@@ -1,133 +1,65 @@
 /* General Styles */
 :root {
-    --primary-color: #0d47a1; /* Bleu foncé */
-    --secondary-color: #1976d2; /* Bleu moyen */
-    --accent-color: #03a9f4; /* Bleu clair pour les boutons */
-    --background-color: #f0f2f5;
-    --card-bg-color: #ffffff;
-    --text-color: #333;
-    --border-color: #e0e0e0;
-    --green-status: #4caf50;
-    --red-status: #f44336;
-    --orange-status: #ff9800;
-    --grey-status: #bdbdbd;
-    --yellow-star: #ffc107;
+    --primary-color: #0d47a1; --secondary-color: #1976d2; --accent-color: #03a9f4;
+    --background-color: #f0f2f5; --card-bg-color: #ffffff; --text-color: #333;
+    --border-color: #e0e0e0; --green-status: #4caf50; --red-status: #f44336;
+    --orange-status: #ff9800; --grey-status: #bdbdbd; --yellow-star: #ffc107;
 }
-
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
+    font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color);
+    margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
 }
-
 .container {
-    width: 100%;
-    max-width: 1200px;
-    background-color: var(--card-bg-color);
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    width: 100%; max-width: 1200px; background-color: var(--card-bg-color);
+    border-radius: 12px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); overflow: hidden;
 }
-
 header {
-    background-color: var(--secondary-color);
-    color: white;
-    padding: 20px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+    background-color: var(--secondary-color); color: white; padding: 20px 25px;
+    display: flex; justify-content: space-between; align-items: center; position: relative;
 }
 header.main-header { justify-content: center; }
 header h1 { margin: 0; font-size: 1.6rem; }
-
-.language-selector, .back-button, .school-logo {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+.back-button {
+    position: absolute; top: 50%; transform: translateY(-50%); left: 25px;
+    background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;
 }
-.language-selector { right: 25px; }
-.back-button { left: 25px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
-.school-logo { right: 25px; height: 40px; }
-
-/* --- NOUVEAU STYLE : TABLEAU DE BORD ÉLÈVE --- */
-.status-legend { display: flex; gap: 20px; padding: 10px 25px; background: #fafafa; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
-.status-legend .dot { height: 15px; width: 15px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
-.dot.green { background-color: var(--green-status); }
-.dot.orange { background-color: var(--orange-status); }
-.dot.red { background-color: var(--red-status); }
-.dot.grey { background-color: var(--grey-status); }
-
+/* Student Dashboard */
 .profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; }
 .student-info { text-align: center; }
 .student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary-color); }
 .star-rating { margin: 10px 0; font-size: 2rem; }
-.star-rating .star { color: var(--grey-status); transition: color 0.3s; }
-.star-rating .star.filled { color: var(--yellow-star); }
-.student-of-week { background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; display: none; }
+.star-rating .star { color: var(--grey-status); } .star-rating .star.filled { color: var(--yellow-star); }
+.student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; }
 .student-of-week.active { display: inline-block; }
-
-.weekly-stats { flex-grow: 1; display: flex; gap: 20px; }
-.stat-item { flex: 1; text-align: center; }
-.pie-chart { width: 100px; height: 100px; border-radius: 50%; margin: 10px auto; background: conic-gradient(#4caf50 0% 40%, #2196f3 40% 70%, #ffc107 70% 90%, #f44336 90% 100%); }
+.weekly-stats { flex-grow: 1; }
+.stat-item { text-align: center; }
 .progress-bar-container { width: 100%; background: #e0e0e0; border-radius: 20px; position: relative; height: 30px; }
 .progress-bar { height: 100%; background: var(--yellow-star); border-radius: 20px; transition: width 0.5s; }
 .progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: bold; }
-
 .dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 .nav-arrow { background: none; border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; }
 .dashboard-nav h2 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
-
 .homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 25px; }
 .subject-card { border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); overflow: hidden; }
-.subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1rem; }
+.subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1rem; background: var(--secondary-color); }
 .subject-card .content { padding: 15px; }
-.subject-card .assignment { background: var(--grey-status); color: white; padding: 10px; border-radius: 5px; min-height: 60px; margin-bottom: 10px; }
+.subject-card .assignment { background: #f5f5f5; padding: 10px; border-radius: 5px; min-height: 60px; margin-bottom: 10px; }
 .subject-card .comment-box { background: #e3f2fd; border-left: 4px solid var(--secondary-color); padding: 10px; border-radius: 5px; min-height: 50px; font-style: italic; }
 .subject-card .scores { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.9rem; }
-.scores div { text-align: center; }
-.scores span { display: block; font-weight: bold; font-size: 1.1rem; }
-
-/* Couleurs des matières */
-.subject-card[data-subject="Maths"] h3 { background: var(--secondary-color); }
-.subject-card[data-subject="L.L"] h3 { background: #ffb300; }
-.subject-card[data-subject="IS"] h3 { background: #8bc34a; }
-.subject-card[data-subject="اللغة العربية"] h3 { background: #e57373; }
-.subject-card[data-subject="Anglais"] h3 { background: #ff8a65; }
-
-/* --- NOUVEAU STYLE : TABLEAU DE BORD ENSEIGNANT --- */
+/* Teacher Dashboard */
+.upload-section { padding: 20px 25px; background: #e8f0fe; border-bottom: 1px solid var(--border-color); text-align: center; }
+.upload-section h3 { margin-top: 0; color: var(--primary-color); }
+.upload-section input[type="file"] { margin-bottom: 15px; }
 .teacher-controls { display: flex; gap: 15px; padding: 20px 25px; background: #fafafa; border-bottom: 1px solid var(--border-color); }
-.teacher-controls select, .teacher-controls input { padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; }
+.teacher-controls select, .teacher-controls input { padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; flex-grow: 1; }
 #teacher-table-container { padding: 25px; overflow-x: auto; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
 .teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
 .teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
-.teacher-evaluation-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
 .teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 .teacher-homework-display { padding: 0 25px 25px 25px; }
-#teacher-homework-list { background: #f5f5f5; padding: 15px; border-radius: 5px; }
-
-/* Styles précédents pour les vues de sélection et de login (ajustés) */
+/* Other Views */
 .main-menu, .login-form, .selection-box { display: flex; flex-direction: column; gap: 20px; padding: 40px; max-width: 400px; margin: auto; }
 .role-button { padding: 18px; font-size: 1.3rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; }
-select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 5px; }
+select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 5px; }
 button[type="submit"] { background: var(--secondary-color); color: white; border: none; }
-.upload-section {
-    padding: 20px 25px;
-    background: #e8f0fe;
-    border-bottom: 1px solid var(--border-color);
-    text-align: center;
-}
-.upload-section h3 {
-    margin-top: 0;
-    color: var(--primary-color);
-}
-.upload-section input[type="file"] {
-    margin-bottom: 15px;
-}
