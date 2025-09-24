@@ -7,14 +7,14 @@ async function connectToDatabase() {
         await client.connect();
     }
     // D'après votre URI, le nom de la base de données est "Alkawthar1"
-    return client.db('Alkawthar1'); 
+    return client.db('test'); 
 }
 
 module.exports = async (req, res) => {
     try {
         const db = await connectToDatabase();
         // IMPORTANT: Remplacez 'PlanHebdomadaire' par le nom EXACT de votre collection
-        const planningCollection = db.collection('PlanHebdomadaire');
+        const planningCollection = db.collection('plans');
 
         // Utiliser .distinct() pour obtenir des listes uniques, en filtrant les valeurs nulles
         const teachers = await planningCollection.distinct("Enseignant", { "Enseignant": { $ne: null } });
