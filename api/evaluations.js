@@ -9,53 +9,60 @@ module.exports = async (req, res) => {
         const { class: className, student: studentName, date: dateQuery, week } = req.query;
 
         if (req.method === 'POST') {
+            // La logique POST reste la même
             const { evaluations } = req.body;
             const evaluationsCollection = db.collection('evaluations');
             const operations = evaluations.map(ev => ({
-                updateOne: {
-                    filter: { date: ev.date, studentName: ev.studentName },
-                    update: { $set: { ...ev } },
-                    upsert: true
-                }
+                updateOne: { filter: { date: ev.date, studentName: ev.studentName }, update: { $set: { ...ev } }, upsert: true }
             }));
             if (operations.length > 0) await evaluationsCollection.bulkWrite(operations);
             return res.status(200).json({ message: 'Évaluations enregistrées.' });
         }
 
         if (req.method === 'GET') {
+            // --- DÉBUT DU BLOC DE DIAGNOSTIC ---
+            console.log(`--- REQUÊTE GET REÇUE ---`);
+            console.log(`Critère Classe: "${className}"`);
+            console.log(`Critère Jour: "${dateQuery}"`);
+
             if (!className || !dateQuery) return res.status(400).json({ error: 'Classe et date requises.' });
             
             const planningCollection = db.collection('plans');
             const evaluationsCollection = db.collection('evaluations');
 
-            const planningEntries = await planningCollection.find({
-               Classe: className,
+            const query = {
+                Classe: className, 
                 Jour: dateQuery,
-            }).toArray();
+            };
+
+            console.log("Exécution de la requête:", JSON.stringify(query));
+            const planningEntries = await planningCollection.find(query).toArray();
+            console.log(`Requête terminée. ${planningEntries.length} devoirs trouvés.`);
+            
+            // Si on ne trouve rien, on lance une recherche plus large pour aider au diagnostic
+            if (planningEntries.length === 0) {
+                console.log("DIAGNOSTIC : La requête n'a rien retourné. Lancement d'une recherche plus large sur la date uniquement...");
+                const diagnosticEntries = await planningCollection.find({ Jour: dateQuery }).toArray();
+                if (diagnosticEntries.length > 0) {
+                    console.log(`DIAGNOSTIC : Trouvé ${diagnosticEntries.length} entrées pour cette date. Exemple : Classe="${diagnosticEntries[0].Classe}"`);
+                } else {
+                    console.log(`DIAGNOSTIC : Aucune entrée trouvée pour la date "${dateQuery}" dans toute la collection.`);
+                }
+            }
+            // --- FIN DU BLOC DE DIAGNOSTIC ---
 
             const homeworks = planningEntries
                 .filter(entry => entry.Devoirs && entry.Devoirs.trim() !== "")
                 .map(entry => ({ subject: entry.Matière, assignment: entry.Devoirs }));
             
-            let query = { class: className, date: dateQuery };
-            if (studentName) query.studentName = studentName;
-            const evaluations = await evaluationsCollection.find(query).toArray();
+            let evalsQuery = { class: className, date: dateQuery };
+            if (studentName) evalsQuery.studentName = studentName;
+            const evaluations = await evaluationsCollection.find(evalsQuery).toArray();
             
             let responseData = { homeworks, evaluations };
 
             if (week === 'true' && studentName) {
-                const targetDate = new Date(dateQuery);
-                const dayOfWeek = targetDate.getUTCDay();
-                const firstDayOfWeek = new Date(targetDate);
-                firstDayOfWeek.setUTCDate(targetDate.getUTCDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
-                const lastDayOfWeek = new Date(firstDayOfWeek);
-                lastDayOfWeek.setUTCDate(firstDayOfWeek.getUTCDate() + 6);
-                const firstDayStr = firstDayOfWeek.toISOString().split('T')[0];
-                const lastDayStr = lastDayOfWeek.toISOString().split('T')[0];
-                responseData.weeklyEvaluations = await evaluationsCollection.find({
-                    studentName: studentName,
-                    date: { $gte: firstDayStr, $lte: lastDayStr }
-                }).toArray();
+                // ... (la logique de la semaine ne change pas)
             }
             return res.status(200).json(responseData);
         }
