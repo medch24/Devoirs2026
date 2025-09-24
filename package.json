@@ -1,11 +1,6 @@
 {
-  "name": "suivi-devoirs-alkawthar",
+  "name": "devoirs-app",
   "version": "1.0.0",
-  "description": "Portail de suivi des devoirs pour parents et enseignants.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
   "dependencies": {
     "mongodb": "^6.5.0"
   }
