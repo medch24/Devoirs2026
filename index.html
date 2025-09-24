@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
 
@@ -115,6 +117,12 @@
                 <h1>Tableau de Bord Enseignant</h1>
             </header>
             <main>
+            <div class="upload-section">
+    <h3>Mettre à jour le planning hebdomadaire</h3>
+    <input type="file" id="excel-file-input" accept=".xlsx, .xls">
+    <button id="upload-excel-btn" class="role-button">1. Charger et Vérifier le Fichier</button>
+    <p id="upload-status"></p>
+</div>    
                 <div class="teacher-controls">
                     <input type="date" id="date-picker">
                     <select id="teacher-name-select"><option>Abas</option></select> <!-- Exemple -->
