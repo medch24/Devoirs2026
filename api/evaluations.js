@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
             const evaluationsCollection = db.collection('evaluations');
             const operations = evaluations.map(ev => ({
                 updateOne: {
-                    filter: { date: ev.date, studentName: ev.studentName, subject: ev.subject },
+                    filter: { date: ev.date, studentName: ev.studentName },
                     update: { $set: { ...ev } },
                     upsert: true
                 }
@@ -30,11 +30,12 @@ module.exports = async (req, res) => {
 
             const planningEntries = await planningCollection.find({
                 Classe: new RegExp(className, 'i'),
-                Jour: dateQuery, // Recherche directe sur la date formatée YYYY-MM-DD
-                Devoirs: { $exists: true, $nin: [null, ""] }
+                Jour: dateQuery,
             }).toArray();
 
-            const homeworks = planningEntries.map(entry => ({ subject: entry.Matière, assignment: entry.Devoirs }));
+            const homeworks = planningEntries
+                .filter(entry => entry.Devoirs && entry.Devoirs.trim() !== "")
+                .map(entry => ({ subject: entry.Matière, assignment: entry.Devoirs }));
             
             let query = { class: className, date: dateQuery };
             if (studentName) query.studentName = studentName;
@@ -58,7 +59,6 @@ module.exports = async (req, res) => {
             }
             return res.status(200).json(responseData);
         }
-
     } catch (error) {
         console.error("[evaluations] ERREUR:", error);
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
