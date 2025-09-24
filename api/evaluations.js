@@ -7,8 +7,7 @@ async function connectToDatabase() {
         await client.connect();
     }
     // Utilisation du nom de base de données correct
-    return client.db('Alkawthar1');
-}
+return client.db('test');}
 
 // Liste des mois pour la recherche de date
 const mois = ["Janv", "Févr", "Mars", "Avril", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
@@ -38,7 +37,7 @@ module.exports = async (req, res) => {
             if (!className || !dateQuery) return res.status(400).json({ error: 'Classe et date requises.' });
 
             // IMPORTANT: Remplacez 'PlanHebdomadaire' par le nom EXACT de votre collection
-            const planningCollection = db.collection('PlanHebdomadaire');
+const planningCollection = db.collection('plans');
             const evaluationsCollection = db.collection('evaluations');
 
             const dateObj = new Date(dateQuery);
