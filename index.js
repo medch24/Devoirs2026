@@ -111,27 +111,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     function formatPlanData(jsonPlan) {
-        if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
-        const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
-        const dataRows = jsonPlan.slice(1);
-        ["Enseignant", "Jour", "Classe", "Matière", "Devoirs"].forEach(header => {
-            if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
+    if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
+    
+    const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
+    const dataRows = jsonPlan.slice(1);
+    
+    ["Enseignant", "Jour", "Classe", "Matière", "Devoirs"].forEach(header => {
+        if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
+    });
+
+    return dataRows.map(row => {
+        const rowData = {};
+        headers.forEach((header, index) => {
+            const value = row[index];
+            // CORRECTION : On nettoie toutes les données texte pour enlever les espaces
+            rowData[header] = (typeof value === 'string') ? value.trim() : value;
         });
-        return dataRows.map(row => {
-            const rowData = {};
-            headers.forEach((header, index) => { rowData[header] = row[index]; });
-            let dateValue = rowData.Jour;
-            let formattedDate;
-            if (typeof dateValue === 'number') {
-                const date = new Date(Math.round((dateValue - 25569) * 86400 * 1000));
-                formattedDate = moment(date).format('YYYY-MM-DD');
-            } else if (typeof dateValue === 'string') {
-                formattedDate = moment(dateValue, "DD/MM/YYYY").isValid() ? moment(dateValue, "DD/MM/YYYY").format('YYYY-MM-DD') : parseFrenchDate(dateValue);
-            }
-            rowData.Jour = formattedDate;
-            return rowData;
-        }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
-    }
+        
+        let dateValue = rowData.Jour;
+        let formattedDate;
+
+        if (typeof dateValue === 'number') {
+            const date = new Date(Math.round((dateValue - 25569) * 86400 * 1000));
+            formattedDate = moment(date).format('YYYY-MM-DD');
+        } else if (typeof dateValue === 'string') {
+            formattedDate = moment(dateValue, "DD/MM/YYYY").isValid() ? moment(dateValue, "DD/MM/YYYY").format('YYYY-MM-DD') : parseFrenchDate(dateValue);
+        }
+        
+        rowData.Jour = formattedDate;
+        return rowData;
+
+    }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
+}
 
     function parseFrenchDate(dateString) {
         const months = { 'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04', 'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08', 'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12' };
