@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
             const evaluationsCollection = db.collection('evaluations');
 
             const planningEntries = await planningCollection.find({
-                Classe: new RegExp(className, 'i'),
+               Classe: className,
                 Jour: dateQuery,
             }).toArray();
 
