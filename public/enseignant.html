@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Enseignant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="container">
+        <section id="login-panel" class="panel">
+            <h2 class="panel-title"><i class="fa-solid fa-lock"></i> Connexion Enseignant</h2>
+            <div class="field"><label for="teacher-select">Sélectionnez votre nom</label><select id="teacher-select"></select></div>
+            <div class="field"><label for="password">Mot de passe (ex: 1234)</label><input type="password" id="password"></div>
+            <button id="login-btn" class="btn">Se connecter</button>
+        </section>
+
+        <section id="dashboard-panel" class="panel hidden">
+            <h2 class="panel-title"><i class="fa-solid fa-highlighter"></i> Mettre à jour les évaluations</h2>
+            <p>Connecté en tant que : <strong id="teacher-name-display"></strong></p>
+            <div class="filter-grid">
+                <div class="field"><label for="eval-date">Date</label><input type="date" id="eval-date"></div>
+                <div class="field"><label for="eval-class">Classe</label><select id="eval-class"></select></div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--border);">
+
+            <h3 style="margin-bottom: 16px;">Devoirs du jour sélectionné :</h3>
+            <div id="homework-display" class="muted" style="background: #0f1628; padding: 10px; border-radius: 8px; min-height: 40px;"></div>
+
+            <h3 style="margin-top: 24px;">Évaluations des élèves</h3>
+            <div class="table-container" style="overflow-x: auto;">
+                <table id="eval-table" style="width: 100%; border-collapse: collapse;">
+                    <thead><tr><th>Élève</th><th>Statut Devoirs</th><th>Participation</th><th>Comportement</th><th>Commentaire</th></tr></thead>
+                    <tbody id="eval-table-body"></tbody>
+                </table>
+            </div>
+            <button id="save-evals-btn" class="btn" style="margin-top: 16px;"><i class="fa-solid fa-save"></i> Enregistrer les modifications</button>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script type="module" src="enseignant.js"></script>
+</body>
+</html>
