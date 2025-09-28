@@ -1,65 +1,110 @@
 /* General Styles */
 :root {
-    --primary-color: #0d47a1; --secondary-color: #1976d2; --accent-color: #03a9f4;
-    --background-color: #f0f2f5; --card-bg-color: #ffffff; --text-color: #333;
-    --border-color: #e0e0e0; --green-status: #4caf50; --red-status: #f44336;
-    --orange-status: #ff9800; --grey-status: #bdbdbd; --yellow-star: #ffc107;
+    --primary-color: #004a99; --secondary-color: #007bff; --accent-color: #0096ff;
+    --background-color: #f4f8fa; --card-bg-color: #ffffff; --text-color: #343a40;
+    --border-color: #dee2e6; --green-status: #28a745; --red-status: #dc3545;
+    --orange-status: #fd7e14; --grey-status: #6c757d; --yellow-star: #ffc107;
 }
+* { box-sizing: border-box; }
 body {
-    font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color);
+    font-family: 'Poppins', 'Tajawal', sans-serif; background-color: var(--background-color); color: var(--text-color);
     margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
 }
 .container {
     width: 100%; max-width: 1200px; background-color: var(--card-bg-color);
-    border-radius: 12px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); overflow: hidden;
+    border-radius: 16px; box-shadow: 0 8px 30px rgba(0, 74, 153, 0.1); overflow: hidden;
 }
 header {
-    background-color: var(--secondary-color); color: white; padding: 20px 25px;
-    display: flex; justify-content: space-between; align-items: center; position: relative;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; padding: 20px 30px;
+    display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 3px solid var(--accent-color);
 }
-header.main-header { justify-content: center; }
-header h1 { margin: 0; font-size: 1.6rem; }
+header h1 { margin: 0; font-size: 1.8rem; }
 .back-button {
-    position: absolute; top: 50%; transform: translateY(-50%); left: 25px;
-    background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;
+    position: absolute; top: 50%; left: 20px; transform: translateY(-50%);
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;
+    font-size: 1.5rem; cursor: pointer; border-radius: 50%; width: 45px; height: 45px; line-height: 45px; text-align: center;
+    transition: background-color 0.2s;
 }
+.back-button:hover { background: rgba(255,255,255,0.2); }
+/* Home Page & Language */
+.language-selector-home { position: absolute; top: 20px; right: 20px; z-index: 10; }
+.language-selector-home button {
+    background: var(--card-bg-color); color: var(--primary-color); border: 1px solid var(--primary-color);
+    padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-left: 10px; font-weight: 600;
+}
+.language-selector-home button:hover { background: #eef; }
 /* Student Dashboard */
-.profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; }
+.profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; flex-wrap: wrap; }
 .student-info { text-align: center; }
-.student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary-color); }
+.student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--secondary-color); object-fit: cover; }
 .star-rating { margin: 10px 0; font-size: 2rem; }
-.star-rating .star { color: var(--grey-status); } .star-rating .star.filled { color: var(--yellow-star); }
-.student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; }
+.star-rating .star { color: #ccc; } .star-rating .star.filled { color: var(--yellow-star); }
+.student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
 .student-of-week.active { display: inline-block; }
 .weekly-stats { flex-grow: 1; }
-.stat-item { text-align: center; }
-.progress-bar-container { width: 100%; background: #e0e0e0; border-radius: 20px; position: relative; height: 30px; }
-.progress-bar { height: 100%; background: var(--yellow-star); border-radius: 20px; transition: width 0.5s; }
-.progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: bold; }
+.stat-item { text-align: center; } .stat-item p { font-weight: 600; color: #555; margin-bottom: 10px; }
+.progress-bar-container { width: 100%; background: #e9ecef; border-radius: 20px; position: relative; height: 35px; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #ffc107, #ff9800); border-radius: 20px; transition: width 0.5s ease-out; }
+.progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: 700; color: #333; font-size: 1.1rem; }
 .dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-.nav-arrow { background: none; border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; }
-.dashboard-nav h2 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
-.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 25px; }
-.subject-card { border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); overflow: hidden; }
-.subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1rem; background: var(--secondary-color); }
-.subject-card .content { padding: 15px; }
-.subject-card .assignment { background: #f5f5f5; padding: 10px; border-radius: 5px; min-height: 60px; margin-bottom: 10px; }
-.subject-card .comment-box { background: #e3f2fd; border-left: 4px solid var(--secondary-color); padding: 10px; border-radius: 5px; min-height: 50px; font-style: italic; }
-.subject-card .scores { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.9rem; }
+.nav-arrow { background: var(--card-bg-color); border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+.nav-arrow:hover { background: var(--secondary-color); color: white; }
+.dashboard-nav h2 { margin: 0; font-size: 1.3rem; color: var(--primary-color); }
+.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 25px; }
+.subject-card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; }
+.subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1.1rem; background: var(--secondary-color); }
+.subject-card .content { padding: 15px; flex-grow: 1; }
+.subject-card .assignment { background: #f8f9fa; padding: 12px; border-radius: 8px; min-height: 70px; margin-bottom: 12px; border-left: 4px solid var(--accent-color); }
+.subject-card .comment-box { background: #fffbe6; padding: 12px; border-radius: 8px; min-height: 50px; font-style: italic; color: #555; }
+.subject-card .scores { display: flex; justify-content: space-around; margin-top: 15px; font-size: 0.9rem; text-align: center; }
+.scores span { display: block; font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
 /* Teacher Dashboard */
-.upload-section { padding: 20px 25px; background: #e8f0fe; border-bottom: 1px solid var(--border-color); text-align: center; }
-.upload-section h3 { margin-top: 0; color: var(--primary-color); }
-.upload-section input[type="file"] { margin-bottom: 15px; }
-.teacher-controls { display: flex; gap: 15px; padding: 20px 25px; background: #fafafa; border-bottom: 1px solid var(--border-color); }
-.teacher-controls select, .teacher-controls input { padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; flex-grow: 1; }
+.upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
+.upload-section h3 { margin: 0 0 15px 0; color: var(--primary-color); }
+#upload-status { font-weight: 600; margin-top: 15px; }
+#upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
+.teacher-controls { display: flex; gap: 15px; padding: 0 25px 25px 25px; }
+.teacher-controls select, .teacher-controls input { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; flex-grow: 1; }
+.section-title { padding: 0 25px; margin-top: 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
+.teacher-homework-display { padding: 15px 25px; background: #fafafa; min-height: 50px; }
 #teacher-table-container { padding: 25px; overflow-x: auto; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
-.teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
+.teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
 .teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
+.teacher-evaluation-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
 .teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-.teacher-homework-display { padding: 0 25px 25px 25px; }
 /* Other Views */
-.main-menu, .login-form, .selection-box { display: flex; flex-direction: column; gap: 20px; padding: 40px; max-width: 400px; margin: auto; }
-.role-button { padding: 18px; font-size: 1.3rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; }
-select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 5px; }
-button[type="submit"] { background: var(--secondary-color); color: white; border: none; }
+.main-menu, .login-form, .selection-box { display: flex; flex-direction: column; gap: 20px; padding: 40px; max-width: 450px; margin: auto; }
+.role-button { padding: 18px; font-size: 1.4rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; font-weight: 600; transition: all 0.2s; }
+.role-button:hover { background-color: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 119, 255, 0.3); }
+select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
+button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }```
+
+---
+
+### **Fichiers 3, 4, 5 : Les Fichiers API (Complets et Corrigés)**
+
+Assurez-vous que les fichiers `api/upload-plan.js`, `api/initial-data.js`, et `api/evaluations.js` contiennent exactement ce code.
+
+#### **`api/upload-plan.js`**
+```javascript
+const { MongoClient } = require('mongodb');
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri);
+
+module.exports = async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).json({ message: 'Méthode non autorisée' });
+    try {
+        await client.connect();
+        const db = client.db('test');
+        const collection = db.collection('plans');
+        const planData = req.body;
+        if (!planData || planData.length === 0) return res.status(400).json({ message: 'Aucune donnée à enregistrer.' });
+        await collection.deleteMany({});
+        await collection.insertMany(planData);
+        res.status(200).json({ message: `Planning mis à jour avec ${planData.length} devoirs.` });
+    } catch (error) {
+        console.error("[upload-plan] ERREUR:", error);
+        res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
+    }
+};
