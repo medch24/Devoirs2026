@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail de Suivi des Devoirs</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Vue Principale (Accueil) -->
+        <div id="home-view">
+             <header class="main-header">
+                <h1>Portail de Suivi des Devoirs</h1>
+                <div class="language-selector">
+                    <button id="lang-fr">Français</button>
+                    <button id="lang-ar">العربية</button>
+                </div>
+            </header>
+            <main class="main-menu">
+                <button id="go-to-parent" class="role-button">Espace Parent</button>
+                <button id="go-to-teacher" class="role-button">Espace Enseignant</button>
+            </main>
+        </div>
+
+        <!-- Vue Espace Parent - Sélection -->
+        <div id="parent-selection-view" class="view" style="display: none;">
+            <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1>Espace Parent</h1>
+            </header>
+            <main>
+                <div class="selection-box">
+                    <label for="class-select">Choisissez une classe :</label>
+                    <select id="class-select"></select>
+                </div>
+                <div class="selection-box" id="student-selector-box" style="display:none;">
+                    <label for="student-select">Choisissez votre enfant :</label>
+                    <select id="student-select"></select>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Vue Espace Enseignant - Connexion -->
+        <div id="teacher-login-view" class="view" style="display: none;">
+            <header>
+                 <button class="back-button">&larr; Retour</button>
+                <h1>Accès Enseignant</h1>
+            </header>
+            <main>
+                <form id="teacher-login-form" class="login-form">
+                    <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+                    <input type="password" id="password" placeholder="Mot de passe" required>
+                    <button type="submit">Connexion</button>
+                    <p id="login-error" class="error-message"></p>
+                </form>
+            </main>
+        </div>
+
+        <!-- NOUVELLE VUE - Tableau de Bord de l'Élève -->
+        <div id="student-dashboard-view" class="view" style="display: none;">
+            <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1 id="student-name-header">Tableau de bord de l'élève</h1>
+                <img src="https://i.imgur.com/your-logo.png" alt="Logo Alkawthar" class="school-logo"> <!-- Remplacez par le lien de votre logo -->
+            </header>
+            <main>
+                <div class="status-legend">
+                    <div><span class="dot green"></span> Fait</div>
+                    <div><span class="dot orange"></span> Partiellement Fait</div>
+                    <div><span class="dot red"></span> NON Fait</div>
+                    <div><span class="dot grey"></span> Abscent</div>
+                </div>
+                <div class="profile-summary">
+                    <div class="student-info">
+                        <img src="https://via.placeholder.com/120" alt="Photo élève" class="student-photo">
+                        <div class="star-rating" id="star-rating">
+                            <!-- Les étoiles seront générées par JS -->
+                        </div>
+                        <div class="student-of-week" id="student-of-week-banner">Élève de la semaine</div>
+                    </div>
+                    <div class="weekly-stats">
+                        <div class="stat-item">
+                            <p>Sur toute la semaine : par matières</p>
+                            <div class="pie-chart" id="pie-chart"></div>
+                        </div>
+                        <div class="stat-item">
+                            <p>Sur toute la semaine : En générale</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="overall-progress-bar"></div>
+                                <span id="overall-progress-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-nav">
+                    <button id="prev-day-btn" class="nav-arrow">&larr; Devoirs Précédents</button>
+                    <h2 id="homework-date">Devoirs d'aujourd'hui : Jeudi 25/09/2025</h2>
+                    <button id="next-day-btn" class="nav-arrow">Devoirs Prochains &rarr;</button>
+                </div>
+                <div class="homework-grid" id="homework-grid">
+                    <!-- Les cartes de devoirs seront générées par JS -->
+                </div>
+            </main>
+        </div>
+        
+        <!-- NOUVELLE VUE - Tableau de Bord Enseignant -->
+        <div id="teacher-dashboard-view" class="view" style="display: none;">
+             <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1>Tableau de Bord Enseignant</h1>
+            </header>
+            <main>
+                <div class="teacher-controls">
+                    <input type="date" id="date-picker">
+                    <select id="teacher-name-select"><option>Abas</option></select> <!-- Exemple -->
+                    <select id="teacher-class-select"></select>
+                </div>
+                <div id="teacher-table-container">
+                     <!-- Le tableau sera généré par JS -->
+                </div>
+                <div class="teacher-homework-display">
+                    <h3>Devoirs du jour sélectionné :</h3>
+                    <div id="teacher-homework-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
