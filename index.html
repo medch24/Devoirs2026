@@ -3,40 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail de Suivi des Devoirs</title>
+    <title data-translate="portalTitle">Portail de Suivi des Devoirs</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Librairie pour lire les fichiers Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Librairie pour gérer les dates facilement -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/fr.js"></script>
 </head>
 <body>
 
     <div class="container">
         <!-- Vue Principale (Accueil) -->
         <div id="home-view">
-             <header class="main-header">
-                <h1>Portail de Suivi des Devoirs</h1>
-             </header>
+            <div class="language-selector-home">
+                <button id="lang-fr">Français</button>
+                <button id="lang-ar">العربية</button>
+            </div>
+            <header class="main-header">
+                <h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1>
+            </header>
             <main class="main-menu">
-                <button id="go-to-parent" class="role-button">Espace Parent</button>
-                <button id="go-to-teacher" class="role-button">Espace Enseignant</button>
+                <button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button>
+                <button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button>
             </main>
         </div>
 
         <!-- Vue Espace Parent - Sélection -->
         <div id="parent-selection-view" class="view" style="display: none;">
             <header>
-                <button class="back-button">&larr; Retour</button>
-                <h1>Espace Parent</h1>
+                <button class="back-button">&larr;</button>
+                <h1 data-translate="parentSpace">Espace Parent</h1>
             </header>
             <main>
                 <div class="selection-box">
-                    <label for="class-select">Choisissez une classe :</label>
+                    <label for="class-select" data-translate="classSelectLabel">Choisissez une classe :</label>
                     <select id="class-select"></select>
                 </div>
                 <div class="selection-box" id="student-selector-box" style="display:none;">
-                    <label for="student-select">Choisissez votre enfant :</label>
+                    <label for="student-select" data-translate="studentSelectLabel">Choisissez votre enfant :</label>
                     <select id="student-select"></select>
                 </div>
             </main>
@@ -45,14 +53,14 @@
         <!-- Vue Espace Enseignant - Connexion -->
         <div id="teacher-login-view" class="view" style="display: none;">
             <header>
-                 <button class="back-button">&larr; Retour</button>
-                <h1>Accès Enseignant</h1>
+                 <button class="back-button">&larr;</button>
+                <h1 data-translate="teacherLoginTitle">Accès Enseignant</h1>
             </header>
             <main>
                 <form id="teacher-login-form" class="login-form">
-                    <input type="text" id="username" placeholder="Nom d'utilisateur" required>
-                    <input type="password" id="password" placeholder="Mot de passe" required>
-                    <button type="submit">Connexion</button>
+                    <input type="text" id="username" data-translate-placeholder="usernamePlaceholder" placeholder="Nom d'utilisateur" required>
+                    <input type="password" id="password" data-translate-placeholder="passwordPlaceholder" placeholder="Mot de passe" required>
+                    <button type="submit" data-translate="loginButton">Connexion</button>
                     <p id="login-error" class="error-message"></p>
                 </form>
             </main>
@@ -61,19 +69,19 @@
         <!-- Vue Tableau de Bord de l'Élève -->
         <div id="student-dashboard-view" class="view" style="display: none;">
             <header>
-                <button class="back-button">&larr; Retour</button>
-                <h1 id="student-name-header">Tableau de bord de l'élève</h1>
+                <button class="back-button">&larr;</button>
+                <h1 id="student-name-header"></h1>
             </header>
             <main>
                 <div class="profile-summary">
                     <div class="student-info">
-                        <img src="https://via.placeholder.com/120" alt="Photo élève" class="student-photo">
+                        <img src="https://i.imgur.com/8f2kF7B.png" alt="Photo élève" class="student-photo">
                         <div class="star-rating" id="star-rating"></div>
-                        <div class="student-of-week" id="student-of-week-banner">Élève de la semaine</div>
+                        <div class="student-of-week" id="student-of-week-banner" data-translate="studentOfTheWeek">Élève de la semaine</div>
                     </div>
                     <div class="weekly-stats">
                          <div class="stat-item">
-                            <p>Sur toute la semaine : En générale</p>
+                            <p data-translate="overallWeeklyProgress">Sur toute la semaine : En générale</p>
                             <div class="progress-bar-container">
                                 <div class="progress-bar" id="overall-progress-bar"></div>
                                 <span id="overall-progress-text">0%</span>
@@ -82,9 +90,9 @@
                     </div>
                 </div>
                 <div class="dashboard-nav">
-                    <button id="prev-day-btn" class="nav-arrow">&larr; Jour Précédent</button>
+                    <button id="prev-day-btn" class="nav-arrow">&larr; <span data-translate="previousDay">Jour Précédent</span></button>
                     <h2 id="homework-date"></h2>
-                    <button id="next-day-btn" class="nav-arrow">Jour Suivant &rarr;</button>
+                    <button id="next-day-btn" class="nav-arrow"><span data-translate="nextDay">Jour Suivant</span> &rarr;</button>
                 </div>
                 <div class="homework-grid" id="homework-grid"></div>
             </main>
@@ -93,14 +101,14 @@
         <!-- Vue Tableau de Bord Enseignant -->
         <div id="teacher-dashboard-view" class="view" style="display: none;">
              <header>
-                <button class="back-button">&larr; Retour</button>
-                <h1>Tableau de Bord Enseignant</h1>
+                <button class="back-button">&larr;</button>
+                <h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1>
             </header>
             <main>
                 <div class="upload-section">
-                    <h3>Mettre à jour le planning hebdomadaire</h3>
+                    <h3 data-translate="updateSchedule">Mettre à jour le planning hebdomadaire</h3>
                     <input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv">
-                    <button id="upload-excel-btn" class="role-button">1. Charger et Mettre à jour</button>
+                    <button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button>
                     <p id="upload-status"></p>
                 </div>
                 <div class="teacher-controls">
@@ -108,11 +116,9 @@
                     <select id="teacher-name-select"></select>
                     <select id="teacher-class-select"></select>
                 </div>
+                <h3 class="section-title" data-translate="homeworkForDay">Devoirs du jour sélectionné :</h3>
+                <div class="teacher-homework-display" id="teacher-homework-list"></div>
                 <div id="teacher-table-container"></div>
-                <div class="teacher-homework-display">
-                    <h3>Devoirs du jour sélectionné :</h3>
-                    <div id="teacher-homework-list"></div>
-                </div>
             </main>
         </div>
     </div>
