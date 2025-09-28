@@ -28,8 +28,10 @@ module.exports = async (req, res) => {
             const planningCollection = db.collection('plans');
             const evaluationsCollection = db.collection('evaluations');
 
+            // --- C'EST ICI LA CORRECTION ---
+            // On cherche une correspondance exacte pour la classe.
             const planningEntries = await planningCollection.find({
-                Classe: new RegExp(className, 'i'),
+                Classe: className, 
                 Jour: dateQuery,
             }).toArray();
 
