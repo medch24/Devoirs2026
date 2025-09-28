@@ -1,0 +1,376 @@
+/* General Styles */
+:root {
+    --primary-color: #0d47a1; /* Bleu foncé */
+    --secondary-color: #1976d2; /* Bleu moyen */
+    --accent-color: #03a9f4; /* Bleu clair pour les boutons */
+    --background-color: #f0f2f5;
+    --card-bg-color: #ffffff;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --green-status: #4caf50;
+    --red-status: #f44336;
+    --orange-status: #ff9800;
+    --grey-status: #bdbdbd;
+    --yellow-star: #ffc107;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    background-color: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+header {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+header.main-header { justify-content: center; }
+header h1 { margin: 0; font-size: 1.6rem; }
+
+.language-selector, .back-button, .school-logo {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.language-selector { right: 25px; }
+.back-button { left: 25px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+.school-logo { right: 25px; height: 40px; }
+
+/* --- NOUVEAU STYLE : TABLEAU DE BORD ÉLÈVE --- */
+.status-legend { display: flex; gap: 20px; padding: 10px 25px; background: #fafafa; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+.status-legend .dot { height: 15px; width: 15px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+.dot.green { background-color: var(--green-status); }
+.dot.orange { background-color: var(--orange-status); }
+.dot.red { background-color: var(--red-status); }
+.dot.grey { background-color: var(--grey-status); }
+
+.profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; }
+.student-info { text-align: center; }
+.student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary-color); }
+.star-rating { margin: 10px 0; font-size: 2rem; }
+.star-rating .star { color: var(--grey-status); transition: color 0.3s; }
+.star-rating .star.filled { color: var(--yellow-star); }
+.student-of-week { background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; display: none; }
+.student-of-week.active { display: inline-block; }
+
+.weekly-stats { flex-grow: 1; display: flex; gap: 20px; }
+.stat-item { flex: 1; text-align: center; }
+.pie-chart { width: 100px; height: 100px; border-radius: 50%; margin: 10px auto; background: conic-gradient(#4caf50 0% 40%, #2196f3 40% 70%, #ffc107 70% 90%, #f44336 90% 100%); }
+.progress-bar-container { width: 100%; background: #e0e0e0; border-radius: 20px; position: relative; height: 30px; }
+.progress-bar { height: 100%; background: var(--yellow-star); border-radius: 20px; transition: width 0.5s; }
+.progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: bold; }
+
+.dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.nav-arrow { background: none; border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+.dashboard-nav h2 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
+
+.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 25px; }
+.subject-card { border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); overflow: hidden; }
+.subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1rem; }
+.subject-card .content { padding: 15px; }
+.subject-card .assignment { background: var(--grey-status); color: white; padding: 10px; border-radius: 5px; min-height: 60px; margin-bottom: 10px; }
+.subject-card .comment-box { background: #e3f2fd; border-left: 4px solid var(--secondary-color); padding: 10px; border-radius: 5px; min-height: 50px; font-style: italic; }
+.subject-card .scores { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.9rem; }
+.scores div { text-align: center; }
+.scores span { display: block; font-weight: bold; font-size: 1.1rem; }
+
+/* Couleurs des matières */
+.subject-card[data-subject="Maths"] h3 { background: var(--secondary-color); }
+.subject-card[data-subject="L.L"] h3 { background: #ffb300; }
+.subject-card[data-subject="IS"] h3 { background: #8bc34a; }
+.subject-card[data-subject="اللغة العربية"] h3 { background: #e57373; }
+.subject-card[data-subject="Anglais"] h3 { background: #ff8a65; }
+
+/* --- NOUVEAU STYLE : TABLEAU DE BORD ENSEIGNANT --- */
+.teacher-controls { display: flex; gap: 15px; padding: 20px 25px; background: #fafafa; border-bottom: 1px solid var(--border-color); }
+.teacher-controls select, .teacher-controls input { padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; }
+#teacher-table-container { padding: 25px; overflow-x: auto; }
+.teacher-evaluation-table { width: 100%; border-collapse: collapse; }
+.teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
+.teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
+.teacher-evaluation-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+.teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+.teacher-homework-display { padding: 0 25px 25px 25px; }
+#teacher-homework-list { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+
+/* Styles précédents pour les vues de sélection et de login (ajustés) */
+.main-menu, .login-form, .selection-box { display: flex; flex-direction: column; gap: 20px; padding: 40px; max-width: 400px; margin: auto; }
+.role-button { padding: 18px; font-size: 1.3rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; }
+select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 5px; }
+button[type="submit"] { background: var(--secondary-color); color: white; border: none; }```
+
+---
+
+### **Étape 3 : Remplacer `index.js`**
+
+C'est la plus grosse mise à jour. Ce code gère la nouvelle logique d'affichage, la navigation par date, le calcul des étoiles, etc.
+
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+    // --- GESTION DE LA DATE ---
+    let currentDate = new Date();
+
+    // --- LOGIQUE DE L'APPLICATION ---
+    // (Le code pour la traduction, les vues, les classes reste le même)
+    // ... Collez ici tout le code de l'ancien index.js jusqu'à la section "Espace Enseignant" ...
+    // NOTE : Assurez-vous d'avoir les sections "DICTIONNAIRE", "GESTION DE LA LANGUE",
+    // et la logique de navigation "showView", "goHome", etc.
+
+    // Remplacez les fonctions existantes par celles-ci :
+    
+    // --- NOUVEL ESPACE ENSEIGNANT ---
+    const datePicker = document.getElementById('date-picker');
+    const teacherClassSelect = document.getElementById('teacher-class-select');
+    const teacherTableContainer = document.getElementById('teacher-table-container');
+    const teacherHomeworkList = document.getElementById('teacher-homework-list');
+
+    function setupTeacherDashboard() {
+        datePicker.valueAsDate = new Date();
+        populateClassSelect('teacher-class-select');
+
+        datePicker.addEventListener('change', renderTeacherView);
+        teacherClassSelect.addEventListener('change', renderTeacherView);
+        
+        renderTeacherView();
+    }
+
+    async function renderTeacherView() {
+        const selectedClass = teacherClassSelect.value;
+        const selectedDate = datePicker.value;
+
+        if (!selectedClass) {
+            teacherTableContainer.innerHTML = "<p>Veuillez sélectionner une classe.</p>";
+            teacherHomeworkList.innerHTML = "";
+            return;
+        }
+
+        try {
+            // Fetch devoirs et évaluations existantes pour ce jour
+            const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
+            const data = await response.json();
+
+            // Afficher les devoirs du jour
+            teacherHomeworkList.innerHTML = "";
+            if(data.homeworks && data.homeworks.length > 0) {
+                data.homeworks.forEach(hw => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<strong>${hw.subject}:</strong> ${hw.assignment}`;
+                    teacherHomeworkList.appendChild(p);
+                });
+            } else {
+                teacherHomeworkList.innerHTML = "<p>Aucun devoir enregistré pour ce jour.</p>";
+            }
+
+            // Afficher le tableau d'évaluation
+            const students = classes[selectedClass] || [];
+            let tableHTML = `
+                <table class="teacher-evaluation-table">
+                    <thead>
+                        <tr><th>Élève</th><th>Devoirs</th><th>Participation</th><th>Comportement</th><th>Commentaire</th></tr>
+                    </thead>
+                    <tbody>`;
+            
+            for (const student of students) {
+                // Trouver l'évaluation existante pour cet élève, si elle existe
+                const existingEval = data.evaluations.find(ev => ev.studentName === student);
+
+                tableHTML += `
+                    <tr data-student="${student}">
+                        <td>${student}</td>
+                        <td>
+                            <select class="status-select">
+                                <option value="Fait" ${existingEval?.status === 'Fait' ? 'selected' : ''}>Fait</option>
+                                <option value="Non Fait" ${existingEval?.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option>
+                                <option value="Partiellement Fait" ${existingEval?.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option>
+                                <option value="Absent" ${existingEval?.status === 'Absent' ? 'selected' : ''}>Absent</option>
+                            </select>
+                        </td>
+                        <td><input type="number" class="participation-input" min="0" max="10" value="${existingEval?.participation || 7}"></td>
+                        <td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval?.behavior || 7}"></td>
+                        <td><input type="text" class="comment-input" value="${existingEval?.comment || ''}"></td>
+                    </tr>`;
+            }
+            tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;">Enregistrer les modifications</button>`;
+            teacherTableContainer.innerHTML = tableHTML;
+            
+            // Ajouter l'événement au nouveau bouton
+            document.getElementById('submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
+
+        } catch (error) {
+            console.error("Erreur de chargement de la vue enseignant:", error);
+            teacherTableContainer.innerHTML = "<p class='error-message'>Erreur de chargement des données.</p>";
+        }
+    }
+
+    async function submitTeacherEvaluations() {
+        const selectedClass = teacherClassSelect.value;
+        const selectedDate = datePicker.value;
+        const evaluations = [];
+        const rows = document.querySelectorAll('.teacher-evaluation-table tbody tr');
+        
+        rows.forEach(row => {
+            evaluations.push({
+                studentName: row.dataset.student,
+                class: selectedClass,
+                date: selectedDate,
+                status: row.querySelector('.status-select').value,
+                participation: parseInt(row.querySelector('.participation-input').value, 10),
+                behavior: parseInt(row.querySelector('.behavior-input').value, 10),
+                comment: row.querySelector('.comment-input').value,
+            });
+        });
+
+        try {
+            await fetch('/api/evaluations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ evaluations })
+            });
+            alert("Évaluations enregistrées avec succès !");
+        } catch (error) {
+            console.error(error);
+            alert("Une erreur est survenue.");
+        }
+    }
+
+    // --- NOUVEL ESPACE PARENT ---
+    const studentSelect = document.getElementById('student-select');
+
+    studentSelect.addEventListener('change', async () => {
+        const studentName = studentSelect.value;
+        const className = document.getElementById('class-select').value;
+        if (studentName && className) {
+            await loadStudentDashboard(className, studentName, currentDate);
+            showView('student-dashboard-view');
+        }
+    });
+
+    document.getElementById('prev-day-btn').addEventListener('click', () => {
+        currentDate.setDate(currentDate.getDate() - 1);
+        const studentName = studentSelect.value;
+        const className = document.getElementById('class-select').value;
+        loadStudentDashboard(className, studentName, currentDate);
+    });
+
+    document.getElementById('next-day-btn').addEventListener('click', () => {
+        currentDate.setDate(currentDate.getDate() + 1);
+        const studentName = studentSelect.value;
+        const className = document.getElementById('class-select').value;
+        loadStudentDashboard(className, studentName, currentDate);
+    });
+
+    async function loadStudentDashboard(className, studentName, date) {
+        document.getElementById('student-name-header').textContent = `Tableau de bord de ${studentName}`;
+        const dateString = date.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+        document.getElementById('homework-date').textContent = `Devoirs du : ${dateString}`;
+        
+        const homeworkGrid = document.getElementById('homework-grid');
+        homeworkGrid.innerHTML = "<p>Chargement...</p>";
+
+        try {
+            const dateQuery = date.toISOString().split('T')[0];
+            const response = await fetch(`/api/evaluations?class=${className}&student=${studentName}&date=${dateQuery}&week=true`);
+            const data = await response.json();
+
+            // Afficher les devoirs du jour
+            homeworkGrid.innerHTML = "";
+            if (data.homeworks && data.homeworks.length > 0) {
+                data.homeworks.forEach(hw => {
+                    const dailyEval = data.evaluations.find(ev => ev.subject === hw.subject) || {};
+                    
+                    const card = document.createElement('div');
+                    card.className = 'subject-card';
+                    card.dataset.subject = hw.subject;
+                    card.innerHTML = `
+                        <h3>${hw.subject}</h3>
+                        <div class="content">
+                            <div class="assignment">${hw.assignment}</div>
+                            <div class="comment-box">${dailyEval.comment || "Aucun commentaire"}</div>
+                            <div class="scores">
+                                <div>Comportement<span>${dailyEval.behavior || 'N/A'}</span></div>
+                                <div>Participation<span>${dailyEval.participation || 'N/A'}</span></div>
+                            </div>
+                        </div>`;
+                    homeworkGrid.appendChild(card);
+                });
+            } else {
+                homeworkGrid.innerHTML = "<p>Aucun devoir pour ce jour.</p>";
+            }
+
+            // Mettre à jour les étoiles et les statistiques de la semaine
+            updateWeeklyStats(data.weeklyEvaluations);
+
+        } catch (error) {
+            console.error("Erreur chargement dashboard élève:", error);
+            homeworkGrid.innerHTML = "<p class='error-message'>Erreur de chargement des données.</p>";
+        }
+    }
+
+    function updateWeeklyStats(weeklyEvals) {
+        let stars = 0;
+        let totalScore = 0;
+        let maxScore = 0;
+        
+        // Logique pour les étoiles (1 étoile par jour "parfait")
+        // Simplifié: on compte juste les jours avec de bonnes notes
+        const dailyScores = {};
+        weeklyEvals.forEach(ev => {
+            const day = new Date(ev.date).getDay();
+            if (!dailyScores[day]) dailyScores[day] = { done: true, score: 0 };
+            if (ev.status !== 'Fait') dailyScores[day].done = false;
+            dailyScores[day].score += ev.participation + ev.behavior;
+        });
+
+        Object.values(dailyScores).forEach(day => {
+            if (day.done && day.score >= 10) stars++;
+        });
+        
+        // Mettre à jour l'affichage des étoiles
+        const starContainer = document.getElementById('star-rating');
+        starContainer.innerHTML = "";
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.className = `star ${i <= stars ? 'filled' : ''}`;
+            star.innerHTML = '&#9733;';
+            starContainer.appendChild(star);
+        }
+
+        const banner = document.getElementById('student-of-week-banner');
+        banner.className = `student-of-week ${stars === 5 ? 'active' : ''}`;
+
+        // Mettre à jour la barre de progression générale
+        weeklyEvals.forEach(ev => {
+            totalScore += (ev.status === 'Fait' ? 10 : (ev.status === 'Partiellement Fait' ? 5 : 0)) + ev.participation + ev.behavior;
+            maxScore += 30; // 10 devoir + 10 part + 10 comp
+        });
+        const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
+        document.getElementById('overall-progress-bar').style.width = `${percentage}%`;
+        document.getElementById('overall-progress-text').textContent = `${percentage}%`;
+    }
+
+    // Le reste du code (fonctions existantes comme showView, goHome, populateClassSelect, etc.) doit être conservé.
+    // Intégrez ce nouveau code en remplaçant les sections correspondantes.
+    
+    // Initialisation
+    setLanguage('fr');
+});
