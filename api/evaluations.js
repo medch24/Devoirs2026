@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
             const evaluationsCollection = db.collection('evaluations');
             const operations = evaluations.map(ev => ({
                 updateOne: {
-                    filter: { date: ev.date, studentName: ev.studentName },
+                    filter: { date: ev.date, studentName: ev.studentName, class: ev.class }, // Ajout de 'class' pour un filtre plus précis
                     update: { $set: { ...ev } },
                     upsert: true
                 }
@@ -23,13 +23,13 @@ module.exports = async (req, res) => {
         }
 
         if (req.method === 'GET') {
-            if (!className || !dateQuery) return res.status(400).json({ error: 'Classe et date requises.' });
+            if (!className || !dateQuery) {
+                return res.status(400).json({ error: 'Classe et date sont requises.' });
+            }
             
             const planningCollection = db.collection('plans');
             const evaluationsCollection = db.collection('evaluations');
 
-            // --- C'EST ICI LA CORRECTION ---
-            // On cherche une correspondance exacte pour la classe.
             const planningEntries = await planningCollection.find({
                 Classe: className, 
                 Jour: dateQuery,
@@ -46,16 +46,20 @@ module.exports = async (req, res) => {
             let responseData = { homeworks, evaluations };
 
             if (week === 'true' && studentName) {
-                const targetDate = new Date(dateQuery);
-                const dayOfWeek = targetDate.getUTCDay();
-                const firstDayOfWeek = new Date(targetDate);
-                firstDayOfWeek.setUTCDate(targetDate.getUTCDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
-                const lastDayOfWeek = new Date(firstDayOfWeek);
-                lastDayOfWeek.setUTCDate(firstDayOfWeek.getUTCDate() + 6);
-                const firstDayStr = firstDayOfWeek.toISOString().split('T')[0];
-                const lastDayStr = lastDayOfWeek.toISOString().split('T')[0];
+                const targetDate = moment.utc(dateQuery); // Utiliser moment.utc pour éviter les problèmes de fuseau horaire
+                const dayOfWeek = targetDate.isoWeekday(); // Lundi=1, Dimanche=7
+                
+                // Début de semaine (lundi)
+                const firstDayOfWeek = targetDate.clone().isoWeekday(1);
+                // Fin de semaine (dimanche)
+                const lastDayOfWeek = targetDate.clone().isoWeekday(7);
+
+                const firstDayStr = firstDayOfWeek.format('YYYY-MM-DD');
+                const lastDayStr = lastDayOfWeek.format('YYYY-MM-DD');
+                
                 responseData.weeklyEvaluations = await evaluationsCollection.find({
                     studentName: studentName,
+                    class: className, // Ajout de la classe pour filtrer les évaluations de la semaine
                     date: { $gte: firstDayStr, $lte: lastDayStr }
                 }).toArray();
             }
@@ -63,6 +67,6 @@ module.exports = async (req, res) => {
         }
     } catch (error) {
         console.error("[evaluations] ERREUR:", error);
-        return res.status(500).json({ error: 'Erreur interne du serveur.' });
+        return res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
     }
 };
