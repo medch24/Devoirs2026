@@ -1,256 +1,121 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- VARIABLES GLOBALES ---
-    let currentDate = new Date();
-    const studentLists = {
-        PEI1: ["Faysal", "Bilal", "Jad", "Manaf"], PEI2: ["Ahmed", "Yasser", "Eyad", "Ali"],
-        PEI3: ["Seifeddine", "Mohamed", "Wajih", "Ahmad", "Adam"],
-        PEI4: ["Mohamed Younes", "Mohamed Amine", "Samir", "Abdulrahman", "Youssef"], DP2: ["Habib", "Salah"]
-    };
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail de Suivi des Devoirs</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
 
-    // --- LOGIQUE DE NAVIGATION (ne change pas) ---
-    const views = document.querySelectorAll('.view');
-    const homeView = document.getElementById('home-view');
-    const goToParentBtn = document.getElementById('go-to-parent');
-    const goToTeacherBtn = document.getElementById('go-to-teacher');
-    const backButtons = document.querySelectorAll('.back-button');
-    const showView = (viewId) => { homeView.style.display = 'none'; views.forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; };
-    const goHome = () => { homeView.style.display = 'block'; views.forEach(v => v.style.display = 'none'); };
-    goToParentBtn.addEventListener('click', () => { populateClassSelect('class-select'); showView('parent-selection-view'); });
-    goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
-    backButtons.forEach(btn => btn.addEventListener('click', goHome));
-    
-    // --- CONNEXION ENSEIGNANT ---
-    document.getElementById('teacher-login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        if (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!') {
-            setupTeacherDashboard();
-            showView('teacher-dashboard-view');
-        } else { document.getElementById('login-error').textContent = "Identifiants incorrects."; }
-    });
+    <div class="container">
+        <!-- Vue Principale (Accueil) -->
+        <div id="home-view">
+             <header class="main-header">
+                <h1>Portail de Suivi des Devoirs</h1>
+             </header>
+            <main class="main-menu">
+                <button id="go-to-parent" class="role-button">Espace Parent</button>
+                <button id="go-to-teacher" class="role-button">Espace Enseignant</button>
+            </main>
+        </div>
 
-    // --- NOUVELLE LOGIQUE D'UPLOAD EXCEL ---
-    const excelFileInput = document.getElementById('excel-file-input');
-    const uploadExcelBtn = document.getElementById('upload-excel-btn');
-    const uploadStatus = document.getElementById('upload-status');
-
-    uploadExcelBtn.addEventListener('click', () => {
-        const file = excelFileInput.files[0];
-        if (!file) {
-            uploadStatus.textContent = "Veuillez d'abord choisir un fichier Excel.";
-            uploadStatus.style.color = 'red';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            try {
-                const data = new Uint8Array(event.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                
-                // Convertir la feuille en JSON
-                const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                
-                // Valider et formater les données
-                const formattedPlan = formatPlanData(jsonPlan);
-                uploadStatus.textContent = `Fichier lu avec succès. ${formattedPlan.length} lignes de devoirs trouvées. Envoi en cours...`;
-                uploadStatus.style.color = 'blue';
-
-                // Envoyer les données à l'API
-                const response = await fetch('/api/upload-plan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formattedPlan)
-                });
-
-                const result = await response.json();
-                if (!response.ok) throw new Error(result.message || 'Erreur inconnue');
-
-                uploadStatus.textContent = result.message;
-                uploadStatus.style.color = 'green';
-                
-                // Recharger la vue enseignant pour afficher les nouvelles données
-                setupTeacherDashboard();
-
-            } catch (error) {
-                console.error("Erreur lors de l'upload:", error);
-                uploadStatus.textContent = `Erreur : ${error.message}`;
-                uploadStatus.style.color = 'red';
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    });
-
-    function excelDateToYYYYMMDD(excelDate) {
-        const date = new Date((excelDate - (25567 + 2)) * 86400 * 1000);
-        return date.toISOString().split('T')[0];
-    }
-    
-    function formatPlanData(jsonPlan) {
-        const headers = jsonPlan[0].map(h => h.trim());
-        const dataRows = jsonPlan.slice(1);
-        const requiredHeaders = ["Enseignant", "Jour", "Classe", "Matière", "Devoirs"];
+        <!-- Vue Espace Parent - Sélection -->
+        <div id="parent-selection-view" class="view" style="display: none;">
+            <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1>Espace Parent</h1>
+            </header>
+            <main>
+                <div class="selection-box">
+                    <label for="class-select">Choisissez une classe :</label>
+                    <select id="class-select"></select>
+                </div>
+                <div class="selection-box" id="student-selector-box" style="display:none;">
+                    <label for="student-select">Choisissez votre enfant :</label>
+                    <select id="student-select"></select>
+                </div>
+            </main>
+        </div>
         
-        // Valider les en-têtes
-        for(const header of requiredHeaders) {
-            if(!headers.includes(header)) throw new Error(`Colonne manquante dans le fichier Excel : "${header}"`);
-        }
+        <!-- Vue Espace Enseignant - Connexion -->
+        <div id="teacher-login-view" class="view" style="display: none;">
+            <header>
+                 <button class="back-button">&larr; Retour</button>
+                <h1>Accès Enseignant</h1>
+            </header>
+            <main>
+                <form id="teacher-login-form" class="login-form">
+                    <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+                    <input type="password" id="password" placeholder="Mot de passe" required>
+                    <button type="submit">Connexion</button>
+                    <p id="login-error" class="error-message"></p>
+                </form>
+            </main>
+        </div>
 
-        return dataRows.map(row => {
-            const rowData = {};
-            headers.forEach((header, index) => {
-                rowData[header] = row[index];
-            });
-            
-            // Transformer la date Excel en format YYYY-MM-DD
-            if (typeof rowData.Jour === 'number') {
-                rowData.Jour = excelDateToYYYYMMDD(rowData.Jour);
-            }
-            
-            return rowData;
-        }).filter(row => row.Devoirs); // Garder uniquement les lignes qui ont un devoir
-    }
-    
-    // --- ESPACE ENSEIGNANT - TABLEAU DE BORD (LOGIQUE DYNAMIQUE) ---
-    const datePicker = document.getElementById('date-picker');
-    const teacherNameSelect = document.getElementById('teacher-name-select');
-    const teacherClassSelect = document.getElementById('teacher-class-select');
-    const teacherTableContainer = document.getElementById('teacher-table-container');
-    const teacherHomeworkList = document.getElementById('teacher-homework-list');
-    
-    async function setupTeacherDashboard() { /* La logique existante est déplacée ici */ }
-    async function renderTeacherView() { /* La logique existante est déplacée ici */ }
-    // ... Collez le reste du code de l'Espace Enseignant et Parent ici ...
-    // Le code qui suit est identique à la version précédente
-    async function setupTeacherDashboard() {
-        datePicker.valueAsDate = new Date();
+        <!-- Vue Tableau de Bord de l'Élève -->
+        <div id="student-dashboard-view" class="view" style="display: none;">
+            <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1 id="student-name-header">Tableau de bord de l'élève</h1>
+            </header>
+            <main>
+                <div class="profile-summary">
+                    <div class="student-info">
+                        <img src="https://via.placeholder.com/120" alt="Photo élève" class="student-photo">
+                        <div class="star-rating" id="star-rating"></div>
+                        <div class="student-of-week" id="student-of-week-banner">Élève de la semaine</div>
+                    </div>
+                    <div class="weekly-stats">
+                         <div class="stat-item">
+                            <p>Sur toute la semaine : En générale</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="overall-progress-bar"></div>
+                                <span id="overall-progress-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-nav">
+                    <button id="prev-day-btn" class="nav-arrow">&larr; Jour Précédent</button>
+                    <h2 id="homework-date"></h2>
+                    <button id="next-day-btn" class="nav-arrow">Jour Suivant &rarr;</button>
+                </div>
+                <div class="homework-grid" id="homework-grid"></div>
+            </main>
+        </div>
         
-        try {
-            const response = await fetch('/api/initial-data');
-            if(!response.ok) throw new Error('Réponse du serveur non valide');
-            const initialData = await response.json();
-
-            populateDynamicSelect('teacher-name-select', initialData.teachers || []);
-            populateDynamicSelect('teacher-class-select', initialData.classes || []);
-
-        } catch (error) {
-            console.error("Impossible de charger les données initiales:", error);
-            teacherTableContainer.innerHTML = `<p class="error-message">Impossible de charger la liste des classes et enseignants. Veuillez mettre à jour le planning via un fichier Excel.</p>`;
-        }
-        
-        datePicker.addEventListener('change', renderTeacherView);
-        teacherClassSelect.addEventListener('change', renderTeacherView);
-        renderTeacherView();
-    }
-    
-    async function renderTeacherView() {
-        const selectedClass = teacherClassSelect.value;
-        const selectedDate = datePicker.value;
-
-        if (!selectedClass) {
-            teacherTableContainer.innerHTML = `<p>Veuillez sélectionner une classe.</p>`;
-            teacherHomeworkList.innerHTML = "";
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
-            const data = await response.json();
-
-            teacherHomeworkList.innerHTML = "";
-            if(data.homeworks && data.homeworks.length > 0) {
-                data.homeworks.forEach(hw => {
-                    const p = document.createElement('p');
-                    p.innerHTML = `<strong>${hw.subject}:</strong> ${hw.assignment}`;
-                    teacherHomeworkList.appendChild(p);
-                });
-            } else {
-                teacherHomeworkList.innerHTML = `<p>Aucun devoir enregistré pour ce jour.</p>`;
-            }
-
-            const students = studentLists[selectedClass.split(' ')[0]] || []; // Gère "PEI1 Garçons" -> "PEI1"
-            let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th>Élève</th><th>Devoirs</th><th>Participation</th><th>Comportement</th><th>Commentaire</th></tr></thead><tbody>`;
-            for (const student of students) {
-                const existingEval = data.evaluations.find(ev => ev.studentName === student) || {};
-                tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
-            }
-            tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;">Enregistrer les modifications</button>`;
-            teacherTableContainer.innerHTML = tableHTML;
-            
-            document.getElementById('submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
-        } catch (error) {
-            teacherTableContainer.innerHTML = `<p class="error-message">Erreur de chargement des données.</p>`;
-        }
-    }
-
-    async function submitTeacherEvaluations() {
-        // ... (cette fonction ne change pas)
-    }
-    
-    // --- ESPACE PARENT ---
-    const classSelect = document.getElementById('class-select');
-    const studentSelect = document.getElementById('student-select');
-    function populateClassSelect(selectId) {
-        const selectElement = document.getElementById(selectId);
-        selectElement.innerHTML = `<option value="">-- Sélectionnez --</option>`;
-        Object.keys(studentLists).forEach(className => {
-            const option = document.createElement('option');
-            option.value = className; option.textContent = className; selectElement.appendChild(option);
-        });
-    }
-    function populateDynamicSelect(selectId, dataArray) {
-        const selectElement = document.getElementById(selectId);
-        selectElement.innerHTML = `<option value="">-- Sélectionnez --</option>`;
-        (dataArray || []).forEach(item => {
-            const option = document.createElement('option');
-            option.value = item; option.textContent = item; selectElement.appendChild(option);
-        });
-    }
-    classSelect.addEventListener('change', () => {
-        const selectedClass = classSelect.value;
-        const studentSelectorBox = document.getElementById('student-selector-box');
-        studentSelect.innerHTML = `<option value="">-- Sélectionnez --</option>`;
-        if (selectedClass && studentLists[selectedClass]) {
-            studentLists[selectedClass].forEach(student => {
-                const option = document.createElement('option');
-                option.value = student; option.textContent = student; studentSelect.appendChild(option);
-            });
-            studentSelectorBox.style.display = 'block';
-        } else { studentSelectorBox.style.display = 'none'; }
-    });
-    studentSelect.addEventListener('change', async () => {
-        const studentName = studentSelect.value;
-        const className = classSelect.value;
-        if (studentName && className) {
-            currentDate = new Date(); 
-            await loadStudentDashboard(className, studentName, currentDate);
-            showView('student-dashboard-view');
-        }
-    });
-    document.getElementById('prev-day-btn').addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 1); loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); });
-    document.getElementById('next-day-btn').addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 1); loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); });
-    
-    async function loadStudentDashboard(className, studentName, date) {
-        // ... (cette fonction ne change pas)
-    }
-    
-    function updateWeeklyStats(weeklyEvals) {
-        // ... (cette fonction ne change pas)
-    }
-
-});
-```*J'ai dû abréger la fin du fichier `index.js` car il est très long. Vous devez reprendre les fonctions `submitTeacherEvaluations`, `loadStudentDashboard`, et `updateWeeklyStats` de la réponse précédente. La partie cruciale est l'ajout de la logique d'upload au début.*
-
-### **Comment Utiliser**
-
-1.  L'enseignant crée un fichier Excel simple avec les colonnes : `Enseignant`, `Jour`, `Classe`, `Matière`, `Devoirs`.
-2.  **IMPORTANT :** La colonne `Jour` doit être formatée en tant que date dans Excel.
-3.  L'enseignant va sur l'Espace Enseignant.
-4.  Il clique sur "Choisir un fichier", sélectionne son planning Excel.
-5.  Il clique sur le bouton "Charger et Vérifier le Fichier".
-6.  Le site lit le fichier, met la base de données à jour, et rafraîchit la page avec les nouvelles données.
-
-Cette approche est bien plus robuste et vous donne un contrôle total sur les données.
+        <!-- Vue Tableau de Bord Enseignant -->
+        <div id="teacher-dashboard-view" class="view" style="display: none;">
+             <header>
+                <button class="back-button">&larr; Retour</button>
+                <h1>Tableau de Bord Enseignant</h1>
+            </header>
+            <main>
+                <div class="upload-section">
+                    <h3>Mettre à jour le planning hebdomadaire</h3>
+                    <input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv">
+                    <button id="upload-excel-btn" class="role-button">1. Charger et Mettre à jour</button>
+                    <p id="upload-status"></p>
+                </div>
+                <div class="teacher-controls">
+                    <input type="date" id="date-picker">
+                    <select id="teacher-name-select"></select>
+                    <select id="teacher-class-select"></select>
+                </div>
+                <div id="teacher-table-container"></div>
+                <div class="teacher-homework-display">
+                    <h3>Devoirs du jour sélectionné :</h3>
+                    <div id="teacher-homework-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
