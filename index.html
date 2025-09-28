@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -16,11 +17,7 @@
         <div id="home-view">
              <header class="main-header">
                 <h1>Portail de Suivi des Devoirs</h1>
-                <div class="language-selector">
-                    <button id="lang-fr">Français</button>
-                    <button id="lang-ar">العربية</button>
-                </div>
-            </header>
+             </header>
             <main class="main-menu">
                 <button id="go-to-parent" class="role-button">Espace Parent</button>
                 <button id="go-to-teacher" class="role-button">Espace Enseignant</button>
@@ -61,34 +58,21 @@
             </main>
         </div>
 
-        <!-- NOUVELLE VUE - Tableau de Bord de l'Élève -->
+        <!-- Vue Tableau de Bord de l'Élève -->
         <div id="student-dashboard-view" class="view" style="display: none;">
             <header>
                 <button class="back-button">&larr; Retour</button>
                 <h1 id="student-name-header">Tableau de bord de l'élève</h1>
-                <img src="https://i.imgur.com/your-logo.png" alt="Logo Alkawthar" class="school-logo"> <!-- Remplacez par le lien de votre logo -->
             </header>
             <main>
-                <div class="status-legend">
-                    <div><span class="dot green"></span> Fait</div>
-                    <div><span class="dot orange"></span> Partiellement Fait</div>
-                    <div><span class="dot red"></span> NON Fait</div>
-                    <div><span class="dot grey"></span> Abscent</div>
-                </div>
                 <div class="profile-summary">
                     <div class="student-info">
                         <img src="https://via.placeholder.com/120" alt="Photo élève" class="student-photo">
-                        <div class="star-rating" id="star-rating">
-                            <!-- Les étoiles seront générées par JS -->
-                        </div>
+                        <div class="star-rating" id="star-rating"></div>
                         <div class="student-of-week" id="student-of-week-banner">Élève de la semaine</div>
                     </div>
                     <div class="weekly-stats">
-                        <div class="stat-item">
-                            <p>Sur toute la semaine : par matières</p>
-                            <div class="pie-chart" id="pie-chart"></div>
-                        </div>
-                        <div class="stat-item">
+                         <div class="stat-item">
                             <p>Sur toute la semaine : En générale</p>
                             <div class="progress-bar-container">
                                 <div class="progress-bar" id="overall-progress-bar"></div>
@@ -98,31 +82,33 @@
                     </div>
                 </div>
                 <div class="dashboard-nav">
-                    <button id="prev-day-btn" class="nav-arrow">&larr; Devoirs Précédents</button>
-                    <h2 id="homework-date">Devoirs d'aujourd'hui : Jeudi 25/09/2025</h2>
-                    <button id="next-day-btn" class="nav-arrow">Devoirs Prochains &rarr;</button>
+                    <button id="prev-day-btn" class="nav-arrow">&larr; Jour Précédent</button>
+                    <h2 id="homework-date"></h2>
+                    <button id="next-day-btn" class="nav-arrow">Jour Suivant &rarr;</button>
                 </div>
-                <div class="homework-grid" id="homework-grid">
-                    <!-- Les cartes de devoirs seront générées par JS -->
-                </div>
+                <div class="homework-grid" id="homework-grid"></div>
             </main>
         </div>
         
-        <!-- NOUVELLE VUE - Tableau de Bord Enseignant -->
+        <!-- Vue Tableau de Bord Enseignant -->
         <div id="teacher-dashboard-view" class="view" style="display: none;">
              <header>
                 <button class="back-button">&larr; Retour</button>
                 <h1>Tableau de Bord Enseignant</h1>
             </header>
             <main>
+                <div class="upload-section">
+                    <h3>Mettre à jour le planning hebdomadaire</h3>
+                    <input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv">
+                    <button id="upload-excel-btn" class="role-button">1. Charger et Mettre à jour</button>
+                    <p id="upload-status"></p>
+                </div>
                 <div class="teacher-controls">
                     <input type="date" id="date-picker">
-                    <select id="teacher-name-select"><option>Abas</option></select> <!-- Exemple -->
+                    <select id="teacher-name-select"></select>
                     <select id="teacher-class-select"></select>
                 </div>
-                <div id="teacher-table-container">
-                     <!-- Le tableau sera généré par JS -->
-                </div>
+                <div id="teacher-table-container"></div>
                 <div class="teacher-homework-display">
                     <h3>Devoirs du jour sélectionné :</h3>
                     <div id="teacher-homework-list"></div>
