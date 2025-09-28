@@ -7,8 +7,9 @@ module.exports = async (req, res) => {
         await client.connect();
         const db = client.db('test');
         const collection = db.collection('plans');
-        const teachers = await collection.distinct("Enseignant", { "Enseignant": { $ne: null, $ne: "" } });
-        const classes = await collection.distinct("Classe", { "Classe": { $ne: null, $ne: "" } });
+        // Assurez-vous que les champs "Enseignant" et "Classe" existent et ne sont pas vides
+        const teachers = await collection.distinct("Enseignant", { "Enseignant": { $exists: true, $ne: null, $ne: "" } });
+        const classes = await collection.distinct("Classe", { "Classe": { $exists: true, $ne: null, $ne: "" } });
         res.status(200).json({ teachers, classes });
     } catch (error) {
         console.error("[initial-data] ERREUR:", error);
