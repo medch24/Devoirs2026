@@ -17,6 +17,7 @@ body {
 header {
     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; padding: 20px 30px;
     display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 3px solid var(--accent-color);
+    text-align: center; /* Assure que le titre est centré même avec le bouton retour */
 }
 header h1 { margin: 0; font-size: 1.8rem; }
 .back-button {
@@ -35,38 +36,41 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .language-selector-home button:hover { background: #eef; }
 /* Student Dashboard */
 .profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; flex-wrap: wrap; }
-.student-info { text-align: center; }
+.student-info { text-align: center; flex-shrink: 0; }
 .student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--secondary-color); object-fit: cover; }
 .star-rating { margin: 10px 0; font-size: 2rem; }
 .star-rating .star { color: #ccc; } .star-rating .star.filled { color: var(--yellow-star); }
 .student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
 .student-of-week.active { display: inline-block; }
-.weekly-stats { flex-grow: 1; }
+.weekly-stats { flex-grow: 1; min-width: 250px; }
 .stat-item { text-align: center; } .stat-item p { font-weight: 600; color: #555; margin-bottom: 10px; }
 .progress-bar-container { width: 100%; background: #e9ecef; border-radius: 20px; position: relative; height: 35px; overflow: hidden; }
 .progress-bar { height: 100%; background: linear-gradient(90deg, #ffc107, #ff9800); border-radius: 20px; transition: width 0.5s ease-out; }
 .progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: 700; color: #333; font-size: 1.1rem; }
-.dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px; }
 .nav-arrow { background: var(--card-bg-color); border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
 .nav-arrow:hover { background: var(--secondary-color); color: white; }
-.dashboard-nav h2 { margin: 0; font-size: 1.3rem; color: var(--primary-color); }
-.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 25px; }
-.subject-card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; }
+.dashboard-nav h2 { margin: 0; font-size: 1.3rem; color: var(--primary-color); text-align: center; flex-grow: 1; }
+.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 25px; }
+.subject-card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; background: #fff; }
 .subject-card h3 { margin: 0; padding: 12px; color: white; text-align: center; font-size: 1.1rem; background: var(--secondary-color); }
-.subject-card .content { padding: 15px; flex-grow: 1; }
-.subject-card .assignment { background: #f8f9fa; padding: 12px; border-radius: 8px; min-height: 70px; margin-bottom: 12px; border-left: 4px solid var(--accent-color); }
+.subject-card .content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+.subject-card .assignment { background: #f8f9fa; padding: 12px; border-radius: 8px; min-height: 70px; margin-bottom: 12px; border-left: 4px solid var(--accent-color); flex-grow: 1; }
 .subject-card .comment-box { background: #fffbe6; padding: 12px; border-radius: 8px; min-height: 50px; font-style: italic; color: #555; }
 .subject-card .scores { display: flex; justify-content: space-around; margin-top: 15px; font-size: 0.9rem; text-align: center; }
-.scores span { display: block; font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
+.scores span { display: block; }
+.scores span:first-child { font-weight: 600; color: var(--text-color); }
+.scores span:last-child { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
 /* Teacher Dashboard */
 .upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
 .upload-section h3 { margin: 0 0 15px 0; color: var(--primary-color); }
 #upload-status { font-weight: 600; margin-top: 15px; }
 #upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
-.teacher-controls { display: flex; gap: 15px; padding: 0 25px 25px 25px; }
-.teacher-controls select, .teacher-controls input { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; flex-grow: 1; }
+.teacher-controls { display: flex; flex-wrap: wrap; gap: 15px; padding: 0 25px 25px 25px; }
+.teacher-controls select, .teacher-controls input { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; flex-grow: 1; min-width: 150px; }
 .section-title { padding: 0 25px; margin-top: 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
 .teacher-homework-display { padding: 15px 25px; background: #fafafa; min-height: 50px; }
+.teacher-homework-display p { margin: 5px 0; }
 #teacher-table-container { padding: 25px; overflow-x: auto; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
 .teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
@@ -78,33 +82,17 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .role-button { padding: 18px; font-size: 1.4rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; font-weight: 600; transition: all 0.2s; }
 .role-button:hover { background-color: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 119, 255, 0.3); }
 select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }```
+button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
+.error-message { color: var(--red-status); font-weight: bold; text-align: center; }
 
----
-
-### **Fichiers 3, 4, 5 : Les Fichiers API (Complets et Corrigés)**
-
-Assurez-vous que les fichiers `api/upload-plan.js`, `api/initial-data.js`, et `api/evaluations.js` contiennent exactement ce code.
-
-#### **`api/upload-plan.js`**
-```javascript
-const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
-
-module.exports = async (req, res) => {
-    if (req.method !== 'POST') return res.status(405).json({ message: 'Méthode non autorisée' });
-    try {
-        await client.connect();
-        const db = client.db('test');
-        const collection = db.collection('plans');
-        const planData = req.body;
-        if (!planData || planData.length === 0) return res.status(400).json({ message: 'Aucune donnée à enregistrer.' });
-        await collection.deleteMany({});
-        await collection.insertMany(planData);
-        res.status(200).json({ message: `Planning mis à jour avec ${planData.length} devoirs.` });
-    } catch (error) {
-        console.error("[upload-plan] ERREUR:", error);
-        res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
-    }
-};
+@media (max-width: 600px) {
+    body { padding: 0; }
+    .container { border-radius: 0; box-shadow: none; }
+    header h1 { font-size: 1.4rem; }
+    .back-button { width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem; }
+    .language-selector-home { top: 15px; right: 15px; }
+    .language-selector-home button { padding: 6px 12px; font-size: 0.9rem; }
+    .main-menu, .login-form, .selection-box { padding: 25px; }
+    .role-button { padding: 15px; font-size: 1.2rem; }
+    .dashboard-nav { justify-content: center; }
+}
