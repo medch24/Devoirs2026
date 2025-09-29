@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
-    let teacherHomeworkData = []; // Variable pour stocker les données de l'enseignant
+    let teacherPlanData = []; // Variable globale pour les données du planning
 
     const studentData = {
         PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" } ],
@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const datePicker = teacherDashboardView.querySelector('#date-picker');
         const teacherClassSelect = teacherDashboardView.querySelector('#teacher-class-select');
         const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
+        const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
         const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
         const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
         datePicker.valueAsDate = moment().toDate();
@@ -75,29 +76,74 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/initial-data');
             if (!response.ok) throw new Error('Impossible de charger les listes.');
             const initialData = await response.json();
-            populateDynamicSelect('teacher-class-select', initialData.classes);
+            teacherPlanData = initialData.planData; // Stocker les données du planning
             populateDynamicSelect('teacher-name-select', initialData.teachers);
         } catch (error) {
             console.error(error);
             teacherDashboardView.querySelector('#teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
+        
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
-        datePicker.addEventListener('change', fetchTeacherData);
-        teacherClassSelect.addEventListener('change', fetchTeacherData);
-        teacherNameSelect.addEventListener('change', updateSubjectOptions);
-        fetchTeacherData();
+        teacherNameSelect.addEventListener('change', updateClassOptions);
+        teacherClassSelect.addEventListener('change', updateSubjectOptions);
+        datePicker.addEventListener('change', renderTeacherView);
+        teacherSubjectSelect.addEventListener('change', renderTeacherView);
+        
+        updateClassOptions(); // Appeler une première fois pour initialiser
+    }
+
+    // NOUVELLE LOGIQUE POUR LES FILTRES EN CASCADE
+    function updateClassOptions() {
+        const teacherNameSelect = document.getElementById('teacher-name-select');
+        const selectedTeacher = teacherNameSelect.value;
+        
+        const classesForTeacher = [...new Set(
+            teacherPlanData
+            .filter(item => item.Enseignant === selectedTeacher)
+            .map(item => item.Classe)
+        )];
+        
+        populateDynamicSelect('teacher-class-select', classesForTeacher);
+        updateSubjectOptions();
+    }
+
+    function updateSubjectOptions() {
+        const teacherNameSelect = document.getElementById('teacher-name-select');
+        const teacherClassSelect = document.getElementById('teacher-class-select');
+        const selectedTeacher = teacherNameSelect.value;
+        const selectedClass = teacherClassSelect.value;
+
+        const subjectsForTeacherAndClass = [...new Set(
+            teacherPlanData
+            .filter(item => item.Enseignant === selectedTeacher && item.Classe === selectedClass)
+            .map(item => item.Matière)
+        )];
+
+        populateDynamicSelect('teacher-subject-select', subjectsForTeacherAndClass);
+        renderTeacherView();
     }
 
     async function handleFileUpload(excelFileInput) {
+        // ... (cette fonction reste la même que dans la version précédente)
+    }
+
+    function parseFrenchDate(dateString) { /* ... */ }
+    function formatPlanData(jsonPlan) { /* ... */ }
+
+    async function renderTeacherView() {
+        // ... (cette fonction est maintenant appelée par les écouteurs de changement)
+    }
+    
+    async function submitTeacherEvaluations() { /* ... */ }
+    
+    // ... (le reste des fonctions pour l'espace parent reste identique)
+
+    // Remplacez les fonctions vides par leur contenu complet
+    async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
-        if (!file) {
-            uploadStatus.textContent = "Veuillez choisir un fichier.";
-            uploadStatus.className = 'error';
-            return;
-        }
-        uploadStatus.textContent = "Lecture du fichier en cours...";
-        uploadStatus.className = '';
+        if (!file) { uploadStatus.textContent = "Veuillez choisir un fichier."; uploadStatus.className = 'error'; return; }
+        uploadStatus.textContent = "Lecture du fichier en cours..."; uploadStatus.className = '';
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
@@ -107,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 const formattedPlan = formatPlanData(jsonPlan);
-                if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée. Vérifiez le format des dates.");
+                if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
                 if (!response.ok) {
@@ -126,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
-
     function parseFrenchDate(dateString) {
         const cleanString = dateString.toLowerCase().trim();
         moment.locale('fr');
@@ -134,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
-
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -157,55 +201,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-
-    async function fetchTeacherData() {
+    async function renderTeacherView() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
-        const teacherClassSelect = teacherDashboardView.querySelector('#teacher-class-select');
-        const selectedClass = teacherClassSelect.value;
-        const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
-
-        if (!selectedClass) {
-            teacherHomeworkData = [];
-            updateSubjectOptions();
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
-            if (!response.ok) throw new Error('Erreur de chargement des données');
-            teacherHomeworkData = await response.json();
-        } catch (error) {
-            console.error("Erreur de fetch:", error);
-            teacherHomeworkData = { homeworks: [], evaluations: [] }; // Reset data on error
-        }
-        updateSubjectOptions();
-    }
-
-    function updateSubjectOptions() {
-        const teacherDashboardView = document.getElementById('teacher-dashboard-view');
-        const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
-        const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
-        const selectedTeacher = teacherNameSelect.value;
-        
-        const subjectsForTeacher = [...new Set(
-            (teacherHomeworkData.homeworks || [])
-            .filter(hw => hw.teacher === selectedTeacher)
-            .map(hw => hw.subject)
-        )];
-        
-        populateDynamicSelect('teacher-subject-select', subjectsForTeacher);
-        renderTeacherView();
-    }
-
-    function renderTeacherView() {
-        const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const teacherClassSelect = teacherDashboardView.querySelector('#teacher-class-select');
         const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
         const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
         const teacherTableContainer = teacherDashboardView.querySelector('#teacher-table-container');
         const teacherHomeworkList = teacherDashboardView.querySelector('#teacher-homework-list');
+        
         const selectedClass = teacherClassSelect.value;
+        const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
         const selectedSubject = teacherSubjectSelect.value;
 
@@ -214,39 +220,43 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
             return;
         }
-        
-        const filteredHomework = (teacherHomeworkData.homeworks || []).find(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
-        teacherHomeworkList.innerHTML = "";
 
-        if (filteredHomework) {
-            const p = document.createElement('p');
-            p.innerHTML = `<strong>${filteredHomework.subject}:</strong> ${filteredHomework.assignment}`;
-            teacherHomeworkList.appendChild(p);
+        try {
+            const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
+            if (!response.ok) throw new Error('Erreur de chargement des données');
+            const data = await response.json();
 
-            const students = (studentData[selectedClass.split(' ')[0]] || []).map(s => s.name);
-            let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th>${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th>${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th>${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th>${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th>${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
-            for (const student of students) {
-                const existingEval = (teacherHomeworkData.evaluations || []).find(ev => ev.studentName === student && ev.subject === selectedSubject) || {};
-                tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
+            const filteredHomework = data.homeworks.find(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
+            teacherHomeworkList.innerHTML = "";
+
+            if (filteredHomework) {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${filteredHomework.subject}:</strong> ${filteredHomework.assignment}`;
+                teacherHomeworkList.appendChild(p);
+                const students = (studentData[selectedClass.split(' ')[0]] || []).map(s => s.name);
+                let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th>${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th>${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th>${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th>${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th>${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
+                for (const student of students) {
+                    const existingEval = data.evaluations.find(ev => ev.studentName === student && ev.subject === selectedSubject) || {};
+                    tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
+                }
+                tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;">${translations[document.documentElement.lang].saveButton}</button>`;
+                teacherTableContainer.innerHTML = tableHTML;
+                teacherTableContainer.querySelector('#submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
+            } else {
+                teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
+                teacherTableContainer.innerHTML = "";
             }
-            tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;">${translations[document.documentElement.lang].saveButton}</button>`;
-            teacherTableContainer.innerHTML = tableHTML;
-            teacherTableContainer.querySelector('#submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
-        } else {
-            teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
-            teacherTableContainer.innerHTML = "";
+        } catch (error) { 
+            console.error("Erreur:", error);
+            teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; 
         }
     }
-    
     async function submitTeacherEvaluations() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const selectedClass = teacherDashboardView.querySelector('#teacher-class-select').value;
         const selectedDate = moment(teacherDashboardView.querySelector('#date-picker').value).format('YYYY-MM-DD');
         const selectedSubject = teacherDashboardView.querySelector('#teacher-subject-select').value;
-        if (!selectedSubject) {
-            alert("Erreur : aucune matière sélectionnée.");
-            return;
-        }
+        if (!selectedSubject) { alert("Erreur : aucune matière sélectionnée."); return; }
         const evaluations = Array.from(teacherDashboardView.querySelectorAll('.teacher-evaluation-table tbody tr')).map(row => ({
             studentName: row.dataset.student, class: selectedClass, date: selectedDate, subject: selectedSubject, status: row.querySelector('.status-select').value,
             participation: parseInt(row.querySelector('.participation-input').value, 10), behavior: parseInt(row.querySelector('.behavior-input').value, 10),
@@ -257,40 +267,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Erreur lors de l'enregistrement (statut ${response.status})`);
             alert("Évaluations enregistrées !");
         } catch (error) { 
-            console.error("Erreur lors de la soumission des évaluations:", error);
-            alert("Une erreur est survenue."); 
+            console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
-
     const classSelect = document.getElementById('class-select');
     const studentSelect = document.getElementById('student-select');
-
     function populateClassSelect(selectId) {
         const selectElement = document.getElementById(selectId);
         selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
         Object.keys(studentData).forEach(className => {
             const option = document.createElement('option');
-            option.value = className;
-            option.textContent = className;
-            selectElement.appendChild(option);
+            option.value = className; option.textContent = className; selectElement.appendChild(option);
         });
     }
-
     function populateDynamicSelect(selectId, dataArray) {
         const selectElement = document.getElementById(selectId);
         const currentVal = selectElement.value;
         selectElement.innerHTML = `<option value="">-- ${selectId.includes('class') ? 'Classe' : selectId.includes('name') ? 'Enseignant' : 'Matière'} --</option>`;
         (dataArray || []).sort().forEach(item => {
             const option = document.createElement('option');
-            option.value = item; 
-            option.textContent = item; 
-            selectElement.appendChild(option);
+            option.value = item; option.textContent = item; selectElement.appendChild(option);
         });
-        if (dataArray.includes(currentVal)) {
-            selectElement.value = currentVal;
-        }
+        if (dataArray.includes(currentVal)) { selectElement.value = currentVal; }
     }
-
     classSelect.addEventListener('change', () => {
         const selectedClass = classSelect.value;
         const studentSelectorBox = document.getElementById('student-selector-box');
@@ -298,16 +297,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedClass && studentData[selectedClass]) {
             studentData[selectedClass].forEach(student => {
                 const option = document.createElement('option');
-                option.value = student.name; 
-                option.textContent = student.name; 
-                studentSelect.appendChild(option);
+                option.value = student.name; option.textContent = student.name; studentSelect.appendChild(option);
             });
             studentSelectorBox.style.display = 'block';
-        } else { 
-            studentSelectorBox.style.display = 'none'; 
-        }
+        } else { studentSelectorBox.style.display = 'none'; }
     });
-
     studentSelect.addEventListener('change', async () => {
         const studentName = studentSelect.value;
         const className = classSelect.value;
@@ -317,41 +311,34 @@ document.addEventListener('DOMContentLoaded', () => {
             showView('student-dashboard-view');
         }
     });
-
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         currentDate.subtract(1, 'days'); 
         loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
     });
-
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         currentDate.add(1, 'days'); 
         loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
     });
-
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const studentPhotoElement = studentDashboardView.querySelector('.student-photo');
         const studentNameHeader = studentDashboardView.querySelector('#student-name-header');
         const homeworkDateElement = studentDashboardView.querySelector('#homework-date');
         const homeworkGrid = studentDashboardView.querySelector('#homework-grid');
-
         const currentLang = document.documentElement.lang;
         studentNameHeader.textContent = `${translations[currentLang].studentDashboardTitle} ${studentName}`;
         homeworkDateElement.textContent = `${translations[currentLang].homeworkFor} ${date.format('dddd D MMMM YYYY')}`;
         homeworkGrid.innerHTML = `<p>${translations[currentLang].loading}</p>`;
-
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
             studentPhotoElement.src = student.photo;
             studentPhotoElement.alt = `Photo de ${studentName}`;
         }
-
         try {
             const dateQuery = date.format('YYYY-MM-DD');
             const response = await fetch(`/api/evaluations?class=${className}&student=${studentName}&date=${dateQuery}&week=true`);
             if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
             const data = await response.json();
-
             homeworkGrid.innerHTML = "";
             if (data.homeworks && data.homeworks.length > 0) {
                 data.homeworks.forEach(hw => {
@@ -361,7 +348,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return status.toLowerCase().replace(/ /g, '-');
                     };
                     const statusClass = getStatusClass(dailyEval.status);
-
                     const card = document.createElement('div');
                     card.className = 'subject-card';
                     card.innerHTML = `<h3><span>${hw.subject}</span><span class="status-lamp ${statusClass}"></span></h3><div class="content"><div class="assignment">${hw.assignment}</div><div class="comment-box">${dailyEval.comment || "..."}</div><div class="scores"><div><span>${translations[currentLang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div><div><span>${translations[currentLang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div></div></div>`;
@@ -372,46 +358,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateWeeklyStats(data.weeklyEvaluations || []);
         } catch (error) { 
-            console.error("Erreur lors du chargement du tableau de bord élève:", error);
+            console.error("Erreur:", error);
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
-
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
         (weeklyEvals || []).forEach(ev => {
             const dayKey = ev.date;
-            if (!dailyScores[dayKey]) {
-                dailyScores[dayKey] = { allDone: true, participationSum: 0, behaviorSum: 0, count: 0, hasHomework: true };
-            }
-            if (ev.status !== 'Fait' && ev.status !== 'Absent') {
-                dailyScores[dayKey].allDone = false;
-            }
+            if (!dailyScores[dayKey]) { dailyScores[dayKey] = { allDone: true, participationSum: 0, behaviorSum: 0, count: 0, hasHomework: true }; }
+            if (ev.status !== 'Fait' && ev.status !== 'Absent') { dailyScores[dayKey].allDone = false; }
             dailyScores[dayKey].participationSum += ev.participation || 0;
             dailyScores[dayKey].behaviorSum += ev.behavior || 0;
             dailyScores[dayKey].count++;
         });
-
         Object.values(dailyScores).forEach(day => {
             if (day.hasHomework && day.allDone) {
                 const avgParticipation = day.count > 0 ? day.participationSum / day.count : 0;
                 const avgBehavior = day.count > 0 ? day.behaviorSum / day.count : 0;
-                if (avgParticipation >= 5 && avgBehavior >= 5) {
-                    stars++;
-                }
+                if (avgParticipation >= 5 && avgBehavior >= 5) { stars++; }
             }
         });
-        
         const starContainer = document.getElementById('star-rating');
         starContainer.innerHTML = Array.from({ length: 5 }, (_, i) => `<span class="star ${i < stars ? 'filled' : ''}">&#9733;</span>`).join('');
         const studentOfWeekBanner = document.getElementById('student-of-week-banner');
-        if (stars >= 5) {
-            studentOfWeekBanner.classList.add('active');
-        } else {
-            studentOfWeekBanner.classList.remove('active');
-        }
-
+        if (stars >= 5) { studentOfWeekBanner.classList.add('active'); } else { studentOfWeekBanner.classList.remove('active'); }
         let totalScore = 0;
         let maxScore = 0;
         (weeklyEvals || []).forEach(ev => {
@@ -420,11 +392,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 maxScore += 30;
             }
         });
-        
         const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
         document.getElementById('overall-progress-bar').style.width = `${percentage}%`;
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
 
     setLanguage('fr');
-});
+});```
