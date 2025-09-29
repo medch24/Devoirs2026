@@ -18,10 +18,7 @@ module.exports = async (req, res) => {
             return res.status(400).json({ message: 'Aucune donnée à enregistrer.' });
         }
 
-        // Étape 1: Effacer l'ancien planning
         await collection.deleteMany({});
-
-        // Étape 2: Insérer le nouveau planning
         await collection.insertMany(planData);
 
         res.status(200).json({ message: `Planning mis à jour avec ${planData.length} devoirs.` });
