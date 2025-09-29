@@ -1,37 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
 
-    // MISE À JOUR : Nouvelle structure de données avec noms et photos
+    // ================== CORRECTION DES URL DE PHOTOS ==================
+    // Les liens Google Drive ont été transformés pour un accès direct.
     const studentData = {
         PEI1: [
-            { name: "Faysal", photo: "https://drive.google.com/uc?export=download&id=1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" },
-            { name: "Bilal", photo: "https://drive.google.com/uc?export=download&id=1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" },
-            { name: "Jad", photo: "https://drive.google.com/uc?export=download&id=1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" },
-            { name: "Manaf", photo: "https://drive.google.com/uc?export=download&id=1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" }
+            { name: "Faysal", photo: "https://drive.google.com/uc?export=view&id=1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" },
+            { name: "Bilal", photo: "https://drive.google.com/uc?export=view&id=1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" },
+            { name: "Jad", photo: "https://drive.google.com/uc?export=view&id=1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" },
+            { name: "Manaf", photo: "https://drive.google.com/uc?export=view&id=1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" }
         ],
         PEI2: [
-            { name: "Ahmed", photo: "https://drive.google.com/uc?export=download&id=1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" },
-            { name: "Yasser", photo: "https://drive.google.com/uc?export=download&id=1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" },
-            { name: "Eyad", photo: "https://drive.google.com/uc?export=download&id=1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" },
-            { name: "Ali", photo: "https://drive.google.com/uc?export=download&id=1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" }
+            { name: "Ahmed", photo: "https://drive.google.com/uc?export=view&id=1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" },
+            { name: "Yasser", photo: "https://drive.google.com/uc?export=view&id=1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" },
+            { name: "Eyad", photo: "https://drive.google.com/uc?export=view&id=1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" },
+            { name: "Ali", photo: "https://drive.google.com/uc?export=view&id=1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" }
         ],
         PEI3: [
-            { name: "Seifeddine", photo: "https://drive.google.com/uc?export=download&id=1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" },
-            { name: "Mohamed", photo: "https://drive.google.com/uc?export=download&id=1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" },
-            { name: "Wajih", photo: "https://drive.google.com/uc?export=download&id=1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" },
-            { name: "Ahmad", photo: "https://drive.google.com/uc?export=download&id=1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" },
-            { name: "Adam", photo: "https://drive.google.com/uc?export=download&id=15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" }
+            { name: "Seifeddine", photo: "https://drive.google.com/uc?export=view&id=1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" },
+            { name: "Mohamed", photo: "https://drive.google.com/uc?export=view&id=1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" },
+            { name: "Wajih", photo: "https://drive.google.com/uc?export=view&id=1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" },
+            { name: "Ahmad", photo: "https://drive.google.com/uc?export=view&id=1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" },
+            { name: "Adam", photo: "https://drive.google.com/uc?export=view&id=15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" }
         ],
         PEI4: [
-            { name: "Mohamed Younes", photo: "https://drive.google.com/uc?export=download&id=1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" },
-            { name: "Mohamed Amine", photo: "https://drive.google.com/uc?export=download&id=1UrBw6guz0oBTUy8COGeewIs3XAK773bR" },
-            { name: "Samir", photo: "https://drive.google.com/uc?export=download&id=1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" },
-            { name: "Abdulrahman", photo: "https://drive.google.com/uc?export=download&id=1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" },
-            { name: "Youssef", photo: "https://drive.google.com/uc?export=download&id=1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" }
+            { name: "Mohamed Younes", photo: "https://drive.google.com/uc?export=view&id=1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" },
+            { name: "Mohamed Amine", photo: "https://drive.google.com/uc?export=view&id=1UrBw6guz0oBTUy8COGeewIs3XAK773bR" },
+            { name: "Samir", photo: "https://drive.google.com/uc?export=view&id=1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" },
+            { name: "Abdulrahman", photo: "https://drive.google.com/uc?export=view&id=1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" },
+            { name: "Youssef", photo: "https://drive.google.com/uc?export=view&id=1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" }
         ],
         DP2: [
-            { name: "Habib", photo: "https://drive.google.com/uc?export=download&id=13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" },
-            { name: "Salah", photo: "https://drive.google.com/uc?export=download&id=1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" }
+            { name: "Habib", photo: "https://drive.google.com/uc?export=view&id=13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" },
+            { name: "Salah", photo: "https://drive.google.com/uc?export=view&id=1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" }
         ]
     };
     
@@ -78,6 +79,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translatePlaceholder;
             if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
         });
+        // CORRECTION DU BUG ARABE : Recharger les données du tableau de bord si la vue est active
+        const studentDashboard = document.getElementById('student-dashboard-view');
+        if (studentDashboard.style.display === 'block') {
+            const studentName = document.getElementById('student-select').value;
+            const className = document.getElementById('class-select').value;
+            if (studentName && className) {
+                loadStudentDashboard(className, studentName, currentDate);
+            }
+        }
     };
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
@@ -318,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateClassSelect(selectId) {
         const selectElement = document.getElementById(selectId);
         selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        // MODIFICATION : Utiliser la nouvelle structure studentData
         Object.keys(studentData).forEach(className => {
             const option = document.createElement('option');
             option.value = className;
@@ -342,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedClass = classSelect.value;
         const studentSelectorBox = document.getElementById('student-selector-box');
         studentSelect.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        // MODIFICATION : Utiliser la nouvelle structure studentData
         if (selectedClass && studentData[selectedClass]) {
             studentData[selectedClass].forEach(student => {
                 const option = document.createElement('option');
@@ -382,10 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const homeworkGrid = document.getElementById('homework-grid');
         homeworkGrid.innerHTML = `<p>${translations[document.documentElement.lang].loading}</p>`;
 
-        // AJOUT : Mettre à jour la photo de l'élève
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
-            document.querySelector('.student-photo').src = student.photo;
+            document.querySelector('#student-dashboard-view .student-photo').src = student.photo;
+            document.querySelector('#student-dashboard-view .student-photo').alt = `Photo de ${studentName}`;
         }
 
         try {
