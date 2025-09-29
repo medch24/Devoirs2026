@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
-    let teacherPlanData = []; // Variable globale pour les données du planning
+    let teacherPlanData = []; 
 
     const studentData = {
         PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" } ],
@@ -76,33 +76,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/initial-data');
             if (!response.ok) throw new Error('Impossible de charger les listes.');
             const initialData = await response.json();
-            teacherPlanData = initialData.planData; // Stocker les données du planning
+            teacherPlanData = initialData.planData;
             populateDynamicSelect('teacher-name-select', initialData.teachers);
         } catch (error) {
             console.error(error);
             teacherDashboardView.querySelector('#teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
-        
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
         teacherNameSelect.addEventListener('change', updateClassOptions);
         teacherClassSelect.addEventListener('change', updateSubjectOptions);
         datePicker.addEventListener('change', renderTeacherView);
         teacherSubjectSelect.addEventListener('change', renderTeacherView);
-        
-        updateClassOptions(); // Appeler une première fois pour initialiser
+        updateClassOptions();
     }
 
-    // NOUVELLE LOGIQUE POUR LES FILTRES EN CASCADE
     function updateClassOptions() {
         const teacherNameSelect = document.getElementById('teacher-name-select');
         const selectedTeacher = teacherNameSelect.value;
-        
         const classesForTeacher = [...new Set(
             teacherPlanData
             .filter(item => item.Enseignant === selectedTeacher)
             .map(item => item.Classe)
-        )];
-        
+        )].sort();
         populateDynamicSelect('teacher-class-select', classesForTeacher);
         updateSubjectOptions();
     }
@@ -112,33 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const teacherClassSelect = document.getElementById('teacher-class-select');
         const selectedTeacher = teacherNameSelect.value;
         const selectedClass = teacherClassSelect.value;
-
         const subjectsForTeacherAndClass = [...new Set(
             teacherPlanData
             .filter(item => item.Enseignant === selectedTeacher && item.Classe === selectedClass)
             .map(item => item.Matière)
-        )];
-
+        )].sort();
         populateDynamicSelect('teacher-subject-select', subjectsForTeacherAndClass);
         renderTeacherView();
     }
 
-    async function handleFileUpload(excelFileInput) {
-        // ... (cette fonction reste la même que dans la version précédente)
-    }
-
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-
-    async function renderTeacherView() {
-        // ... (cette fonction est maintenant appelée par les écouteurs de changement)
-    }
-    
-    async function submitTeacherEvaluations() { /* ... */ }
-    
-    // ... (le reste des fonctions pour l'espace parent reste identique)
-
-    // Remplacez les fonctions vides par leur contenu complet
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -172,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
+
     function parseFrenchDate(dateString) {
         const cleanString = dateString.toLowerCase().trim();
         moment.locale('fr');
@@ -179,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
+
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -201,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
+
     async function renderTeacherView() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
@@ -209,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
         const teacherTableContainer = teacherDashboardView.querySelector('#teacher-table-container');
         const teacherHomeworkList = teacherDashboardView.querySelector('#teacher-homework-list');
-        
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
@@ -225,10 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
             if (!response.ok) throw new Error('Erreur de chargement des données');
             const data = await response.json();
-
             const filteredHomework = data.homeworks.find(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
             teacherHomeworkList.innerHTML = "";
-
             if (filteredHomework) {
                 const p = document.createElement('p');
                 p.innerHTML = `<strong>${filteredHomework.subject}:</strong> ${filteredHomework.assignment}`;
@@ -251,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; 
         }
     }
+    
     async function submitTeacherEvaluations() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const selectedClass = teacherDashboardView.querySelector('#teacher-class-select').value;
@@ -270,8 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
+
     const classSelect = document.getElementById('class-select');
     const studentSelect = document.getElementById('student-select');
+
     function populateClassSelect(selectId) {
         const selectElement = document.getElementById(selectId);
         selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
@@ -280,16 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
             option.value = className; option.textContent = className; selectElement.appendChild(option);
         });
     }
+
     function populateDynamicSelect(selectId, dataArray) {
         const selectElement = document.getElementById(selectId);
         const currentVal = selectElement.value;
         selectElement.innerHTML = `<option value="">-- ${selectId.includes('class') ? 'Classe' : selectId.includes('name') ? 'Enseignant' : 'Matière'} --</option>`;
-        (dataArray || []).sort().forEach(item => {
+        (dataArray || []).forEach(item => {
             const option = document.createElement('option');
             option.value = item; option.textContent = item; selectElement.appendChild(option);
         });
         if (dataArray.includes(currentVal)) { selectElement.value = currentVal; }
     }
+
     classSelect.addEventListener('change', () => {
         const selectedClass = classSelect.value;
         const studentSelectorBox = document.getElementById('student-selector-box');
@@ -302,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             studentSelectorBox.style.display = 'block';
         } else { studentSelectorBox.style.display = 'none'; }
     });
+
     studentSelect.addEventListener('change', async () => {
         const studentName = studentSelect.value;
         const className = classSelect.value;
@@ -311,14 +294,17 @@ document.addEventListener('DOMContentLoaded', () => {
             showView('student-dashboard-view');
         }
     });
+
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         currentDate.subtract(1, 'days'); 
         loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
     });
+
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         currentDate.add(1, 'days'); 
         loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
     });
+
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const studentPhotoElement = studentDashboardView.querySelector('.student-photo');
@@ -362,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
+
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
@@ -398,4 +385,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setLanguage('fr');
-});```
+});
