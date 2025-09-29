@@ -18,7 +18,6 @@
     <div class="container">
         <!-- Vue Principale (Accueil) -->
         <div id="home-view">
-            <!-- CORRECTION : La barre de langue est maintenant dans l'en-tête pour un meilleur style -->
             <header class="main-header">
                 <div class="language-selector-home">
                     <button id="lang-fr">Français</button>
@@ -26,7 +25,6 @@
                 </div>
                 <h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1>
             </header>
-            <!-- CORRECTION : Nouvelle structure pour la page d'accueil avec le logo -->
             <main class="main-menu">
                 <img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo">
                 <button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button>
@@ -34,8 +32,7 @@
             </main>
         </div>
 
-        <!-- ... (le reste du HTML reste inchangé) ... -->
-
+        <!-- Le reste du HTML est inchangé -->
         <div id="parent-selection-view" class="view" style="display: none;">
             <header><button class="back-button">&larr;</button><h1 data-translate="parentSpace">Espace Parent</h1></header>
             <main><div class="selection-box"><label for="class-select" data-translate="classSelectLabel">Choisissez une classe :</label><select id="class-select"></select></div><div class="selection-box" id="student-selector-box" style="display:none;"><label for="student-select" data-translate="studentSelectLabel">Choisissez votre enfant :</label><select id="student-select"></select></div></main>
