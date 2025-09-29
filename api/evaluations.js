@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const moment = require('moment'); // AJOUT TRÈS IMPORTANT
+const moment = require('moment');
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
@@ -56,7 +56,6 @@ module.exports = async (req, res) => {
             let responseData = { homeworks, evaluations };
 
             if (week === 'true' && studentName) {
-                // Utilisation de moment qui est maintenant importé
                 const targetDate = moment.utc(dateQuery);
                 const firstDayOfWeek = targetDate.clone().startOf('isoWeek');
                 const lastDayOfWeek = targetDate.clone().endOf('isoWeek');
