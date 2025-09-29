@@ -1,137 +1,40 @@
-/* General Styles */
-:root {
-    --primary-color: #004a99; --secondary-color: #007bff; --accent-color: #0096ff;
-    --background-color: #f4f8fa; --card-bg-color: #ffffff; --text-color: #343a40;
-    --border-color: #dee2e6; --green-status: #28a745; --red-status: #dc3545;
-    --orange-status: #fd7e14; --grey-status: #6c757d; --yellow-star: #ffc107;
-}
-* { box-sizing: border-box; }
-body {
-    font-family: 'Poppins', 'Tajawal', sans-serif; background-color: var(--background-color); color: var(--text-color);
-    margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
-}
-.container {
-    width: 100%; max-width: 1200px; background-color: var(--card-bg-color);
-    border-radius: 16px; box-shadow: 0 8px 30px rgba(0, 74, 153, 0.1); overflow: hidden;
-}
-header {
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; padding: 20px 30px;
-    display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 3px solid var(--accent-color);
-    text-align: center;
-}
-header h1 { margin: 0; font-size: 1.8rem; }
-.back-button {
-    position: absolute; top: 50%; left: 20px; transform: translateY(-50%);
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;
-    font-size: 1.5rem; cursor: pointer; border-radius: 50%; width: 45px; height: 45px; line-height: 45px; text-align: center;
-    transition: background-color 0.2s;
-}
-.back-button:hover { background: rgba(255,255,255,0.2); }
-.language-selector-home { position: absolute; top: 20px; right: 20px; z-index: 10; }
-.language-selector-home button {
-    background: var(--card-bg-color); color: var(--primary-color); border: 1px solid var(--primary-color);
-    padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-left: 10px; font-weight: 600;
-}
-.language-selector-home button:hover { background: #eef; }
-.profile-summary { display: flex; gap: 30px; padding: 25px; align-items: center; flex-wrap: wrap; }
-.student-info { text-align: center; flex-shrink: 0; }
-.student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--secondary-color); object-fit: cover; }
-.star-rating { margin: 10px 0; font-size: 2rem; }
-.star-rating .star { color: #ccc; } .star-rating .star.filled { color: var(--yellow-star); }
-.student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
-.student-of-week.active { display: inline-block; }
-.weekly-stats { flex-grow: 1; min-width: 250px; }
-.stat-item { text-align: center; } .stat-item p { font-weight: 600; color: #555; margin-bottom: 10px; }
-.progress-bar-container { width: 100%; background: #e9ecef; border-radius: 20px; position: relative; height: 35px; overflow: hidden; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, #ffc107, #ff9800); border-radius: 20px; transition: width 0.5s ease-out; }
-.progress-bar-container span { position: absolute; width: 100%; left: 0; top: 50%; transform: translateY(-50%); font-weight: 700; color: #333; font-size: 1.1rem; }
-.dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fafafa; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px; }
-.nav-arrow { background: var(--card-bg-color); border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-.nav-arrow:hover { background: var(--secondary-color); color: white; }
-.dashboard-nav h2 { margin: 0; font-size: 1.3rem; color: var(--primary-color); text-align: center; flex-grow: 1; }
-.homework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 25px; }
-.subject-card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; background: #fff; }
-
-/* MODIFICATION : Rendre l'en-tête flexible pour aligner le titre et l'ampoule */
-.subject-card h3 { 
-    margin: 0; padding: 12px 15px; color: white; font-size: 1.1rem; background: var(--secondary-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.subject-card .content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-.subject-card .assignment { background: #f8f9fa; padding: 12px; border-radius: 8px; min-height: 70px; margin-bottom: 12px; border-left: 4px solid var(--accent-color); flex-grow: 1; }
-.subject-card .comment-box { background: #fffbe6; padding: 12px; border-radius: 8px; min-height: 50px; font-style: italic; color: #555; }
-.subject-card .scores { display: flex; justify-content: space-around; margin-top: 15px; font-size: 0.9rem; text-align: center; }
-.scores span { display: block; }
-.scores span:first-child { font-weight: 600; color: var(--text-color); }
-.scores span:last-child { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
-
-/* ========== NOUVEAU CODE POUR L'AMPOULE DE STATUT ========== */
-.status-lamp {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: transparent; /* Transparent par défaut si pas de statut */
-    flex-shrink: 0; /* Empêche l'ampoule de rétrécir */
-    margin-left: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-}
-.status-lamp.fait { background-color: var(--green-status); }
-.status-lamp.non-fait { background-color: var(--red-status); }
-.status-lamp.partiellement-fait { background-color: var(--orange-status); }
-.status-lamp.absent { background-color: var(--grey-status); }
-/* ============================================================ */
-
-.upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
-.upload-section h3 { margin: 0 0 15px 0; color: var(--primary-color); }
-#upload-status { font-weight: 600; margin-top: 15px; }
-#upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
-.teacher-controls { display: flex; flex-wrap: wrap; gap: 15px; padding: 0 25px 25px 25px; }
-.teacher-controls select, .teacher-controls input { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; flex-grow: 1; min-width: 150px; }
-.section-title { padding: 0 25px; margin-top: 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
-.teacher-homework-display { padding: 15px 25px; background: #fafafa; min-height: 50px; }
-.teacher-homework-display p { margin: 5px 0; }
-#teacher-table-container { padding: 25px; overflow-x: auto; }
-.teacher-evaluation-table { width: 100%; border-collapse: collapse; }
-.teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
-.teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
-.teacher-evaluation-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
-.teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-.main-menu, .login-form, .selection-box { display: flex; flex-direction: column; gap: 20px; padding: 40px; max-width: 450px; margin: auto; }
-.role-button { padding: 18px; font-size: 1.4rem; border: none; cursor: pointer; background-color: var(--accent-color); color: white; border-radius: 8px; font-weight: 600; transition: all 0.2s; }
-.role-button:hover { background-color: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 119, 255, 0.3); }
-select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
-.error-message { color: var(--red-status); font-weight: bold; text-align: center; }
-@media (max-width: 600px) {
-    body { padding: 0; }
-    .container { border-radius: 0; box-shadow: none; }
-    header h1 { font-size: 1.4rem; }
-    .back-button { width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem; }
-    .language-selector-home { top: 15px; right: 15px; }
-    .language-selector-home button { padding: 6px 12px; font-size: 0.9rem; }
-    .main-menu, .login-form, .selection-box { padding: 25px; }
-    .role-button { padding: 15px; font-size: 1.2rem; }
-    .dashboard-nav { justify-content: center; }
-}```
-
----
-
-### **Étape 2 : Mettre à jour `public/index.js`**
-
-Nous allons modifier la fonction `loadStudentDashboard` pour qu'elle ajoute l'élément "ampoule" avec la bonne classe de couleur.
-
-**Remplacez TOUT le contenu de `public/index.js` par ce code mis à jour :**
-
-```javascript
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
-    const studentLists = {
-        PEI1: ["Faysal", "Bilal", "Jad", "Manaf"], PEI2: ["Ahmed", "Yasser", "Eyad", "Ali"],
-        PEI3: ["Seifeddine", "Mohamed", "Wajih", "Ahmad", "Adam"],
-        PEI4: ["Mohamed Younes", "Mohamed Amine", "Samir", "Abdulrahman", "Youssef"], DP2: ["Habib", "Salah"]
+
+    // MISE À JOUR : Nouvelle structure de données avec noms et photos
+    const studentData = {
+        PEI1: [
+            { name: "Faysal", photo: "https://drive.google.com/uc?export=download&id=1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" },
+            { name: "Bilal", photo: "https://drive.google.com/uc?export=download&id=1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" },
+            { name: "Jad", photo: "https://drive.google.com/uc?export=download&id=1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" },
+            { name: "Manaf", photo: "https://drive.google.com/uc?export=download&id=1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" }
+        ],
+        PEI2: [
+            { name: "Ahmed", photo: "https://drive.google.com/uc?export=download&id=1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" },
+            { name: "Yasser", photo: "https://drive.google.com/uc?export=download&id=1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" },
+            { name: "Eyad", photo: "https://drive.google.com/uc?export=download&id=1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" },
+            { name: "Ali", photo: "https://drive.google.com/uc?export=download&id=1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" }
+        ],
+        PEI3: [
+            { name: "Seifeddine", photo: "https://drive.google.com/uc?export=download&id=1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" },
+            { name: "Mohamed", photo: "https://drive.google.com/uc?export=download&id=1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" },
+            { name: "Wajih", photo: "https://drive.google.com/uc?export=download&id=1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" },
+            { name: "Ahmad", photo: "https://drive.google.com/uc?export=download&id=1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" },
+            { name: "Adam", photo: "https://drive.google.com/uc?export=download&id=15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" }
+        ],
+        PEI4: [
+            { name: "Mohamed Younes", photo: "https://drive.google.com/uc?export=download&id=1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" },
+            { name: "Mohamed Amine", photo: "https://drive.google.com/uc?export=download&id=1UrBw6guz0oBTUy8COGeewIs3XAK773bR" },
+            { name: "Samir", photo: "https://drive.google.com/uc?export=download&id=1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" },
+            { name: "Abdulrahman", photo: "https://drive.google.com/uc?export=download&id=1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" },
+            { name: "Youssef", photo: "https://drive.google.com/uc?export=download&id=1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" }
+        ],
+        DP2: [
+            { name: "Habib", photo: "https://drive.google.com/uc?export=download&id=13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" },
+            { name: "Salah", photo: "https://drive.google.com/uc?export=download&id=1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" }
+        ]
     };
+    
     const translations = {
         fr: {
             portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant",
@@ -148,7 +51,18 @@ document.addEventListener('DOMContentLoaded', () => {
             noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui."
         },
         ar: {
-            // ... (translations en arabe)
+            portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي",
+            backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم",
+            passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.",
+            classSelectLabel: "اختر القسم:", studentSelectLabel: "اختر ابنك:", selectDefault: "-- اختر --",
+            studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام",
+            previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...",
+            noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع",
+            teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي",
+            uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.",
+            evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة",
+            evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل",
+            noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم."
         }
     };
 
@@ -343,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     teacherHomeworkList.appendChild(p);
                 });
 
-                const students = studentLists[selectedClass.split(' ')[0]] || [];
+                const students = (studentData[selectedClass.split(' ')[0]] || []).map(s => s.name);
                 let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th>${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th>${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th>${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th>${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th>${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
                 for (const student of students) {
                     const existingEval = data.evaluations.find(ev => ev.studentName === student && ev.subject === selectedSubject) || {};
@@ -404,7 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateClassSelect(selectId) {
         const selectElement = document.getElementById(selectId);
         selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        Object.keys(studentLists).forEach(className => {
+        // MODIFICATION : Utiliser la nouvelle structure studentData
+        Object.keys(studentData).forEach(className => {
             const option = document.createElement('option');
             option.value = className;
             option.textContent = className;
@@ -427,11 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedClass = classSelect.value;
         const studentSelectorBox = document.getElementById('student-selector-box');
         studentSelect.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        if (selectedClass && studentLists[selectedClass]) {
-            studentLists[selectedClass].forEach(student => {
+        // MODIFICATION : Utiliser la nouvelle structure studentData
+        if (selectedClass && studentData[selectedClass]) {
+            studentData[selectedClass].forEach(student => {
                 const option = document.createElement('option');
-                option.value = student; 
-                option.textContent = student; 
+                option.value = student.name; 
+                option.textContent = student.name; 
                 studentSelect.appendChild(option);
             });
             studentSelectorBox.style.display = 'block';
@@ -460,12 +376,17 @@ document.addEventListener('DOMContentLoaded', () => {
         loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
     });
 
-    // ================== MODIFICATION POUR L'AMPOULE DE STATUT ==================
     async function loadStudentDashboard(className, studentName, date) {
         document.getElementById('student-name-header').textContent = `${translations[document.documentElement.lang].studentDashboardTitle} ${studentName}`;
         document.getElementById('homework-date').textContent = `${translations[document.documentElement.lang].homeworkFor} ${date.format('dddd D MMMM YYYY')}`;
         const homeworkGrid = document.getElementById('homework-grid');
         homeworkGrid.innerHTML = `<p>${translations[document.documentElement.lang].loading}</p>`;
+
+        // AJOUT : Mettre à jour la photo de l'élève
+        const student = (studentData[className] || []).find(s => s.name === studentName);
+        if (student) {
+            document.querySelector('.student-photo').src = student.photo;
+        }
 
         try {
             const dateQuery = date.format('YYYY-MM-DD');
@@ -477,8 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.homeworks && data.homeworks.length > 0) {
                 data.homeworks.forEach(hw => {
                     const dailyEval = data.evaluations.find(ev => ev.studentName === studentName && ev.subject === hw.subject) || {};
-                    
-                    // Fonction pour créer la classe CSS à partir du statut
                     const getStatusClass = (status) => {
                         if (!status) return '';
                         return status.toLowerCase().replace(/ /g, '-');
@@ -487,26 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const card = document.createElement('div');
                     card.className = 'subject-card';
-                    // Ajout de l'élément ampoule <span class="status-lamp ..."></span> dans le h3
-                    card.innerHTML = `
-                        <h3>
-                            <span>${hw.subject}</span>
-                            <span class="status-lamp ${statusClass}"></span>
-                        </h3>
-                        <div class="content">
-                            <div class="assignment">${hw.assignment}</div>
-                            <div class="comment-box">${dailyEval.comment || "..."}</div>
-                            <div class="scores">
-                                <div>
-                                    <span data-translate="evalTableHeaderBehavior">${translations[document.documentElement.lang].evalTableHeaderBehavior}</span>
-                                    <span>${dailyEval.behavior ?? '-'}</span>
-                                </div>
-                                <div>
-                                    <span data-translate="evalTableHeaderParticipation">${translations[document.documentElement.lang].evalTableHeaderParticipation}</span>
-                                    <span>${dailyEval.participation ?? '-'}</span>
-                                </div>
-                            </div>
-                        </div>`;
+                    card.innerHTML = `<h3><span>${hw.subject}</span><span class="status-lamp ${statusClass}"></span></h3><div class="content"><div class="assignment">${hw.assignment}</div><div class="comment-box">${dailyEval.comment || "..."}</div><div class="scores"><div><span>${translations[document.documentElement.lang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div><div><span>${translations[document.documentElement.lang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div></div></div>`;
                     homeworkGrid.appendChild(card);
                 });
             } else {
@@ -519,7 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         setLanguage(document.documentElement.lang);
     }
-    // ============================================================================
 
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
