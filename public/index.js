@@ -15,9 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
             previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...",
             noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine",
             teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning hebdomadaire",
-            uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner une classe.",
+            uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner une classe, un enseignant et une matière.",
             evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation",
-            evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer"
+            evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer",
+            noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui."
         },
         ar: {
             portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي",
@@ -28,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...",
             noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع",
             teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي",
-            uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار قسم.",
+            uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار قسم، مربي ومادة.",
             evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة",
-            evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل"
+            evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل",
+            noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم."
         }
     };
 
@@ -155,9 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const datePicker = document.getElementById('date-picker');
     const teacherClassSelect = document.getElementById('teacher-class-select');
+    const teacherNameSelect = document.getElementById('teacher-name-select'); // AJOUT
+    const teacherSubjectSelect = document.getElementById('teacher-subject-select'); // AJOUT
     const teacherTableContainer = document.getElementById('teacher-table-container');
     const teacherHomeworkList = document.getElementById('teacher-homework-list');
 
+    // CORRECTION MAJEURE : Mise à jour de la configuration du tableau de bord enseignant
     async function setupTeacherDashboard() {
         datePicker.valueAsDate = moment().toDate();
         try {
@@ -165,40 +170,67 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Impossible de charger les listes.');
             const initialData = await response.json();
             populateDynamicSelect('teacher-class-select', initialData.classes);
+            populateDynamicSelect('teacher-name-select', initialData.teachers); // AJOUT
+            populateDynamicSelect('teacher-subject-select', initialData.subjects); // AJOUT
         } catch (error) {
             console.error(error);
             teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
+        // AJOUT : Écouteurs pour les nouveaux filtres
         datePicker.addEventListener('change', renderTeacherView);
         teacherClassSelect.addEventListener('change', renderTeacherView);
+        teacherNameSelect.addEventListener('change', renderTeacherView);
+        teacherSubjectSelect.addEventListener('change', renderTeacherView);
         renderTeacherView();
     }
 
+    // CORRECTION MAJEURE : Nouvelle logique d'affichage pour l'enseignant avec filtres
     async function renderTeacherView() {
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
-        if (!selectedClass) { teacherTableContainer.innerHTML = `<p data-translate="selectClassPrompt">${translations[document.documentElement.lang].selectClassPrompt}</p>`; teacherHomeworkList.innerHTML = ""; return; }
+        const selectedTeacher = teacherNameSelect.value;
+        const selectedSubject = teacherSubjectSelect.value;
+
+        // Vider l'affichage si tous les filtres ne sont pas sélectionnés
+        if (!selectedClass || !selectedTeacher || !selectedSubject) {
+            teacherHomeworkList.innerHTML = "";
+            teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
+            return;
+        }
+
         try {
             const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
-            if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
+            if (!response.ok) throw new Error('Erreur de chargement des données');
             const data = await response.json();
+
+            // Filtrer les devoirs pour l'enseignant et la matière sélectionnés
+            const filteredHomeworks = data.homeworks.filter(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
+
             teacherHomeworkList.innerHTML = "";
-            if (data.homeworks && data.homeworks.length > 0) {
-                data.homeworks.forEach(hw => {
+            if (filteredHomeworks.length > 0) {
+                // Afficher le devoir filtré
+                filteredHomeworks.forEach(hw => {
                     const p = document.createElement('p');
                     p.innerHTML = `<strong>${hw.subject}:</strong> ${hw.assignment}`;
                     teacherHomeworkList.appendChild(p);
                 });
-            } else { teacherHomeworkList.innerHTML = `<p data-translate="noHomeworkForDay">${translations[document.documentElement.lang].noHomeworkForDay}</p>`; }
-            const students = studentLists[selectedClass.split(' ')[0]] || [];
-            let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th data-translate="evalTableHeaderStudent">${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th data-translate="evalTableHeaderStatus">${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th data-translate="evalTableHeaderParticipation">${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th data-translate="evalTableHeaderBehavior">${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th data-translate="evalTableHeaderComment">${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
-            for (const student of students) {
-                const existingEval = data.evaluations.find(ev => ev.studentName === student) || {};
-                tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
+
+                // Afficher le tableau d'évaluation pour ce devoir
+                const students = studentLists[selectedClass.split(' ')[0]] || [];
+                let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th data-translate="evalTableHeaderStudent">${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th data-translate="evalTableHeaderStatus">${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th data-translate="evalTableHeaderParticipation">${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th data-translate="evalTableHeaderBehavior">${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th data-translate="evalTableHeaderComment">${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
+                for (const student of students) {
+                    // Trouver l'évaluation existante pour CETTE matière
+                    const existingEval = data.evaluations.find(ev => ev.studentName === student && ev.subject === selectedSubject) || {};
+                    tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
+                }
+                tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;" data-translate="saveButton">${translations[document.documentElement.lang].saveButton}</button>`;
+                teacherTableContainer.innerHTML = tableHTML;
+                document.getElementById('submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
+            } else {
+                // Afficher le message s'il n'y a pas de devoir pour ce filtre
+                teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
+                teacherTableContainer.innerHTML = ""; // Vider le tableau
             }
-            tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;" data-translate="saveButton">${translations[document.documentElement.lang].saveButton}</button>`;
-            teacherTableContainer.innerHTML = tableHTML;
-            document.getElementById('submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
         } catch (error) { 
             console.error("Erreur lors du rendu de la vue enseignant:", error);
             teacherTableContainer.innerHTML = `<p class="error-message" data-translate="fetchError">${translations[document.documentElement.lang].fetchError}</p>`; 
@@ -206,13 +238,22 @@ document.addEventListener('DOMContentLoaded', () => {
         setLanguage(document.documentElement.lang);
     }
     
+    // CORRECTION MAJEURE : Envoyer la matière avec l'évaluation
     async function submitTeacherEvaluations() {
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
+        const selectedSubject = teacherSubjectSelect.value; // AJOUT
+
+        if (!selectedSubject) {
+            alert("Erreur : aucune matière sélectionnée.");
+            return;
+        }
+
         const evaluations = Array.from(document.querySelectorAll('.teacher-evaluation-table tbody tr')).map(row => ({
             studentName: row.dataset.student,
             class: selectedClass,
             date: selectedDate,
+            subject: selectedSubject, // AJOUT CRUCIAL
             status: row.querySelector('.status-select').value,
             participation: parseInt(row.querySelector('.participation-input').value, 10),
             behavior: parseInt(row.querySelector('.behavior-input').value, 10),
@@ -248,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateDynamicSelect(selectId, dataArray) {
         const selectElement = document.getElementById(selectId);
-        selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
+        selectElement.innerHTML = `<option value="">-- ${selectId.includes('class') ? 'Classe' : selectId.includes('name') ? 'Enseignant' : 'Matière'} --</option>`;
         (dataArray || []).sort().forEach(item => {
             const option = document.createElement('option');
             option.value = item; 
@@ -308,8 +349,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             homeworkGrid.innerHTML = "";
             if (data.homeworks && data.homeworks.length > 0) {
+                // Pour le parent, on affiche TOUS les devoirs du jour
                 data.homeworks.forEach(hw => {
-                    const dailyEval = data.evaluations.find(ev => ev.studentName === studentName) || {};
+                    // CORRECTION MAJEURE : Trouver l'évaluation qui correspond à la matière du devoir
+                    const dailyEval = data.evaluations.find(ev => ev.studentName === studentName && ev.subject === hw.subject) || {};
                     const card = document.createElement('div');
                     card.className = 'subject-card';
                     card.innerHTML = `<h3>${hw.subject}</h3><div class="content"><div class="assignment">${hw.assignment}</div><div class="comment-box">${dailyEval.comment || "..."}</div><div class="scores"><div><span data-translate="evalTableHeaderBehavior">${translations[document.documentElement.lang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div><div><span data-translate="evalTableHeaderParticipation">${translations[document.documentElement.lang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div></div></div>`;
