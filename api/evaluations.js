@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const moment = require('moment'); // AJOUT TRÈS IMPORTANT
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
@@ -10,15 +11,18 @@ module.exports = async (req, res) => {
 
         if (req.method === 'POST') {
             const { evaluations } = req.body;
+            if (!evaluations || evaluations.length === 0) {
+                return res.status(200).json({ message: 'Aucune évaluation à enregistrer.' });
+            }
             const evaluationsCollection = db.collection('evaluations');
             const operations = evaluations.map(ev => ({
                 updateOne: {
-                    filter: { date: ev.date, studentName: ev.studentName, class: ev.class }, // Ajout de 'class' pour un filtre plus précis
-                    update: { $set: { ...ev } },
+                    filter: { date: ev.date, studentName: ev.studentName, class: ev.class, subject: ev.subject },
+                    update: { $set: ev },
                     upsert: true
                 }
             }));
-            if (operations.length > 0) await evaluationsCollection.bulkWrite(operations);
+            await evaluationsCollection.bulkWrite(operations);
             return res.status(200).json({ message: 'Évaluations enregistrées.' });
         }
 
@@ -37,34 +41,40 @@ module.exports = async (req, res) => {
 
             const homeworks = planningEntries
                 .filter(entry => entry.Devoirs && entry.Devoirs.trim() !== "")
-                .map(entry => ({ subject: entry.Matière, assignment: entry.Devoirs }));
+                .map(entry => ({ 
+                    subject: entry.Matière, 
+                    assignment: entry.Devoirs, 
+                    teacher: entry.Enseignant
+                }));
             
             let query = { class: className, date: dateQuery };
-            if (studentName) query.studentName = studentName;
+            if (studentName) {
+                query.studentName = studentName;
+            }
             const evaluations = await evaluationsCollection.find(query).toArray();
             
             let responseData = { homeworks, evaluations };
 
             if (week === 'true' && studentName) {
-                const targetDate = moment.utc(dateQuery); // Utiliser moment.utc pour éviter les problèmes de fuseau horaire
-                const dayOfWeek = targetDate.isoWeekday(); // Lundi=1, Dimanche=7
-                
-                // Début de semaine (lundi)
-                const firstDayOfWeek = targetDate.clone().isoWeekday(1);
-                // Fin de semaine (dimanche)
-                const lastDayOfWeek = targetDate.clone().isoWeekday(7);
+                // Utilisation de moment qui est maintenant importé
+                const targetDate = moment.utc(dateQuery);
+                const firstDayOfWeek = targetDate.clone().startOf('isoWeek');
+                const lastDayOfWeek = targetDate.clone().endOf('isoWeek');
 
                 const firstDayStr = firstDayOfWeek.format('YYYY-MM-DD');
                 const lastDayStr = lastDayOfWeek.format('YYYY-MM-DD');
                 
                 responseData.weeklyEvaluations = await evaluationsCollection.find({
                     studentName: studentName,
-                    class: className, // Ajout de la classe pour filtrer les évaluations de la semaine
+                    class: className,
                     date: { $gte: firstDayStr, $lte: lastDayStr }
                 }).toArray();
             }
             return res.status(200).json(responseData);
         }
+        
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+
     } catch (error) {
         console.error("[evaluations] ERREUR:", error);
         return res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
