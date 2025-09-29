@@ -8,9 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Librairie pour lire les fichiers Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Librairie pour gérer les dates facilement -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/fr.js"></script>
 </head>
@@ -111,10 +109,12 @@
                     <button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button>
                     <p id="upload-status"></p>
                 </div>
+                <!-- ================== NOUVELLE DISPOSITION DES FILTRES ================== -->
                 <div class="teacher-controls">
+                    <select id="teacher-name-select"><option value="">-- Enseignant --</option></select>
+                    <select id="teacher-subject-select"><option value="">-- Matière --</option></select>
                     <input type="date" id="date-picker">
-                    <select id="teacher-name-select" style="display:none;"></select> <!-- Caché car non utilisé pour le moment -->
-                    <select id="teacher-class-select"></select>
+                    <select id="teacher-class-select"><option value="">-- Classe --</option></select>
                 </div>
                 <h3 class="section-title" data-translate="homeworkForDay">Devoirs du jour sélectionné :</h3>
                 <div class="teacher-homework-display" id="teacher-homework-list"></div>
