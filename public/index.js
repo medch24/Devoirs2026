@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 
-                // On utilise la date du sélecteur de date comme référence pour la semaine
                 const referenceDate = moment(document.getElementById('date-picker').value);
                 const formattedPlan = formatPlanData(jsonPlan, referenceDate);
                 
@@ -133,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsArrayBuffer(file);
     });
 
-    // CORRECTION MAJEURE : Nouvelle fonction pour interpréter les jours de la semaine
     function formatPlanData(jsonPlan, referenceDate) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         
@@ -143,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
         });
 
-        // Mappage des jours en français vers le numéro de jour de Moment.js (Dimanche=0, Lundi=1...)
         const dayNameToNumber = {
             'dimanche': 0, 'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6
         };
@@ -158,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dayValue && typeof dayValue === 'string') {
                 const dayNumber = dayNameToNumber[dayValue.toLowerCase().trim()];
                 if (dayNumber !== undefined) {
-                    // Calcule la date de la semaine de référence qui correspond à ce jour
                     formattedDate = referenceDate.clone().day(dayNumber).format('YYYY-MM-DD');
                 }
             }
@@ -168,15 +164,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
 
-
-    const datePicker = document.getElementById('date-picker');
-    const teacherClassSelect = document.getElementById('teacher-class-select');
-    const teacherNameSelect = document.getElementById('teacher-name-select');
-    const teacherSubjectSelect = document.getElementById('teacher-subject-select');
-    const teacherTableContainer = document.getElementById('teacher-table-container');
-    const teacherHomeworkList = document.getElementById('teacher-homework-list');
+    // ================== DÉBUT DE LA CORRECTION ==================
+    // La déclaration des variables du tableau de bord enseignant a été déplacée
+    // de l'extérieur vers l'intérieur de la fonction setupTeacherDashboard.
 
     async function setupTeacherDashboard() {
+        // Ces variables sont maintenant DÉCLARÉES ICI
+        const datePicker = document.getElementById('date-picker');
+        const teacherClassSelect = document.getElementById('teacher-class-select');
+        const teacherNameSelect = document.getElementById('teacher-name-select');
+        const teacherSubjectSelect = document.getElementById('teacher-subject-select');
+
         datePicker.valueAsDate = moment().toDate();
         try {
             const response = await fetch('/api/initial-data');
@@ -187,16 +185,27 @@ document.addEventListener('DOMContentLoaded', () => {
             populateDynamicSelect('teacher-subject-select', initialData.subjects);
         } catch (error) {
             console.error(error);
-            teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
+            document.getElementById('teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
+        
+        // Les écouteurs sont attachés ici, après avoir trouvé les éléments
         datePicker.addEventListener('change', renderTeacherView);
         teacherClassSelect.addEventListener('change', renderTeacherView);
         teacherNameSelect.addEventListener('change', renderTeacherView);
         teacherSubjectSelect.addEventListener('change', renderTeacherView);
+        
         renderTeacherView();
     }
 
     async function renderTeacherView() {
+        // On doit aussi retrouver les éléments ici car cette fonction est appelée par les écouteurs
+        const datePicker = document.getElementById('date-picker');
+        const teacherClassSelect = document.getElementById('teacher-class-select');
+        const teacherNameSelect = document.getElementById('teacher-name-select');
+        const teacherSubjectSelect = document.getElementById('teacher-subject-select');
+        const teacherTableContainer = document.getElementById('teacher-table-container');
+        const teacherHomeworkList = document.getElementById('teacher-homework-list');
+        
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
@@ -244,9 +253,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function submitTeacherEvaluations() {
-        const selectedClass = teacherClassSelect.value;
-        const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
-        const selectedSubject = teacherSubjectSelect.value;
+        const selectedClass = document.getElementById('teacher-class-select').value;
+        const selectedDate = moment(document.getElementById('date-picker').value).format('YYYY-MM-DD');
+        const selectedSubject = document.getElementById('teacher-subject-select').value;
 
         if (!selectedSubject) {
             alert("Erreur : aucune matière sélectionnée.");
@@ -276,6 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Une erreur est survenue lors de l'enregistrement des évaluations."); 
         }
     }
+
+    // ================== FIN DE LA CORRECTION ==================
 
     const classSelect = document.getElementById('class-select');
     const studentSelect = document.getElementById('student-select');
