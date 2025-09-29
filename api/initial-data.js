@@ -7,11 +7,15 @@ module.exports = async (req, res) => {
         await client.connect();
         const db = client.db('test');
         const collection = db.collection('plans');
-        const teachers = await collection.distinct("Enseignant", { "Enseignant": { $exists: true, $ne: null, $ne: "" } });
-        const classes = await collection.distinct("Classe", { "Classe": { $exists: true, $ne: null, $ne: "" } });
-        const subjects = await collection.distinct("Matière", { "Matière": { $exists: true, $ne: null, $ne: "" } });
         
-        res.status(200).json({ teachers, classes, subjects });
+        // CORRECTION : Renvoyer toutes les données du planning
+        // Cela permet au front-end de construire les filtres dynamiques.
+        const planData = await collection.find({}).toArray();
+        
+        // On extrait aussi les listes uniques pour le remplissage initial
+        const teachers = [...new Set(planData.map(item => item.Enseignant))].sort();
+        
+        res.status(200).json({ teachers, planData });
     } catch (error) {
         console.error("[initial-data] ERREUR:", error);
         res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
