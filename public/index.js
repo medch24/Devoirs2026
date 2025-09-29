@@ -79,9 +79,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadExcelBtn = document.getElementById('upload-excel-btn');
     const uploadStatus = document.getElementById('upload-status');
 
-    uploadExcelBtn.addEventListener('click', () => {
+    uploadExcelBtn.addEventListener('click', async () => {
         const file = excelFileInput.files[0];
-        if (!file) { uploadStatus.textContent = "Veuillez choisir un fichier."; uploadStatus.className = 'error'; return; }
+        if (!file) {
+            uploadStatus.textContent = "Veuillez choisir un fichier.";
+            uploadStatus.className = 'error';
+            return;
+        }
+        
+        uploadStatus.textContent = "Lecture du fichier en cours...";
+        uploadStatus.className = '';
+        
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
@@ -90,79 +98,84 @@ document.addEventListener('DOMContentLoaded', () => {
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                const formattedPlan = formatPlanData(jsonPlan);
-                uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
-                uploadStatus.className = '';
+                
+                // On utilise la date du sélecteur de date comme référence pour la semaine
+                const referenceDate = moment(document.getElementById('date-picker').value);
+                const formattedPlan = formatPlanData(jsonPlan, referenceDate);
+                
+                if (formattedPlan.length === 0) {
+                    throw new Error("Aucune donnée valide trouvée dans le fichier Excel. Vérifiez les noms des jours.");
+                }
 
+                uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
+                
                 const response = await fetch('/api/upload-plan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formattedPlan)
                 });
-                if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
+                
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
+                }
+                
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
-                setupTeacherDashboard();
+                await setupTeacherDashboard();
             } catch (error) {
-                uploadStatus.textContent = `${translations[document.documentElement.lang].fetchError} : ${error.message}.`;
+                console.error("Erreur d'upload:", error);
+                uploadStatus.textContent = `Erreur : ${error.message}.`;
                 uploadStatus.className = 'error';
             }
         };
         reader.readAsArrayBuffer(file);
     });
-    
-    function formatPlanData(jsonPlan) {
+
+    // CORRECTION MAJEURE : Nouvelle fonction pour interpréter les jours de la semaine
+    function formatPlanData(jsonPlan, referenceDate) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
+        
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
         const dataRows = jsonPlan.slice(1);
         ["Enseignant", "Jour", "Classe", "Matière", "Devoirs"].forEach(header => {
             if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
         });
+
+        // Mappage des jours en français vers le numéro de jour de Moment.js (Dimanche=0, Lundi=1...)
+        const dayNameToNumber = {
+            'dimanche': 0, 'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6
+        };
+
         return dataRows.map(row => {
             const rowData = {};
             headers.forEach((header, index) => { rowData[header] = row[index]; });
-            let dateValue = rowData.Jour;
-            let formattedDate;
-            if (typeof dateValue === 'number') {
-                const date = moment('1899-12-30').add(dateValue, 'days');
-                formattedDate = date.format('YYYY-MM-DD');
-            } else if (typeof dateValue === 'string') {
-                formattedDate = moment(dateValue, "YYYY-MM-DD", true).isValid() ? moment(dateValue, "YYYY-MM-DD", true).format('YYYY-MM-DD') :
-                                moment(dateValue, "DD/MM/YYYY", true).isValid() ? moment(dateValue, "DD/MM/YYYY", true).format('YYYY-MM-DD') :
-                                parseFrenchDate(dateValue);
+
+            let dayValue = rowData.Jour;
+            let formattedDate = 'Invalid date';
+
+            if (dayValue && typeof dayValue === 'string') {
+                const dayNumber = dayNameToNumber[dayValue.toLowerCase().trim()];
+                if (dayNumber !== undefined) {
+                    // Calcule la date de la semaine de référence qui correspond à ce jour
+                    formattedDate = referenceDate.clone().day(dayNumber).format('YYYY-MM-DD');
+                }
             }
+            
             rowData.Jour = formattedDate;
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
 
-    function parseFrenchDate(dateString) {
-        const months = { 'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04', 'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08', 'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12' };
-        const parts = dateString.toLowerCase().split(' ').filter(p => p);
-        let day, month, year;
-        for (const part of parts) {
-            if (!isNaN(parseInt(part, 10)) && parseInt(part, 10) > 0 && parseInt(part, 10) < 32) {
-                day = part;
-            } else if (months[part]) {
-                month = months[part];
-            } else if (!isNaN(parseInt(part, 10)) && parseInt(part, 10) > 1900 && parseInt(part, 10) < 2100) {
-                year = part;
-            }
-        }
-        if (!day || !month || !year) return 'Invalid date';
-        const momentDate = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
-        return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
-    }
 
     const datePicker = document.getElementById('date-picker');
     const teacherClassSelect = document.getElementById('teacher-class-select');
-    const teacherNameSelect = document.getElementById('teacher-name-select'); // AJOUT
-    const teacherSubjectSelect = document.getElementById('teacher-subject-select'); // AJOUT
+    const teacherNameSelect = document.getElementById('teacher-name-select');
+    const teacherSubjectSelect = document.getElementById('teacher-subject-select');
     const teacherTableContainer = document.getElementById('teacher-table-container');
     const teacherHomeworkList = document.getElementById('teacher-homework-list');
 
-    // CORRECTION MAJEURE : Mise à jour de la configuration du tableau de bord enseignant
     async function setupTeacherDashboard() {
         datePicker.valueAsDate = moment().toDate();
         try {
@@ -170,13 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Impossible de charger les listes.');
             const initialData = await response.json();
             populateDynamicSelect('teacher-class-select', initialData.classes);
-            populateDynamicSelect('teacher-name-select', initialData.teachers); // AJOUT
-            populateDynamicSelect('teacher-subject-select', initialData.subjects); // AJOUT
+            populateDynamicSelect('teacher-name-select', initialData.teachers);
+            populateDynamicSelect('teacher-subject-select', initialData.subjects);
         } catch (error) {
             console.error(error);
             teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
-        // AJOUT : Écouteurs pour les nouveaux filtres
         datePicker.addEventListener('change', renderTeacherView);
         teacherClassSelect.addEventListener('change', renderTeacherView);
         teacherNameSelect.addEventListener('change', renderTeacherView);
@@ -184,14 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTeacherView();
     }
 
-    // CORRECTION MAJEURE : Nouvelle logique d'affichage pour l'enseignant avec filtres
     async function renderTeacherView() {
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
         const selectedSubject = teacherSubjectSelect.value;
 
-        // Vider l'affichage si tous les filtres ne sont pas sélectionnés
         if (!selectedClass || !selectedTeacher || !selectedSubject) {
             teacherHomeworkList.innerHTML = "";
             teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
@@ -203,23 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Erreur de chargement des données');
             const data = await response.json();
 
-            // Filtrer les devoirs pour l'enseignant et la matière sélectionnés
             const filteredHomeworks = data.homeworks.filter(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
 
             teacherHomeworkList.innerHTML = "";
             if (filteredHomeworks.length > 0) {
-                // Afficher le devoir filtré
                 filteredHomeworks.forEach(hw => {
                     const p = document.createElement('p');
                     p.innerHTML = `<strong>${hw.subject}:</strong> ${hw.assignment}`;
                     teacherHomeworkList.appendChild(p);
                 });
 
-                // Afficher le tableau d'évaluation pour ce devoir
                 const students = studentLists[selectedClass.split(' ')[0]] || [];
                 let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th data-translate="evalTableHeaderStudent">${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th data-translate="evalTableHeaderStatus">${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th data-translate="evalTableHeaderParticipation">${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th data-translate="evalTableHeaderBehavior">${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th data-translate="evalTableHeaderComment">${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
                 for (const student of students) {
-                    // Trouver l'évaluation existante pour CETTE matière
                     const existingEval = data.evaluations.find(ev => ev.studentName === student && ev.subject === selectedSubject) || {};
                     tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>Fait</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>Non Fait</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>Partiellement Fait</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>Absent</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
                 }
@@ -227,9 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 teacherTableContainer.innerHTML = tableHTML;
                 document.getElementById('submit-evals-btn').addEventListener('click', submitTeacherEvaluations);
             } else {
-                // Afficher le message s'il n'y a pas de devoir pour ce filtre
                 teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
-                teacherTableContainer.innerHTML = ""; // Vider le tableau
+                teacherTableContainer.innerHTML = "";
             }
         } catch (error) { 
             console.error("Erreur lors du rendu de la vue enseignant:", error);
@@ -238,11 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setLanguage(document.documentElement.lang);
     }
     
-    // CORRECTION MAJEURE : Envoyer la matière avec l'évaluation
     async function submitTeacherEvaluations() {
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
-        const selectedSubject = teacherSubjectSelect.value; // AJOUT
+        const selectedSubject = teacherSubjectSelect.value;
 
         if (!selectedSubject) {
             alert("Erreur : aucune matière sélectionnée.");
@@ -253,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             studentName: row.dataset.student,
             class: selectedClass,
             date: selectedDate,
-            subject: selectedSubject, // AJOUT CRUCIAL
+            subject: selectedSubject,
             status: row.querySelector('.status-select').value,
             participation: parseInt(row.querySelector('.participation-input').value, 10),
             behavior: parseInt(row.querySelector('.behavior-input').value, 10),
@@ -349,9 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             homeworkGrid.innerHTML = "";
             if (data.homeworks && data.homeworks.length > 0) {
-                // Pour le parent, on affiche TOUS les devoirs du jour
                 data.homeworks.forEach(hw => {
-                    // CORRECTION MAJEURE : Trouver l'évaluation qui correspond à la matière du devoir
                     const dailyEval = data.evaluations.find(ev => ev.studentName === studentName && ev.subject === hw.subject) || {};
                     const card = document.createElement('div');
                     card.className = 'subject-card';
