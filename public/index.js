@@ -75,64 +75,35 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError; }
     });
 
-    const excelFileInput = document.getElementById('excel-file-input');
-    const uploadExcelBtn = document.getElementById('upload-excel-btn');
-    const uploadStatus = document.getElementById('upload-status');
+    // CORRECTION MAJEURE : La logique de l'upload est déplacée dans `setupTeacherDashboard`
+    // pour garantir que les éléments existent.
 
-    uploadExcelBtn.addEventListener('click', async () => {
-        const file = excelFileInput.files[0];
-        if (!file) {
-            uploadStatus.textContent = "Veuillez choisir un fichier.";
-            uploadStatus.className = 'error';
-            return;
-        }
-        
-        uploadStatus.textContent = "Lecture du fichier en cours...";
-        uploadStatus.className = '';
-        
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            try {
-                const data = new Uint8Array(event.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                
-                const referenceDate = moment(document.getElementById('date-picker').value);
-                const formattedPlan = formatPlanData(jsonPlan, referenceDate);
-                
-                if (formattedPlan.length === 0) {
-                    throw new Error("Aucune donnée valide trouvée dans le fichier Excel. Vérifiez les noms des jours.");
-                }
-
-                uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
-                
-                const response = await fetch('/api/upload-plan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formattedPlan)
-                });
-                
-                if (!response.ok) {
-                    const errorResult = await response.json();
-                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
-                }
-                
-                const result = await response.json();
-                uploadStatus.textContent = result.message;
-                uploadStatus.className = 'success';
-                await setupTeacherDashboard();
-            } catch (error) {
-                console.error("Erreur d'upload:", error);
-                uploadStatus.textContent = `Erreur : ${error.message}.`;
-                uploadStatus.className = 'error';
-            }
+    // NOUVELLE FONCTION, PLUS ROBUSTE, POUR PARSER LES DATES COMME "lundi 29 septembre 2025"
+    function parseFrenchDate(dateString) {
+        const months = { 
+            'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04', 'mai': '05', 'juin': '06', 
+            'juillet': '07', 'août': '08', 'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12' 
         };
-        reader.readAsArrayBuffer(file);
-    });
+        const parts = dateString.toLowerCase().split(' ').filter(p => p);
+        let day, month, year;
 
-    function formatPlanData(jsonPlan, referenceDate) {
+        for (const part of parts) {
+            if (!isNaN(parseInt(part, 10)) && parseInt(part, 10) > 0 && parseInt(part, 10) < 32) {
+                day = part.padStart(2, '0');
+            } else if (months[part]) {
+                month = months[part];
+            } else if (!isNaN(parseInt(part, 10)) && part.length === 4) {
+                year = part;
+            }
+        }
+
+        if (!day || !month || !year) return 'Invalid date';
+        
+        const momentDate = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
+        return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
+    }
+
+    function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -141,22 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
         });
 
-        const dayNameToNumber = {
-            'dimanche': 0, 'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6
-        };
-
         return dataRows.map(row => {
             const rowData = {};
             headers.forEach((header, index) => { rowData[header] = row[index]; });
+            let dateValue = rowData.Jour;
+            let formattedDate;
 
-            let dayValue = rowData.Jour;
-            let formattedDate = 'Invalid date';
-
-            if (dayValue && typeof dayValue === 'string') {
-                const dayNumber = dayNameToNumber[dayValue.toLowerCase().trim()];
-                if (dayNumber !== undefined) {
-                    formattedDate = referenceDate.clone().day(dayNumber).format('YYYY-MM-DD');
-                }
+            if (typeof dateValue === 'number') { // Gère les dates numériques d'Excel
+                const date = moment('1899-12-30').add(dateValue, 'days');
+                formattedDate = date.format('YYYY-MM-DD');
+            } else if (typeof dateValue === 'string') { // Gère les dates en texte
+                formattedDate = parseFrenchDate(dateValue);
             }
             
             rowData.Jour = formattedDate;
@@ -164,16 +130,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
 
-    // ================== DÉBUT DE LA CORRECTION ==================
-    // La déclaration des variables du tableau de bord enseignant a été déplacée
-    // de l'extérieur vers l'intérieur de la fonction setupTeacherDashboard.
-
+    // ================== CORRECTION DÉFINITIVE DU BUG 'addEventListener' ==================
+    // Toute la logique du tableau de bord enseignant est maintenant encapsulée.
+    
     async function setupTeacherDashboard() {
-        // Ces variables sont maintenant DÉCLARÉES ICI
+        // On récupère les éléments ici, une fois qu'on est sûr que la vue est affichée.
         const datePicker = document.getElementById('date-picker');
         const teacherClassSelect = document.getElementById('teacher-class-select');
         const teacherNameSelect = document.getElementById('teacher-name-select');
         const teacherSubjectSelect = document.getElementById('teacher-subject-select');
+        const excelFileInput = document.getElementById('excel-file-input');
+        const uploadExcelBtn = document.getElementById('upload-excel-btn');
+        const uploadStatus = document.getElementById('upload-status');
 
         datePicker.valueAsDate = moment().toDate();
         try {
@@ -188,7 +156,59 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
         
-        // Les écouteurs sont attachés ici, après avoir trouvé les éléments
+        // On attache les écouteurs ici.
+        uploadExcelBtn.addEventListener('click', async () => {
+            const file = excelFileInput.files[0];
+            if (!file) {
+                uploadStatus.textContent = "Veuillez choisir un fichier.";
+                uploadStatus.className = 'error';
+                return;
+            }
+            
+            uploadStatus.textContent = "Lecture du fichier en cours...";
+            uploadStatus.className = '';
+            
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    const formattedPlan = formatPlanData(jsonPlan);
+                    
+                    if (formattedPlan.length === 0) {
+                        throw new Error("Aucune donnée valide trouvée. Vérifiez le format des dates dans le fichier Excel.");
+                    }
+
+                    uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
+                    
+                    const response = await fetch('/api/upload-plan', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formattedPlan)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorResult = await response.json();
+                        throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
+                    }
+                    
+                    const result = await response.json();
+                    uploadStatus.textContent = result.message;
+                    uploadStatus.className = 'success';
+                    await setupTeacherDashboard(); // Recharger le dashboard
+                } catch (error) {
+                    console.error("Erreur d'upload:", error);
+                    uploadStatus.textContent = `Erreur : ${error.message}.`;
+                    uploadStatus.className = 'error';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
         datePicker.addEventListener('change', renderTeacherView);
         teacherClassSelect.addEventListener('change', renderTeacherView);
         teacherNameSelect.addEventListener('change', renderTeacherView);
@@ -198,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function renderTeacherView() {
-        // On doit aussi retrouver les éléments ici car cette fonction est appelée par les écouteurs
         const datePicker = document.getElementById('date-picker');
         const teacherClassSelect = document.getElementById('teacher-class-select');
         const teacherNameSelect = document.getElementById('teacher-name-select');
@@ -285,8 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Une erreur est survenue lors de l'enregistrement des évaluations."); 
         }
     }
-
-    // ================== FIN DE LA CORRECTION ==================
 
     const classSelect = document.getElementById('class-select');
     const studentSelect = document.getElementById('student-select');
