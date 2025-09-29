@@ -1,38 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
 
-    // ================== CORRECTION DES URL DE PHOTOS ==================
-    // Les liens Google Drive ont été transformés pour un accès direct.
+    // ================== CORRECTION FINALE DES URL DE PHOTOS ==================
     const studentData = {
         PEI1: [
-            { name: "Faysal", photo: "https://drive.google.com/uc?export=view&id=1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" },
-            { name: "Bilal", photo: "https://drive.google.com/uc?export=view&id=1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" },
-            { name: "Jad", photo: "https://drive.google.com/uc?export=view&id=1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" },
-            { name: "Manaf", photo: "https://drive.google.com/uc?export=view&id=1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" }
+            { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" },
+            { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" },
+            { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" },
+            { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" }
         ],
         PEI2: [
-            { name: "Ahmed", photo: "https://drive.google.com/uc?export=view&id=1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" },
-            { name: "Yasser", photo: "https://drive.google.com/uc?export=view&id=1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" },
-            { name: "Eyad", photo: "https://drive.google.com/uc?export=view&id=1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" },
-            { name: "Ali", photo: "https://drive.google.com/uc?export=view&id=1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" }
+            { name: "Ahmed", photo: "https://lh3.googleusercontent.com/d/1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" },
+            { name: "Yasser", photo: "https://lh3.googleusercontent.com/d/1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" },
+            { name: "Eyad", photo: "https://lh3.googleusercontent.com/d/1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" },
+            { name: "Ali", photo: "https://lh3.googleusercontent.com/d/1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" }
         ],
         PEI3: [
-            { name: "Seifeddine", photo: "https://drive.google.com/uc?export=view&id=1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" },
-            { name: "Mohamed", photo: "https://drive.google.com/uc?export=view&id=1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" },
-            { name: "Wajih", photo: "https://drive.google.com/uc?export=view&id=1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" },
-            { name: "Ahmad", photo: "https://drive.google.com/uc?export=view&id=1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" },
-            { name: "Adam", photo: "https://drive.google.com/uc?export=view&id=15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" }
+            { name: "Seifeddine", photo: "https://lh3.googleusercontent.com/d/1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" },
+            { name: "Mohamed", photo: "https://lh3.googleusercontent.com/d/1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" },
+            { name: "Wajih", photo: "https://lh3.googleusercontent.com/d/1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" },
+            { name: "Ahmad", photo: "https://lh3.googleusercontent.com/d/1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" },
+            { name: "Adam", photo: "https://lh3.googleusercontent.com/d/15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" }
         ],
         PEI4: [
-            { name: "Mohamed Younes", photo: "https://drive.google.com/uc?export=view&id=1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" },
-            { name: "Mohamed Amine", photo: "https://drive.google.com/uc?export=view&id=1UrBw6guz0oBTUy8COGeewIs3XAK773bR" },
-            { name: "Samir", photo: "https://drive.google.com/uc?export=view&id=1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" },
-            { name: "Abdulrahman", photo: "https://drive.google.com/uc?export=view&id=1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" },
-            { name: "Youssef", photo: "https://drive.google.com/uc?export=view&id=1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" }
+            { name: "Mohamed Younes", photo: "https://lh3.googleusercontent.com/d/1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" },
+            { name: "Mohamed Amine", photo: "https://lh3.googleusercontent.com/d/1UrBw6guz0oBTUy8COGeewIs3XAK773bR" },
+            { name: "Samir", photo: "https://lh3.googleusercontent.com/d/1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" },
+            { name: "Abdulrahman", photo: "https://lh3.googleusercontent.com/d/1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" },
+            { name: "Youssef", photo: "https://lh3.googleusercontent.com/d/1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" }
         ],
         DP2: [
-            { name: "Habib", photo: "https://drive.google.com/uc?export=view&id=13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" },
-            { name: "Salah", photo: "https://drive.google.com/uc?export=view&id=1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" }
+            { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" },
+            { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" }
         ]
     };
     
@@ -71,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         moment.locale(lang);
+        // Traduire tous les textes statiques
         document.querySelectorAll('[data-translate]').forEach(el => {
             const key = el.dataset.translate;
             if (translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
@@ -79,12 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translatePlaceholder;
             if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
         });
-        // CORRECTION DU BUG ARABE : Recharger les données du tableau de bord si la vue est active
-        const studentDashboard = document.getElementById('student-dashboard-view');
-        if (studentDashboard.style.display === 'block') {
-            const studentName = document.getElementById('student-select').value;
+
+        // ================== CORRECTION DU BUG ARABE ==================
+        // Recharger le tableau de bord de l'élève pour mettre à jour les dates et les données
+        const studentDashboardView = document.getElementById('student-dashboard-view');
+        if (studentDashboardView.style.display === 'block') {
             const className = document.getElementById('class-select').value;
-            if (studentName && className) {
+            const studentName = document.getElementById('student-select').value;
+            if (className && studentName) {
                 loadStudentDashboard(className, studentName, currentDate);
             }
         }
@@ -92,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
 
+    // ... (le reste du code jusqu'à loadStudentDashboard reste identique)
     const views = document.querySelectorAll('.view');
     const homeView = document.getElementById('home-view');
     const goToParentBtn = document.getElementById('go-to-parent');
@@ -124,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
         const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
         const uploadStatus = teacherDashboardView.querySelector('#upload-status');
-
         datePicker.valueAsDate = moment().toDate();
         try {
             const response = await fetch('/api/initial-data');
@@ -137,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(error);
             teacherDashboardView.querySelector('#teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
         }
-        
         uploadExcelBtn.addEventListener('click', async () => {
             const file = excelFileInput.files[0];
             if (!file) {
@@ -147,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             uploadStatus.textContent = "Lecture du fichier en cours...";
             uploadStatus.className = '';
-            
             const reader = new FileReader();
             reader.onload = async (event) => {
                 try {
@@ -156,26 +156,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     const jsonPlan = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                    
                     const formattedPlan = formatPlanData(jsonPlan);
-                    
                     if (formattedPlan.length === 0) {
                         throw new Error("Aucune donnée valide trouvée. Vérifiez le format des dates (ex: 'lundi 29 septembre 2025').");
                     }
-
                     uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
-                    
                     const response = await fetch('/api/upload-plan', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formattedPlan)
                     });
-                    
                     if (!response.ok) {
                         const errorResult = await response.json();
                         throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
                     }
-                    
                     const result = await response.json();
                     uploadStatus.textContent = result.message;
                     uploadStatus.className = 'success';
@@ -188,12 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             reader.readAsArrayBuffer(file);
         });
-
         datePicker.addEventListener('change', renderTeacherView);
         teacherClassSelect.addEventListener('change', renderTeacherView);
         teacherNameSelect.addEventListener('change', renderTeacherView);
         teacherSubjectSelect.addEventListener('change', renderTeacherView);
-        
         renderTeacherView();
     }
 
@@ -207,26 +199,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
-        
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
         const dataRows = jsonPlan.slice(1);
         ["Enseignant", "Jour", "Classe", "Matière", "Devoirs"].forEach(header => {
             if (!headers.includes(header)) throw new Error(`Colonne manquante : "${header}"`);
         });
-
         return dataRows.map(row => {
             const rowData = {};
             headers.forEach((header, index) => { rowData[header] = row[index]; });
             let dateValue = rowData.Jour;
             let formattedDate = 'Invalid date';
-
             if (typeof dateValue === 'number') {
                 const date = moment('1899-12-30').add(dateValue, 'days');
                 formattedDate = date.format('YYYY-MM-DD');
             } else if (typeof dateValue === 'string') {
                 formattedDate = parseFrenchDate(dateValue);
             }
-            
             rowData.Jour = formattedDate;
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
@@ -240,25 +228,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
         const teacherTableContainer = teacherDashboardView.querySelector('#teacher-table-container');
         const teacherHomeworkList = teacherDashboardView.querySelector('#teacher-homework-list');
-        
         const selectedClass = teacherClassSelect.value;
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
         const selectedSubject = teacherSubjectSelect.value;
-
         if (!selectedClass || !selectedTeacher || !selectedSubject) {
             teacherHomeworkList.innerHTML = "";
             teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
             return;
         }
-
         try {
             const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
             if (!response.ok) throw new Error('Erreur de chargement des données');
             const data = await response.json();
-
             const filteredHomeworks = data.homeworks.filter(hw => hw.teacher === selectedTeacher && hw.subject === selectedSubject);
-
             teacherHomeworkList.innerHTML = "";
             if (filteredHomeworks.length > 0) {
                 filteredHomeworks.forEach(hw => {
@@ -266,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     p.innerHTML = `<strong>${hw.subject}:</strong> ${hw.assignment}`;
                     teacherHomeworkList.appendChild(p);
                 });
-
                 const students = (studentData[selectedClass.split(' ')[0]] || []).map(s => s.name);
                 let tableHTML = `<table class="teacher-evaluation-table"><thead><tr><th>${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th>${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th>${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th>${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th>${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
                 for (const student of students) {
@@ -292,12 +274,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedClass = teacherDashboardView.querySelector('#teacher-class-select').value;
         const selectedDate = moment(teacherDashboardView.querySelector('#date-picker').value).format('YYYY-MM-DD');
         const selectedSubject = teacherDashboardView.querySelector('#teacher-subject-select').value;
-
         if (!selectedSubject) {
             alert("Erreur : aucune matière sélectionnée.");
             return;
         }
-
         const evaluations = Array.from(teacherDashboardView.querySelectorAll('.teacher-evaluation-table tbody tr')).map(row => ({
             studentName: row.dataset.student,
             class: selectedClass,
@@ -385,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function loadStudentDashboard(className, studentName, date) {
+        // La traduction est maintenant gérée par setLanguage, on met juste les données ici
         document.getElementById('student-name-header').textContent = `${translations[document.documentElement.lang].studentDashboardTitle} ${studentName}`;
         document.getElementById('homework-date').textContent = `${translations[document.documentElement.lang].homeworkFor} ${date.format('dddd D MMMM YYYY')}`;
         const homeworkGrid = document.getElementById('homework-grid');
@@ -392,8 +373,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
-            document.querySelector('#student-dashboard-view .student-photo').src = student.photo;
-            document.querySelector('#student-dashboard-view .student-photo').alt = `Photo de ${studentName}`;
+            const studentPhotoElement = document.querySelector('#student-dashboard-view .student-photo');
+            studentPhotoElement.src = student.photo;
+            studentPhotoElement.alt = `Photo de ${studentName}`;
         }
 
         try {
@@ -425,6 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur lors du chargement du tableau de bord élève:", error);
             homeworkGrid.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; 
         }
+        // Appeler setLanguage à la fin garantit que tout le contenu dynamique est aussi traduit
         setLanguage(document.documentElement.lang);
     }
 
