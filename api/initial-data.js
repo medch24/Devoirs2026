@@ -8,12 +8,11 @@ module.exports = async (req, res) => {
         const db = client.db('test');
         const collection = db.collection('plans');
         
-        // CORRECTION : Renvoyer toutes les données du planning
-        // Cela permet au front-end de construire les filtres dynamiques.
+        // Renvoyer toutes les données du planning pour construire les filtres
         const planData = await collection.find({}).toArray();
         
-        // On extrait aussi les listes uniques pour le remplissage initial
-        const teachers = [...new Set(planData.map(item => item.Enseignant))].sort();
+        // Extraire la liste unique des enseignants
+        const teachers = [...new Set(planData.map(item => item.Enseignant).filter(Boolean))].sort();
         
         res.status(200).json({ teachers, planData });
     } catch (error) {
