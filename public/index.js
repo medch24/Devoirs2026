@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translatePlaceholder;
             if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
         });
+        
         const studentDashboardView = document.getElementById('student-dashboard-view');
         if (studentDashboardView.style.display === 'block') {
             const className = document.getElementById('class-select').value;
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadStudentDashboard(className, studentName, currentDate);
             }
         }
+        
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         if (teacherDashboardView.style.display === 'block') {
             renderTeacherView();
@@ -306,15 +308,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function loadStudentDashboard(className, studentName, date) {
+        const currentLang = document.documentElement.lang;
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const studentPhotoElement = studentDashboardView.querySelector('.student-photo');
         const studentNameHeader = studentDashboardView.querySelector('#student-name-header');
         const homeworkDateElement = studentDashboardView.querySelector('#homework-date');
         const homeworkGrid = studentDashboardView.querySelector('#homework-grid');
-        const currentLang = document.documentElement.lang;
+        
         studentNameHeader.textContent = `${translations[currentLang].studentDashboardTitle} ${studentName}`;
-        homeworkDateElement.textContent = `${translations[currentLang].homeworkFor} ${date.format('dddd D MMMM YYYY')}`;
+        homeworkDateElement.textContent = `${translations[currentLang].homeworkFor} ${date.clone().locale(currentLang).format('dddd D MMMM YYYY')}`;
         homeworkGrid.innerHTML = `<p>${translations[currentLang].loading}</p>`;
+        
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
             studentPhotoElement.src = student.photo;
