@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translatePlaceholder;
             if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
         });
+        
         const studentDashboardView = document.getElementById('student-dashboard-view');
         if (studentDashboardView.style.display === 'block') {
             const className = document.getElementById('class-select').value;
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadStudentDashboard(className, studentName, currentDate);
             }
         }
+        
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         if (teacherDashboardView.style.display === 'block') {
             renderTeacherView();
@@ -66,9 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function setupTeacherDashboard() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
-        const teacherClassSelect = teacherDashboardView.querySelector('#teacher-class-select');
         const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
-        const teacherSubjectSelect = teacherDashboardView.querySelector('#teacher-subject-select');
         const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
         const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
         datePicker.valueAsDate = moment().toDate();
@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
         teacherNameSelect.addEventListener('change', updateClassOptions);
-        teacherClassSelect.addEventListener('change', updateSubjectOptions);
-        datePicker.addEventListener('change', renderTeacherView);
-        teacherSubjectSelect.addEventListener('change', renderTeacherView);
+        teacherDashboardView.querySelector('#teacher-class-select').addEventListener('change', updateSubjectOptions);
+        teacherDashboardView.querySelector('#date-picker').addEventListener('change', renderTeacherView);
+        teacherDashboardView.querySelector('#teacher-subject-select').addEventListener('change', renderTeacherView);
         updateClassOptions();
     }
 
@@ -323,11 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
             studentPhotoElement.alt = `Photo de ${studentName}`;
         }
         try {
-            // ================== CORRECTION FINALE DU BUG ARABE ==================
-            // Toujours cloner la date et la formater en locale 'en' pour l'API
             const dateQuery = date.clone().locale('en').format('YYYY-MM-DD');
             const response = await fetch(`/api/evaluations?class=${className}&student=${studentName}&date=${dateQuery}&week=true`);
-            
             if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
             const data = await response.json();
             homeworkGrid.innerHTML = "";
