@@ -12,11 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const translations = {
         fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectLabel: "Choisissez une classe :", studentSelectLabel: "Choisissez votre enfant :", selectDefault: "-- Sélectionnez --", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale de la semaine", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning hebdomadaire", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui." },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectLabel: "اختر القسم:", studentSelectLabel: "اختر ابنك:", selectDefault: "-- اختر --", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام",
-            // ================== CORRECTION DE LA TRADUCTION ==================
-            previousDay: "اليوم السابق", 
-            nextDay: "اليوم التالي", 
-            homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم." }
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectLabel: "اختر القسم:", studentSelectLabel: "اختر ابنك:", selectDefault: "-- اختر --", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم." }
     };
 
     const setLanguage = (lang) => {
@@ -327,8 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
             studentPhotoElement.alt = `Photo de ${studentName}`;
         }
         try {
-            const dateQuery = date.format('YYYY-MM-DD'); // Toujours envoyer en format universel
+            // ================== CORRECTION FINALE DU BUG ARABE ==================
+            // Toujours cloner la date et la formater en locale 'en' pour l'API
+            const dateQuery = date.clone().locale('en').format('YYYY-MM-DD');
             const response = await fetch(`/api/evaluations?class=${className}&student=${studentName}&date=${dateQuery}&week=true`);
+            
             if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
             const data = await response.json();
             homeworkGrid.innerHTML = "";
