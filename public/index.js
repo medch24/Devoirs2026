@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const translations = {
-        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectLabel: "Choisissez une classe :", studentSelectLabel: "Choisissez votre enfant :", selectDefault: "-- Sélectionnez --", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale de la semaine", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning hebdomadaire", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui." },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectLabel: "اختر القسم:", studentSelectLabel: "اختر ابنك:", selectDefault: "-- اختر --", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم." }
+        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectLabel: "Choisissez une classe :", studentSelectLabel: "Choisissez votre enfant :", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", selectDefault: "-- Sélectionnez --", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale de la semaine", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning hebdomadaire", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui." },
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectLabel: "اختر القسم:", studentSelectLabel: "اختر ابنك:", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", selectDefault: "-- اختر --", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم." }
     };
 
     const setLanguage = (lang) => {
@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const studentDashboardView = document.getElementById('student-dashboard-view');
         if (studentDashboardView.style.display === 'block') {
-            const className = document.getElementById('class-select').value;
-            const studentName = document.getElementById('student-select').value;
+            const studentName = studentDashboardView.dataset.studentName;
+            const className = studentDashboardView.dataset.className;
             if (className && studentName) {
                 loadStudentDashboard(className, studentName, currentDate);
             }
@@ -52,7 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const backButtons = document.querySelectorAll('.back-button');
     const showView = (viewId) => { homeView.style.display = 'none'; views.forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; };
     const goHome = () => { homeView.style.display = 'block'; views.forEach(v => v.style.display = 'none'); };
-    goToParentBtn.addEventListener('click', () => { populateClassSelect('class-select'); showView('parent-selection-view'); });
+
+    goToParentBtn.addEventListener('click', () => {
+        populateClassButtons();
+        showView('parent-selection-view');
+    });
     goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
     document.getElementById('teacher-login-form').addEventListener('submit', (e) => {
@@ -65,6 +69,66 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError; }
     });
 
+    // NOUVELLE LOGIQUE POUR L'ESPACE PARENT
+    function populateClassButtons() {
+        const container = document.getElementById('class-buttons-container');
+        const studentGrid = document.getElementById('student-grid-container');
+        const studentTitle = document.getElementById('student-selection-title');
+        
+        container.innerHTML = '';
+        studentGrid.innerHTML = '';
+        studentTitle.style.display = 'none';
+
+        Object.keys(studentData).forEach(className => {
+            const button = document.createElement('button');
+            button.className = 'class-button';
+            button.textContent = className;
+            button.dataset.className = className;
+            button.addEventListener('click', (e) => {
+                // Gérer le style du bouton actif
+                container.querySelectorAll('.class-button').forEach(btn => btn.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                displayStudentGrid(className);
+            });
+            container.appendChild(button);
+        });
+    }
+
+    function displayStudentGrid(className) {
+        const gridContainer = document.getElementById('student-grid-container');
+        const studentTitle = document.getElementById('student-selection-title');
+        gridContainer.innerHTML = '';
+        studentTitle.style.display = 'block';
+
+        const students = studentData[className];
+        if (!students) return;
+
+        students.forEach(student => {
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            card.innerHTML = `<img src="${student.photo}" alt="Photo de ${student.name}"><p>${student.name}</p>`;
+            card.addEventListener('click', () => {
+                currentDate = moment();
+                loadStudentDashboard(className, student.name, currentDate);
+                showView('student-dashboard-view');
+            });
+            gridContainer.appendChild(card);
+        });
+    }
+
+    async function setupTeacherDashboard() { /* ... */ }
+    function updateClassOptions() { /* ... */ }
+    function updateSubjectOptions() { /* ... */ }
+    async function handleFileUpload(excelFileInput) { /* ... */ }
+    function parseFrenchDate(dateString) { /* ... */ }
+    function formatPlanData(jsonPlan) { /* ... */ }
+    async function renderTeacherView() { /* ... */ }
+    async function submitTeacherEvaluations() { /* ... */ }
+    function populateDynamicSelect(selectId, dataArray) { /* ... */ }
+    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
+    function updateWeeklyStats(weeklyEvals) { /* ... */ }
+
+    // ================== REMPLISSAGE DES FONCTIONS ==================
     async function setupTeacherDashboard() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
@@ -80,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             populateDynamicSelect('teacher-name-select', initialData.teachers);
         } catch (error) {
             console.error(error);
-            teacherDashboardView.querySelector('#teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}. Veuillez mettre à jour le planning.</p>`;
+            teacherDashboardView.querySelector('#teacher-table-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
         teacherNameSelect.addEventListener('change', updateClassOptions);
@@ -89,33 +153,25 @@ document.addEventListener('DOMContentLoaded', () => {
         teacherDashboardView.querySelector('#teacher-subject-select').addEventListener('change', renderTeacherView);
         updateClassOptions();
     }
-
+    
     function updateClassOptions() {
         const teacherNameSelect = document.getElementById('teacher-name-select');
         const selectedTeacher = teacherNameSelect.value;
-        const classesForTeacher = [...new Set(
-            teacherPlanData
-            .filter(item => item.Enseignant === selectedTeacher)
-            .map(item => item.Classe)
-        )].sort();
+        const classesForTeacher = [...new Set(teacherPlanData.filter(item => item.Enseignant === selectedTeacher).map(item => item.Classe))].sort();
         populateDynamicSelect('teacher-class-select', classesForTeacher);
         updateSubjectOptions();
     }
-
+    
     function updateSubjectOptions() {
         const teacherNameSelect = document.getElementById('teacher-name-select');
         const teacherClassSelect = document.getElementById('teacher-class-select');
         const selectedTeacher = teacherNameSelect.value;
         const selectedClass = teacherClassSelect.value;
-        const subjectsForTeacherAndClass = [...new Set(
-            teacherPlanData
-            .filter(item => item.Enseignant === selectedTeacher && item.Classe === selectedClass)
-            .map(item => item.Matière)
-        )].sort();
+        const subjectsForTeacherAndClass = [...new Set(teacherPlanData.filter(item => item.Enseignant === selectedTeacher && item.Classe === selectedClass).map(item => item.Matière))].sort();
         populateDynamicSelect('teacher-subject-select', subjectsForTeacherAndClass);
         renderTeacherView();
     }
-
+    
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -149,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
-
+    
     function parseFrenchDate(dateString) {
         const cleanString = dateString.toLowerCase().trim();
         moment.locale('fr');
@@ -157,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
-
+    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -180,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-
+    
     async function renderTeacherView() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
@@ -193,13 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
         const selectedSubject = teacherSubjectSelect.value;
-
         if (!selectedClass || !selectedTeacher || !selectedSubject) {
             teacherHomeworkList.innerHTML = "";
             teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
             return;
         }
-
         try {
             const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
             if (!response.ok) throw new Error('Erreur de chargement des données');
@@ -223,10 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
                 teacherTableContainer.innerHTML = "";
             }
-        } catch (error) { 
-            console.error("Erreur:", error);
-            teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; 
-        }
+        } catch (error) { console.error("Erreur:", error); teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; }
     }
     
     async function submitTeacherEvaluations() {
@@ -244,23 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/evaluations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evaluations }) });
             if (!response.ok) throw new Error(`Erreur lors de l'enregistrement (statut ${response.status})`);
             alert("Évaluations enregistrées !");
-        } catch (error) { 
-            console.error("Erreur:", error); alert("Une erreur est survenue."); 
-        }
+        } catch (error) { console.error("Erreur:", error); alert("Une erreur est survenue."); }
     }
-
-    const classSelect = document.getElementById('class-select');
-    const studentSelect = document.getElementById('student-select');
-
-    function populateClassSelect(selectId) {
-        const selectElement = document.getElementById(selectId);
-        selectElement.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        Object.keys(studentData).forEach(className => {
-            const option = document.createElement('option');
-            option.value = className; option.textContent = className; selectElement.appendChild(option);
-        });
-    }
-
+    
     function populateDynamicSelect(selectId, dataArray) {
         const selectElement = document.getElementById(selectId);
         const currentVal = selectElement.value;
@@ -271,52 +308,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (dataArray.includes(currentVal)) { selectElement.value = currentVal; }
     }
-
-    classSelect.addEventListener('change', () => {
-        const selectedClass = classSelect.value;
-        const studentSelectorBox = document.getElementById('student-selector-box');
-        studentSelect.innerHTML = `<option value="">${translations[document.documentElement.lang].selectDefault}</option>`;
-        if (selectedClass && studentData[selectedClass]) {
-            studentData[selectedClass].forEach(student => {
-                const option = document.createElement('option');
-                option.value = student.name; option.textContent = student.name; studentSelect.appendChild(option);
-            });
-            studentSelectorBox.style.display = 'block';
-        } else { studentSelectorBox.style.display = 'none'; }
-    });
-
-    studentSelect.addEventListener('change', async () => {
-        const studentName = studentSelect.value;
-        const className = classSelect.value;
-        if (studentName && className) {
-            currentDate = moment();
-            await loadStudentDashboard(className, studentName, currentDate);
-            showView('student-dashboard-view');
-        }
-    });
-
-    document.getElementById('prev-day-btn').addEventListener('click', () => { 
-        currentDate.subtract(1, 'days'); 
-        loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
-    });
-
-    document.getElementById('next-day-btn').addEventListener('click', () => { 
-        currentDate.add(1, 'days'); 
-        loadStudentDashboard(classSelect.value, studentSelect.value, currentDate); 
-    });
-
+    
     async function loadStudentDashboard(className, studentName, date) {
-        const currentLang = document.documentElement.lang;
         const studentDashboardView = document.getElementById('student-dashboard-view');
+        studentDashboardView.dataset.className = className;
+        studentDashboardView.dataset.studentName = studentName;
+        const currentLang = document.documentElement.lang;
         const studentPhotoElement = studentDashboardView.querySelector('.student-photo');
         const studentNameHeader = studentDashboardView.querySelector('#student-name-header');
         const homeworkDateElement = studentDashboardView.querySelector('#homework-date');
         const homeworkGrid = studentDashboardView.querySelector('#homework-grid');
-        
         studentNameHeader.textContent = `${translations[currentLang].studentDashboardTitle} ${studentName}`;
         homeworkDateElement.textContent = `${translations[currentLang].homeworkFor} ${date.clone().locale(currentLang).format('dddd D MMMM YYYY')}`;
         homeworkGrid.innerHTML = `<p>${translations[currentLang].loading}</p>`;
-        
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
             studentPhotoElement.src = student.photo;
@@ -382,7 +386,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
-        document.getElementById('overall-progress-bar').style.width = `${percentage}%`;
+        const progressBar = document.getElementById('overall-progress-bar');
+        progressBar.style.width = `${percentage}%`;
+        progressBar.classList.remove('red', 'orange', 'green');
+        if (percentage < 45) {
+            progressBar.classList.add('red');
+        } else if (percentage <= 60) {
+            progressBar.classList.add('orange');
+        } else {
+            progressBar.classList.add('green');
+        }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
 
