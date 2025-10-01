@@ -56,7 +56,6 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .stat-title { font-size: 1.1rem; color: #555; text-align: center; margin: 0 0 10px 0; }
 .progress-bar-container { width: 100%; background: #e9ecef; border-radius: 20px; position: relative; height: 35px; overflow: hidden; }
 .progress-bar { height: 100%; border-radius: 20px; transition: width 0.5s ease-out, background-color 0.5s ease; }
-/* NOUVEAU : Couleurs de la barre de progression */
 .progress-bar.green { background: linear-gradient(90deg, #28a745, #218838); }
 .progress-bar.orange { background: linear-gradient(90deg, #fd7e14, #e67e22); }
 .progress-bar.red { background: linear-gradient(90deg, #dc3545, #c82333); }
@@ -88,15 +87,9 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .status-lamp.partiellement-fait { background-color: var(--orange-status); }
 .status-lamp.absent { background-color: var(--grey-status); }
 .upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
-.upload-section h3 { margin: 0 0 15px 0; color: var(--primary-color); }
 #upload-status { font-weight: 600; margin-top: 15px; }
 #upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
-.teacher-controls { display: flex; flex-wrap: wrap; gap: 15px; padding: 0 25px 25px 25px; }
-.teacher-controls select, .teacher-controls input { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; flex-grow: 1; min-width: 150px; }
 .section-title { padding: 0 25px; margin: 20px 0 10px 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; font-size: 1.3rem; }
-.teacher-homework-display { padding: 15px 25px; background: #fafafa; min-height: 50px; }
-.teacher-homework-display p { margin: 5px 0; }
-#teacher-table-container { padding: 25px; overflow-x: auto; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
 .teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
 .teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
@@ -105,8 +98,6 @@ header h1 { margin: 0; font-size: 1.8rem; }
 select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
 button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
 .error-message { color: var(--red-status); font-weight: bold; text-align: center; }
-
-/* NOUVEAU : Styles pour le flux de sélection des parents */
 .parent-flow-main { padding: 25px; }
 .class-buttons-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 30px; }
 .class-button {
@@ -114,25 +105,38 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     cursor: pointer; background-color: #fff; color: var(--accent-color);
     border-radius: 30px; font-weight: 600; transition: all 0.2s;
 }
-.class-button:hover, .class-button.active {
-    background-color: var(--accent-color); color: white;
-}
-.student-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px; padding: 10px;
-}
-.student-card {
-    text-align: center; cursor: pointer; border-radius: 12px;
-    padding: 10px; transition: background-color 0.2s, transform 0.2s;
-}
+.class-button:hover, .class-button.active { background-color: var(--accent-color); color: white; }
+.student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; padding: 10px; }
+.student-card { text-align: center; cursor: pointer; border-radius: 12px; padding: 10px; transition: background-color 0.2s, transform 0.2s; }
 .student-card:hover { background-color: #f1f1f1; transform: translateY(-5px); }
-.student-card img {
-    width: 100px; height: 100px; border-radius: 50%;
-    object-fit: cover; border: 3px solid var(--border-color);
+.student-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-color); }
+.student-card p { margin-top: 10px; font-weight: 600; color: var(--text-color); }
+
+/* NOUVEAU : Styles pour la vue enseignant */
+.teacher-main-content { padding: 25px; }
+.teacher-selection { margin-bottom: 30px; }
+.teacher-selection label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--primary-color); }
+.teacher-selection select { width: 100%; max-width: 400px; margin: auto; display: block; }
+.homework-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
-.student-card p {
-    margin-top: 10px; font-weight: 600; color: var(--text-color);
+.homework-card {
+    border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 15px; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+.homework-card:hover, .homework-card.active {
+    border-color: var(--accent-color);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 119, 255, 0.1);
+}
+.homework-card h4 { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary-color); }
+.homework-card p { margin: 4px 0; color: #555; }
+.homework-card span { font-weight: 600; }
+#teacher-evaluation-section { margin-top: 30px; }
 
 @media (max-width: 600px) {
     body { padding: 0; }
