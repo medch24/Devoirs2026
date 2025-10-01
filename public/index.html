@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
     <title data-translate="portalTitle">Portail de Suivi des Devoirs</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,18 +47,16 @@
                 <div class="upload-section"><h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div>
                 
                 <div class="teacher-main-content">
-                    <div class="teacher-selection">
-                        <label for="teacher-name-select" data-translate="teacherSelectLabel">👤 Choisissez votre nom :</label>
-                        <select id="teacher-name-select"><option value="">-- Enseignant --</option></select>
+                    <h2 class="section-title" data-translate="teacherSelectTitle">1. Choisissez votre nom</h2>
+                    <div id="teacher-icons-container" class="teacher-icons-container">
+                        <!-- Les icônes des enseignants seront générées ici -->
                     </div>
 
-                    <h3 class="section-title" id="homework-cards-title" style="display: none;">📝 <span data-translate="homeworkToEvaluate">Devoirs à évaluer</span></h3>
-                    <div id="homework-cards-container" class="homework-cards-container">
-                        <!-- Les cartes de devoirs seront générées ici -->
-                    </div>
+                    <h2 class="section-title" id="homework-cards-title" style="display: none;">2. <span data-translate="homeworkToEvaluate">Choisissez un devoir à évaluer</span></h2>
+                    <div id="homework-cards-container" class="homework-cards-container"></div>
 
                     <div id="teacher-evaluation-section" style="display: none;">
-                        <h3 class="section-title">📊 <span data-translate="studentEvaluationTitle">Évaluation des élèves</span></h3>
+                        <h2 class="section-title">3. <span data-translate="studentEvaluationTitle">Évaluez les élèves</span></h2>
                         <div id="teacher-table-container"></div>
                     </div>
                 </div>
