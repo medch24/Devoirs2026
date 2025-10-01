@@ -27,16 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translatePlaceholder;
             if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
         });
-        
         const studentDashboardView = document.getElementById('student-dashboard-view');
         if (studentDashboardView.style.display === 'block') {
-            const studentName = studentDashboardView.dataset.studentName;
             const className = studentDashboardView.dataset.className;
+            const studentName = studentDashboardView.dataset.studentName;
             if (className && studentName) {
                 loadStudentDashboard(className, studentName, currentDate);
             }
         }
-        
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         if (teacherDashboardView.style.display === 'block') {
             renderTeacherView();
@@ -69,23 +67,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError; }
     });
 
-    // NOUVELLE LOGIQUE POUR L'ESPACE PARENT
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
-        
         container.innerHTML = '';
         studentGrid.innerHTML = '';
         studentTitle.style.display = 'none';
-
         Object.keys(studentData).forEach(className => {
             const button = document.createElement('button');
             button.className = 'class-button';
             button.textContent = className;
             button.dataset.className = className;
             button.addEventListener('click', (e) => {
-                // Gérer le style du bouton actif
                 container.querySelectorAll('.class-button').forEach(btn => btn.classList.remove('active'));
                 e.currentTarget.classList.add('active');
                 displayStudentGrid(className);
@@ -99,10 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const studentTitle = document.getElementById('student-selection-title');
         gridContainer.innerHTML = '';
         studentTitle.style.display = 'block';
-
         const students = studentData[className];
         if (!students) return;
-
         students.forEach(student => {
             const card = document.createElement('div');
             card.className = 'student-card';
@@ -116,19 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function setupTeacherDashboard() { /* ... */ }
-    function updateClassOptions() { /* ... */ }
-    function updateSubjectOptions() { /* ... */ }
-    async function handleFileUpload(excelFileInput) { /* ... */ }
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-    async function renderTeacherView() { /* ... */ }
-    async function submitTeacherEvaluations() { /* ... */ }
-    function populateDynamicSelect(selectId, dataArray) { /* ... */ }
-    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
-    function updateWeeklyStats(weeklyEvals) { /* ... */ }
-
-    // ================== REMPLISSAGE DES FONCTIONS ==================
     async function setupTeacherDashboard() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const datePicker = teacherDashboardView.querySelector('#date-picker');
@@ -249,11 +228,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedDate = moment(datePicker.value).format('YYYY-MM-DD');
         const selectedTeacher = teacherNameSelect.value;
         const selectedSubject = teacherSubjectSelect.value;
+
         if (!selectedClass || !selectedTeacher || !selectedSubject) {
             teacherHomeworkList.innerHTML = "";
             teacherTableContainer.innerHTML = `<p>${translations[document.documentElement.lang].selectClassPrompt}</p>`;
             return;
         }
+
         try {
             const response = await fetch(`/api/evaluations?class=${selectedClass}&date=${selectedDate}`);
             if (!response.ok) throw new Error('Erreur de chargement des données');
@@ -277,7 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 teacherHomeworkList.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForSubject}</p>`;
                 teacherTableContainer.innerHTML = "";
             }
-        } catch (error) { console.error("Erreur:", error); teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; }
+        } catch (error) { 
+            console.error("Erreur:", error);
+            teacherTableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`; 
+        }
     }
     
     async function submitTeacherEvaluations() {
@@ -295,7 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/evaluations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evaluations }) });
             if (!response.ok) throw new Error(`Erreur lors de l'enregistrement (statut ${response.status})`);
             alert("Évaluations enregistrées !");
-        } catch (error) { console.error("Erreur:", error); alert("Une erreur est survenue."); }
+        } catch (error) { 
+            console.error("Erreur:", error); alert("Une erreur est survenue."); 
+        }
     }
     
     function populateDynamicSelect(selectId, dataArray) {
@@ -309,18 +295,42 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dataArray.includes(currentVal)) { selectElement.value = currentVal; }
     }
     
+    // ================== CORRECTION FINALE DES BOUTONS DE NAVIGATION ==================
+    document.getElementById('prev-day-btn').addEventListener('click', () => { 
+        const studentDashboardView = document.getElementById('student-dashboard-view');
+        const className = studentDashboardView.dataset.className;
+        const studentName = studentDashboardView.dataset.studentName;
+        if (className && studentName) {
+            currentDate.subtract(1, 'days'); 
+            loadStudentDashboard(className, studentName, currentDate); 
+        }
+    });
+
+    document.getElementById('next-day-btn').addEventListener('click', () => { 
+        const studentDashboardView = document.getElementById('student-dashboard-view');
+        const className = studentDashboardView.dataset.className;
+        const studentName = studentDashboardView.dataset.studentName;
+        if (className && studentName) {
+            currentDate.add(1, 'days'); 
+            loadStudentDashboard(className, studentName, currentDate); 
+        }
+    });
+
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
         studentDashboardView.dataset.studentName = studentName;
+
         const currentLang = document.documentElement.lang;
         const studentPhotoElement = studentDashboardView.querySelector('.student-photo');
         const studentNameHeader = studentDashboardView.querySelector('#student-name-header');
         const homeworkDateElement = studentDashboardView.querySelector('#homework-date');
         const homeworkGrid = studentDashboardView.querySelector('#homework-grid');
+        
         studentNameHeader.textContent = `${translations[currentLang].studentDashboardTitle} ${studentName}`;
         homeworkDateElement.textContent = `${translations[currentLang].homeworkFor} ${date.clone().locale(currentLang).format('dddd D MMMM YYYY')}`;
         homeworkGrid.innerHTML = `<p>${translations[currentLang].loading}</p>`;
+        
         const student = (studentData[className] || []).find(s => s.name === studentName);
         if (student) {
             studentPhotoElement.src = student.photo;
