@@ -32,10 +32,23 @@
             </main>
         </div>
 
-        <!-- Vue Espace Parent - Sélection -->
+        <!-- Vue Espace Parent - Sélection (NOUVELLE STRUCTURE) -->
         <div id="parent-selection-view" class="view" style="display: none;">
-            <header><button class="back-button">&larr;</button><h1 data-translate="parentSpace">Espace Parent</h1></header>
-            <main><div class="selection-box"><label for="class-select" data-translate="classSelectLabel">Choisissez une classe :</label><select id="class-select"></select></div><div class="selection-box" id="student-selector-box" style="display:none;"><label for="student-select" data-translate="studentSelectLabel">Choisissez votre enfant :</label><select id="student-select"></select></div></main>
+            <header>
+                <button class="back-button">&larr;</button>
+                <h1 data-translate="parentSpace">Espace Parent</h1>
+            </header>
+            <main class="parent-flow-main">
+                <h2 class="section-title" data-translate="classSelectionTitle">1. Choisissez une classe</h2>
+                <div id="class-buttons-container" class="class-buttons-container">
+                    <!-- Les boutons de classe seront générés ici par JavaScript -->
+                </div>
+                
+                <h2 class="section-title" id="student-selection-title" data-translate="studentSelectionTitle" style="display: none;">2. Choisissez votre enfant</h2>
+                <div id="student-grid-container" class="student-grid">
+                    <!-- La grille des élèves sera générée ici par JavaScript -->
+                </div>
+            </main>
         </div>
         
         <!-- Vue Espace Enseignant - Connexion -->
@@ -47,13 +60,26 @@
         <!-- Vue Tableau de Bord de l'Élève -->
         <div id="student-dashboard-view" class="view" style="display: none;">
             <header><button class="back-button">&larr;</button><h1 id="student-name-header"></h1></header>
-            <main><div class="profile-summary"><div class="student-info"><img src="" alt="Photo élève" class="student-photo"><div class="star-rating" id="star-rating"></div><div class="student-of-week" id="student-of-week-banner" data-translate="studentOfTheWeek">Élève de la semaine</div></div><div class="weekly-stats"><div class="stat-item"><p data-translate="overallWeeklyProgress">Progression générale de la semaine</p><div class="progress-bar-container"><div class="progress-bar" id="overall-progress-bar"></div><span id="overall-progress-text">0%</span></div></div></div></div><div class="dashboard-nav"><button id="prev-day-btn" class="nav-arrow">&larr; <span data-translate="previousDay">Jour Précédent</span></button><h2 id="homework-date"></h2><button id="next-day-btn" class="nav-arrow"><span data-translate="nextDay">Jour Suivant</span> &rarr;</button></div><div class="homework-grid" id="homework-grid"></div></main>
+            <main>
+                <div class="profile-summary">
+                    <div class="student-info"><img src="" alt="Photo élève" class="student-photo"><div class="star-rating" id="star-rating"></div><div class="student-of-week" id="student-of-week-banner" data-translate="studentOfTheWeek">Élève de la semaine</div></div>
+                    <div class="weekly-stats"><h3 class="stat-title">📈 <span data-translate="overallWeeklyProgress">Progression générale</span></h3><div class="progress-bar-container"><div class="progress-bar" id="overall-progress-bar"></div><span id="overall-progress-text">0%</span></div></div>
+                </div>
+                <div class="dashboard-nav"><button id="prev-day-btn" class="nav-arrow">&larr; <span data-translate="previousDay">Jour Précédent</span></button><h2 id="homework-date"></h2><button id="next-day-btn" class="nav-arrow"><span data-translate="nextDay">Jour Suivant</span> &rarr;</button></div>
+                <div class="homework-grid" id="homework-grid"></div>
+            </main>
         </div>
         
         <!-- Vue Tableau de Bord Enseignant -->
         <div id="teacher-dashboard-view" class="view" style="display: none;">
             <header><button class="back-button">&larr;</button><h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1></header>
-            <main><div class="upload-section"><h3 data-translate="updateSchedule">Mettre à jour le planning hebdomadaire</h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div><div class="teacher-controls"><select id="teacher-name-select"><option value="">-- Enseignant --</option></select><select id="teacher-class-select"><option value="">-- Classe --</option></select><select id="teacher-subject-select"><option value="">-- Matière --</option></select><input type="date" id="date-picker"></div><h3 class="section-title" data-translate="homeworkForDay">Devoirs du jour sélectionné :</h3><div class="teacher-homework-display" id="teacher-homework-list"></div><div id="teacher-table-container"></div></main>
+            <main>
+                <div class="upload-section"><h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div>
+                <div class="teacher-controls"><select id="teacher-name-select"><option value="">-- Enseignant --</option></select><select id="teacher-class-select"><option value="">-- Classe --</option></select><select id="teacher-subject-select"><option value="">-- Matière --</option></select><input type="date" id="date-picker"></div>
+                <h3 class="section-title">📚 <span data-translate="homeworkForDay">Devoirs du jour</span></h3>
+                <div class="teacher-homework-display" id="teacher-homework-list"></div>
+                <div id="teacher-table-container"></div>
+            </main>
         </div>
     </div>
     <script src="index.js"></script>
