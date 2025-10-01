@@ -89,13 +89,13 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
 #upload-status { font-weight: 600; margin-top: 15px; }
 #upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
-.section-title { padding: 0 25px; margin: 20px 0 10px 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; font-size: 1.3rem; }
+.section-title { padding: 0 25px; margin: 20px 0 15px 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; font-size: 1.3rem; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
 .teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
 .teacher-evaluation-table thead { background-color: var(--primary-color); color: white; }
 .teacher-evaluation-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
 .teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-select, input[type="text"], input[type="password"], input[type="date"], button[type="submit"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
+select, input[type="text"], input[type="password"], input[type="date"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
 button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
 .error-message { color: var(--red-status); font-weight: bold; text-align: center; }
 .parent-flow-main { padding: 25px; }
@@ -114,25 +114,19 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 
 /* NOUVEAU : Styles pour la vue enseignant */
 .teacher-main-content { padding: 25px; }
-.teacher-selection { margin-bottom: 30px; }
-.teacher-selection label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--primary-color); }
-.teacher-selection select { width: 100%; max-width: 400px; margin: auto; display: block; }
-.homework-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-.homework-card {
-    border: 1px solid var(--border-color); border-radius: 12px;
-    padding: 15px; cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.homework-card:hover, .homework-card.active {
-    border-color: var(--accent-color);
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 119, 255, 0.1);
-}
+.teacher-icons-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 30px; }
+.teacher-icon-card { text-align: center; cursor: pointer; padding: 10px; border-radius: 12px; transition: all 0.2s; }
+.teacher-icon-card:hover { background-color: #f1f1f1; }
+.teacher-icon-card.active { background-color: var(--accent-color); color: white; }
+.teacher-icon { width: 80px; height: 80px; border-radius: 50%; background-color: var(--secondary-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 3px solid transparent; }
+.teacher-icon-card.active .teacher-icon { border-color: white; }
+.teacher-icon-card p { font-weight: 600; margin: 0; }
+.homework-cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+.homework-card { border: 2px solid var(--border-color); border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.homework-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0, 119, 255, 0.1); }
+.homework-card.active { border-color: var(--accent-color); background-color: #f4f8fa; }
+/* NOUVEAU : Style pour l'indicateur "évalué" */
+.homework-card.evaluated { border-left: 5px solid var(--green-status); }
 .homework-card h4 { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary-color); }
 .homework-card p { margin: 4px 0; color: #555; }
 .homework-card span { font-weight: 600; }
