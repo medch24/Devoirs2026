@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const translations = {
-        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale de la semaine", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning hebdomadaire", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour sélectionné :", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectLabel: "👤 Choisissez votre nom :", homeworkToEvaluate: "Devoirs à évaluer", studentEvaluationTitle: "Évaluation des élèves" },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم الأسبوعي العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول الأسبوعي", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم المحدد:", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectLabel: "👤 اختر اسمك:", homeworkToEvaluate: "واجبات للتقييم", studentEvaluationTitle: "تقييم التلاميذ" }
+        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "Choisissez un devoir à évaluer", studentEvaluationTitle: "Évaluez les élèves" },
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "اختر واجباً لتقييمه", studentEvaluationTitle: "تقييم التلاميذ" }
     };
 
     const setLanguage = (lang) => {
@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function setupTeacherDashboard() {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
-        const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
         const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
         const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
         try {
@@ -115,41 +114,70 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Impossible de charger les listes.');
             const initialData = await response.json();
             teacherPlanData = initialData.planData;
-            populateDynamicSelect('teacher-name-select', initialData.teachers);
+            populateTeacherIcons(initialData.teachers);
         } catch (error) {
             console.error(error);
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
-        teacherNameSelect.addEventListener('change', displayHomeworkCards);
     }
 
-    function displayHomeworkCards() {
+    function populateTeacherIcons(teachers) {
+        const iconsContainer = document.getElementById('teacher-icons-container');
+        iconsContainer.innerHTML = '';
+        teachers.forEach(teacherName => {
+            const card = document.createElement('div');
+            card.className = 'teacher-icon-card';
+            card.dataset.teacherName = teacherName;
+            card.innerHTML = `
+                <div class="teacher-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                    </svg>
+                </div>
+                <p>${teacherName}</p>`;
+            card.addEventListener('click', () => {
+                iconsContainer.querySelectorAll('.teacher-icon-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                displayHomeworkCards(teacherName);
+            });
+            iconsContainer.appendChild(card);
+        });
+    }
+
+    async function displayHomeworkCards(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
-        const teacherNameSelect = teacherDashboardView.querySelector('#teacher-name-select');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
         const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
         const evaluationSection = teacherDashboardView.querySelector('#teacher-evaluation-section');
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
-
-        const selectedTeacher = teacherNameSelect.value;
-        if (!selectedTeacher) {
-            cardsTitle.style.display = 'none';
-            return;
-        }
-
         cardsTitle.style.display = 'block';
-        const homeworks = teacherPlanData.filter(item => item.Enseignant === selectedTeacher && item.Devoirs && item.Jour);
-        
+
+        const homeworks = teacherPlanData.filter(item => item.Enseignant === teacherName && item.Devoirs && item.Jour);
         if (homeworks.length === 0) {
             cardsContainer.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForDay}</p>`;
             return;
         }
-        
+
+        // Pour l'indicateur vert, nous devons récupérer toutes les évaluations une seule fois
+        const allDates = [...new Set(homeworks.map(hw => hw.Jour))];
+        const allClassNames = [...new Set(homeworks.map(hw => hw.Classe))];
+        let allEvaluations = [];
+        try {
+            const promises = allClassNames.flatMap(className => 
+                allDates.map(date => fetch(`/api/evaluations?class=${className}&date=${date}`).then(res => res.json()))
+            );
+            const results = await Promise.all(promises);
+            allEvaluations = results.flatMap(result => result.evaluations);
+        } catch (error) {
+            console.error("Erreur de pré-chargement des évaluations:", error);
+        }
+
         homeworks.forEach(hw => {
+            const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
             const card = document.createElement('div');
-            card.className = 'homework-card';
+            card.className = `homework-card ${isEvaluated ? 'evaluated' : ''}`;
             card.innerHTML = `
                 <h4>${hw.Matière}</h4>
                 <p><strong>🏫 Classe:</strong> <span>${hw.Classe}</span></p>
@@ -203,12 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/evaluations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evaluations }) });
             if (!response.ok) throw new Error(`Erreur d'enregistrement`);
             alert("Évaluations enregistrées !");
+            // Rafraîchir les cartes pour montrer l'indicateur vert
+            displayHomeworkCards(document.querySelector('.teacher-icon-card.active').dataset.teacherName);
         } catch (error) { 
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
     
-    // ... Le reste du code est identique et complet ...
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -242,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
+    
     function parseFrenchDate(dateString) {
         const cleanString = dateString.toLowerCase().trim();
         moment.locale('fr');
@@ -249,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
+    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -271,16 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-    function populateDynamicSelect(selectId, dataArray) {
-        const selectElement = document.getElementById(selectId);
-        const currentVal = selectElement.value;
-        selectElement.innerHTML = `<option value="">-- ${selectId.includes('class') ? 'Classe' : selectId.includes('name') ? 'Enseignant' : 'Matière'} --</option>`;
-        (dataArray || []).forEach(item => {
-            const option = document.createElement('option');
-            option.value = item; option.textContent = item; selectElement.appendChild(option);
-        });
-        if (dataArray.includes(currentVal)) { selectElement.value = currentVal; }
-    }
+    
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -290,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -299,6 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+    
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
@@ -344,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
+    
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
