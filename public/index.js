@@ -71,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
         }
     });
-
-    // ... (le reste du code est identique et complet, je le fournis pour être sûr)
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
