@@ -1,75 +1,93 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="portalTitle">Portail de Suivi des Devoirs</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/fr.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/ar.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-translate="portalTitle">Portail de Suivi des Devoirs</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/fr.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/ar.js"></script>
 </head>
 <body>
-
-    <div class="container">
-        <!-- Vue Principale (Accueil) -->
-        <div id="home-view">
-            <header class="main-header"><div class="language-selector-home"><button id="lang-fr">Français</button><button id="lang-ar">العربية</button></div><h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1></header>
-            <main class="main-menu"><img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo"><button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button><button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button><div class="home-showcase-container"><div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;"><h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2><img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo"><h3 id="sotw-name"></h3><p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p></div><div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2><img id="potd-image" src="" alt="Photo de félicitations" class="potd-image"><p id="potd-message" data-translate="potdMessage">Un projet ou un succès à célébrer !</p></div></div></main>
-        </div>
-
-        <!-- Vue Espace Parent -->
-        <div id="parent-selection-view" class="view" style="display: none;">
-            <header><button class="back-button">&larr;</button><h1 data-translate="parentSpace">Espace Parent</h1></header>
-            <main class="parent-flow-main"><h2 class="section-title" data-translate="classSelectionTitle">1. Choisissez une classe</h2><div id="class-buttons-container" class="class-buttons-container"></div><h2 class="section-title" id="student-selection-title" data-translate="studentSelectionTitle" style="display: none;">2. Choisissez votre enfant</h2><div id="student-grid-container" class="student-grid"></div></main>
-        </div>
-        
-        <!-- Vue Espace Enseignant - Connexion -->
-        <div id="teacher-login-view" class="view" style="display: none;">
-            <header><button class="back-button">&larr;</button><h1 data-translate="teacherLoginTitle">Accès Enseignant</h1></header>
-            <main><form id="teacher-login-form" class="login-form"><input type="text" id="username" data-translate-placeholder="usernamePlaceholder" placeholder="Nom d'utilisateur" required><input type="password" id="password" data-translate-placeholder="passwordPlaceholder" placeholder="Mot de passe" required><button type="submit" data-translate="loginButton">Connexion</button><p id="login-error" class="error-message"></p></form></main>
-        </div>
-
-        <!-- Vue Tableau de Bord de l'Élève -->
-        <div id="student-dashboard-view" class="view" style="display: none;">
-            <header><button class="back-button">&larr;</button><h1 id="student-name-header"></h1></header>
-            <main><div class="profile-summary"><div class="student-info"><img src="" alt="Photo élève" class="student-photo"><div class="star-rating" id="star-rating"></div><div class="student-of-week" id="student-of-week-banner" data-translate="studentOfTheWeek">Élève de la semaine</div></div><div class="weekly-stats"><h3 class="stat-title">📈 <span data-translate="overallWeeklyProgress">Progression générale</span></h3><div class="progress-bar-container"><div class="progress-bar" id="overall-progress-bar"></div><span id="overall-progress-text">0%</span></div></div></div><div class="dashboard-nav"><button id="prev-day-btn" class="nav-arrow">&larr; <span data-translate="previousDay">Jour Précédent</span></button><h2 id="homework-date"></h2><button id="next-day-btn" class="nav-arrow"><span data-translate="nextDay">Jour Suivant</span> &rarr;</button></div><div class="homework-grid" id="homework-grid"></div></main>
-        </div>
-        
-        <!-- Vue Tableau de Bord Enseignant -->
-        <div id="teacher-dashboard-view" class="view" style="display: none;">
-            <header><button class="back-button">&larr;</button><h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1></header>
-            <main><div id="admin-upload-section" class="upload-section" style="display: none;"><h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div><div class="teacher-main-content"><h2 class="section-title" data-translate="teacherSelectTitle">1. Choisissez votre nom</h2><div id="teacher-icons-container" class="teacher-icons-container"></div><h2 class="section-title" id="homework-cards-title" style="display: none;">2. <span data-translate="homeworkToEvaluate">Choisissez un devoir à évaluer</span></h2><div id="homework-cards-container" class="homework-cards-container"></div><div id="teacher-evaluation-section" style="display: none;"><h2 class="section-title">3. <span data-translate="studentEvaluationTitle">Évaluez les élèves</span></h2><div id="teacher-table-container"></div></div></div><div id="admin-photo-section" class="upload-section" style="display: none; margin-top: 30px; background-color: #e9f5ff;"><h3 class="section-title">🖼️ <span data-translate="adminPhotoTitle">Ajouter une Photo de Félicitations</span></h3><input type="text" id="photo-url-input" placeholder="Collez le lien de l'image ici (lh3.googleusercontent.com)..."><button id="submit-photo-btn" class="role-button" data-translate="saveButton">Enregistrer</button><p id="photo-status"></p></div></main>
-        </div>
+<div class="container">
+    <!-- Vue Principale (Accueil) -->
+    <div id="home-view">
+        <header class="main-header"><div class="language-selector-home"><button id="lang-fr">Français</button><button id="lang-ar">العربية</button></div><h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1></header>
+        <main class="main-menu"><img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo"><button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button><button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button><div class="home-showcase-container"><div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;"><h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2><img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo"><h3 id="sotw-name"></h3><p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p></div><div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2><img id="potd-image" src="" alt="Photo de félicitations" class="potd-image"><p id="potd-message" data-translate="potdMessage">Un projet ou un succès à célébrer !</p></div></div></main>
     </div>
 
-    <!-- NOUVEAU : Fenêtre Modale pour la Date de Naissance avec listes déroulantes -->
-    <div id="birthday-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 data-translate="birthdayModalTitle">Vérification</h3>
-            <p data-translate="birthdayPrompt">Veuillez choisir le mois et l'année de naissance de votre enfant :</p>
-            <div class="birthday-inputs">
-                <select id="birthday-month-select">
-                    <option value="" data-translate="monthPlaceholder">Mois</option>
-                    <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
-                    <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
-                    <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
-                    <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
-                </select>
-                <input type="number" id="birthday-year-input" data-translate-placeholder="yearPlaceholder" placeholder="Année" min="2000" max="2020">
-            </div>
-            <p id="birthday-modal-error" class="error-message" style="display: none;"></p>
-            <div class="modal-actions">
-                <button id="birthday-cancel" class="modal-button secondary" data-translate="cancelButton">Annuler</button>
-                <button id="birthday-confirm" class="modal-button primary" data-translate="confirmButton">Confirmer</button>
-            </div>
-        </div>
+    <!-- Vue Espace Parent -->
+    <div id="parent-selection-view" class="view" style="display: none;">
+        <header><button class="back-button">&larr;</button><h1 data-translate="parentSpace">Espace Parent</h1></header>
+        <main class="parent-flow-main"><h2 class="section-title" data-translate="classSelectionTitle">1. Choisissez une classe</h2><div id="class-buttons-container" class="class-buttons-container"></div><h2 class="section-title" id="student-selection-title" data-translate="studentSelectionTitle" style="display: none;">2. Choisissez votre enfant</h2><div id="student-grid-container" class="student-grid"></div></main>
+    </div>
+    
+    <!-- Vue Espace Enseignant - Connexion -->
+    <div id="teacher-login-view" class="view" style="display: none;">
+        <header><button class="back-button">&larr;</button><h1 data-translate="teacherLoginTitle">Accès Enseignant</h1></header>
+        <main><form id="teacher-login-form" class="login-form"><input type="text" id="username" data-translate-placeholder="usernamePlaceholder" placeholder="Nom d'utilisateur" required><input type="password" id="password" data-translate-placeholder="passwordPlaceholder" placeholder="Mot de passe" required><button type="submit" data-translate="loginButton">Connexion</button><p id="login-error" class="error-message"></p></form></main>
     </div>
 
-    <script src="index.js"></script>
+    <!-- Vue Tableau de Bord de l'Élève -->
+    <div id="student-dashboard-view" class="view" style="display: none;">
+        <header><button class="back-button">&larr;</button><h1 id="student-name-header"></h1></header>
+        <main><div class="profile-summary"><div class="student-info"><img src="" alt="Photo élève" class="student-photo"><div class="star-rating" id="star-rating"></div><div class="student-of-week" id="student-of-week-banner" data-translate="studentOfTheWeek">Élève de la semaine</div></div><div class="weekly-stats"><h3 class="stat-title">📈 <span data-translate="overallWeeklyProgress">Progression générale</span></h3><div class="progress-bar-container"><div class="progress-bar" id="overall-progress-bar"></div><span id="overall-progress-text">0%</span></div></div></div><div class="dashboard-nav"><button id="prev-day-btn" class="nav-arrow">&larr; <span data-translate="previousDay">Jour Précédent</span></button><h2 id="homework-date"></h2><button id="next-day-btn" class="nav-arrow"><span data-translate="nextDay">Jour Suivant</span> &rarr;</button></div><div class="homework-grid" id="homework-grid"></div></main>
+    </div>
+    
+    <!-- Vue Tableau de Bord Enseignant (NOUVELLE STRUCTURE) -->
+    <div id="teacher-dashboard-view" class="view" style="display: none;">
+        <header><button class="back-button">&larr;</button><h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1></header>
+        <main>
+            <div id="admin-upload-section" class="upload-section" style="display: none;"><h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div>
+            
+            <div class="teacher-main-content">
+                <h2 class="section-title" data-translate="teacherSelectTitle">1. Choisissez votre nom</h2>
+                <div id="teacher-icons-container" class="teacher-icons-container"></div>
+                
+                <h2 class="section-title" id="week-selection-title" style="display: none;">2. <span data-translate="weekSelectionTitle">Choisissez une semaine</span></h2>
+                <div id="week-buttons-container" class="week-buttons-container"></div>
+
+                <h2 class="section-title" id="homework-cards-title" style="display: none;">3. <span data-translate="homeworkToEvaluate">Choisissez un devoir à évaluer</span></h2>
+                <div id="homework-cards-container" class="homework-cards-container"></div>
+
+                <div id="teacher-evaluation-section" style="display: none;">
+                    <h2 class="section-title">4. <span data-translate="studentEvaluationTitle">Évaluez les élèves</span></h2>
+                    <div id="teacher-table-container"></div>
+                </div>
+            </div>
+            
+            <div id="admin-photo-section" class="upload-section" style="display: none; margin-top: 30px; background-color: #e9f5ff;"><h3 class="section-title">🖼️ <span data-translate="adminPhotoTitle">Ajouter une Photo de Félicitations</span></h3><input type="text" id="photo-url-input" placeholder="Collez le lien de l'image ici (lh3.googleusercontent.com)..."><button id="submit-photo-btn" class="role-button" data-translate="saveButton">Enregistrer</button><p id="photo-status"></p></div>
+        </main>
+    </div>
+</div>
+
+<!-- Fenêtre Modale pour la Date de Naissance -->
+<div id="birthday-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3 data-translate="birthdayModalTitle">Vérification</h3>
+        <p data-translate="birthdayPrompt">Veuillez choisir le mois et l'année de naissance de votre enfant :</p>
+        <div class="birthday-inputs">
+            <select id="birthday-month-select">
+                <option value="" data-translate="monthPlaceholder">Mois</option>
+                <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+                <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+                <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+                <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+            </select>
+            <input type="number" id="birthday-year-input" data-translate-placeholder="yearPlaceholder" placeholder="Année" min="2000" max="2020">
+        </div>
+        <p id="birthday-modal-error" class="error-message" style="display: none;"></p>
+        <div class="modal-actions">
+            <button id="birthday-cancel" class="modal-button secondary" data-translate="cancelButton">Annuler</button>
+            <button id="birthday-confirm" class="modal-button primary" data-translate="confirmButton">Confirmer</button>
+        </div>
+    </div>
+</div>
+<script src="index.js"></script>
 </body>
 </html>
