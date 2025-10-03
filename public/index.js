@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "2. اختر واجباً لتقييمه", studentEvaluationTitle: "3. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة" }
     };
 
-    // ... (Le reste du code est identique et complet, je le fournis pour être sûr)
     const setLanguage = (lang) => {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -46,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
+
     const views = document.querySelectorAll('.view');
     const homeView = document.getElementById('home-view');
     const goToParentBtn = document.getElementById('go-to-parent');
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
     goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
+    
     document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('username').value;
@@ -72,26 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
         }
     });
-    function populateClassButtons() { /* ... */ }
-    function displayStudentGrid(className) { /* ... */ }
-    function showBirthdayModal(className, student) { /* ... */ }
-    async function setupTeacherDashboard(isAdmin, username) { /* ... */ }
-    function populateTeacherIcons(teachers) { /* ... */ }
-    async function displayHomeworkCards(teacherName) { /* ... */ }
-    async function renderEvaluationTable(className, date, subject, assignment) { /* ... */ }
-    async function submitTeacherEvaluations(event) { /* ... */ }
-    async function handleFileUpload(excelFileInput) { /* ... */ }
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
-    function updateWeeklyStats(weeklyEvals) { /* ... */ }
-    async function displayHomePageExtras() { /* ... */ }
-    async function handleSubmitPhoto() { /* ... */ }
-    async function displayStudentOfTheWeek() { /* ... */ }
-    async function displayPhotoOfTheDay() { /* ... */ }
-    
-    // ================== REMPLISSAGE DES FONCTIONS ==================
-    // ... (les autres fonctions sont identiques et complètes, je les inclus pour être sûr)
+
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -110,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(button);
         });
     }
+
     function displayStudentGrid(className) {
         const gridContainer = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
@@ -126,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.appendChild(card);
         });
     }
+
     function showBirthdayModal(className, student) {
         const modal = document.getElementById('birthday-modal');
         const monthSelect = document.getElementById('birthday-month-select');
@@ -169,6 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         newConfirmBtn.addEventListener('click', handleConfirm);
         newCancelBtn.addEventListener('click', handleCancel);
     }
+    
+    // ... (Le reste du code est identique et complet, je le fournis pour être sûr)
     async function setupTeacherDashboard(isAdmin = false) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
@@ -300,19 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
-    async function handleFileUpload(excelFileInput) { /* ... */ }
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-    document.getElementById('prev-day-btn').addEventListener('click', () => { /* ... */ });
-    document.getElementById('next-day-btn').addEventListener('click', () => { /* ... */ });
-    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
-    function updateWeeklyStats(weeklyEvals) { /* ... */ }
-    async function displayHomePageExtras() { /* ... */ }
-    async function handleSubmitPhoto() { /* ... */ }
-    async function displayStudentOfTheWeek() { /* ... */ }
-    async function displayPhotoOfTheDay() { /* ... */ }
-
-    // ... (Le code complet des fonctions est ci-dessous)
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -372,22 +345,22 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-    document.getElementById('prev-day-btn').addEventListener('click', () => {
+    document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.subtract(1, 'days');
-            loadStudentDashboard(className, studentName, currentDate);
+            currentDate.subtract(1, 'days'); 
+            loadStudentDashboard(className, studentName, currentDate); 
         }
     });
-    document.getElementById('next-day-btn').addEventListener('click', () => {
+    document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.add(1, 'days');
-            loadStudentDashboard(className, studentName, currentDate);
+            currentDate.add(1, 'days'); 
+            loadStudentDashboard(className, studentName, currentDate); 
         }
     });
     async function loadStudentDashboard(className, studentName, date) {
