@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
+
     const views = document.querySelectorAll('.view');
     const homeView = document.getElementById('home-view');
     const goToParentBtn = document.getElementById('go-to-parent');
@@ -55,12 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
     goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
     goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
+    
     document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
+
         if (isAdmin) {
             setupTeacherDashboard(true);
             showView('teacher-dashboard-view');
@@ -72,26 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function populateClassButtons() { /* ... */ }
-    function displayStudentGrid(className) { /* ... */ }
-    function showBirthdayModal(className, student) { /* ... */ }
-    async function setupTeacherDashboard(isAdmin) { /* ... */ }
-    function populateTeacherIcons(teachers) { /* ... */ }
-    function displayWeekSelector(teacherName) { /* ... */ }
-    async function displayHomeworkCards(teacherName, weekNumber, weekHomeworks) { /* ... */ }
-    async function renderEvaluationTable(className, date, subject, assignment) { /* ... */ }
-    async function submitTeacherEvaluations(event) { /* ... */ }
-    async function handleFileUpload(excelFileInput) { /* ... */ }
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
-    function updateWeeklyStats(weeklyEvals) { /* ... */ }
-    async function displayHomePageExtras() { /* ... */ }
-    async function handleSubmitPhoto() { /* ... */ }
-    async function displayStudentOfTheWeek() { /* ... */ }
-    async function displayPhotoOfTheDay() { /* ... */ }
-    
-    // ================== REMPLISSAGE DES FONCTIONS ==================
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -110,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(button);
         });
     }
+
     function displayStudentGrid(className) {
         const gridContainer = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
@@ -126,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.appendChild(card);
         });
     }
+
     function showBirthdayModal(className, student) {
         const modal = document.getElementById('birthday-modal');
         const monthSelect = document.getElementById('birthday-month-select');
@@ -133,14 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmBtn = document.getElementById('birthday-confirm');
         const cancelBtn = document.getElementById('birthday-cancel');
         const errorMsg = document.getElementById('birthday-modal-error');
+
         yearInput.value = '';
         monthSelect.selectedIndex = 0;
         errorMsg.style.display = 'none';
         modal.style.display = 'flex';
+
         const newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
         const newCancelBtn = cancelBtn.cloneNode(true);
         cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
         const handleConfirm = () => {
             const month = monthSelect.value;
             const year = yearInput.value;
@@ -166,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newConfirmBtn.addEventListener('click', handleConfirm);
         newCancelBtn.addEventListener('click', handleCancel);
     }
+    
     async function setupTeacherDashboard(isAdmin = false) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
@@ -197,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
     }
+    
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -213,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             iconsContainer.appendChild(card);
         });
     }
+
     function displayWeekSelector(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const weekContainer = teacherDashboardView.querySelector('#week-buttons-container');
@@ -220,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
         const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
         const evaluationSection = teacherDashboardView.querySelector('#teacher-evaluation-section');
+
         weekContainer.innerHTML = '';
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
@@ -243,12 +235,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(a) - new Date(b));
 
-        sortedWeeks.forEach(weekKey => {
+        sortedWeekKeys.forEach(weekKey => {
             const button = document.createElement('button');
             button.className = 'week-button';
             const startOfWeek = moment(weekKey).locale(document.documentElement.lang);
-            const endOfWeek = startOfWeek.clone().add(4, 'days'); // Dimanche à Jeudi
+            const endOfWeek = startOfWeek.clone().add(4, 'days');
             button.textContent = `${translations[document.documentElement.lang].weekLabel} (${startOfWeek.format('D MMM')} - ${endOfWeek.format('D MMM')})`;
+            
             button.addEventListener('click', (e) => {
                 weekContainer.querySelectorAll('.week-button').forEach(btn => btn.classList.remove('active'));
                 e.currentTarget.classList.add('active');
@@ -257,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             weekContainer.appendChild(button);
         });
     }
+    
     async function displayHomeworkCards(teacherName, weekHomeworks) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
@@ -292,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsContainer.appendChild(card);
         });
     }
+    
     async function renderEvaluationTable(className, date, subject, assignment) {
         const evaluationSection = document.getElementById('teacher-evaluation-section');
         const tableContainer = document.getElementById('teacher-table-container');
@@ -318,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`;
         }
     }
+
     async function submitTeacherEvaluations(event) {
         const button = event.currentTarget;
         const className = button.dataset.class;
@@ -340,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
+    
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -357,7 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
-                if (!response.ok) { const errorResult = await response.json(); throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`); }
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
+                }
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
@@ -370,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
+    
     function parseFrenchDate(dateString) {
         let cleanString = dateString.toLowerCase().trim();
         const arabicMap = { 'يناير': 'january', 'فبراير': 'february', 'مارس': 'march', 'أبريل': 'april', 'ماي': 'may', 'يونيو': 'june', 'يوليو': 'july', 'أغسطس': 'august', 'سبتمبر': 'september', 'أكتوبر': 'october', 'نوفمبر': 'november', 'ديسمبر': 'december', 'الأحد': 'sunday', 'الاثنين': 'monday', 'الثلاثاء': 'tuesday', 'الأربعاء': 'wednesday', 'الخميس': 'thursday', 'الجمعة': 'friday', 'السبت': 'saturday' };
@@ -381,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
+    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -403,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
+    
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -412,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -421,6 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+    
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
@@ -466,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
+    
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
@@ -515,10 +521,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
+
     async function displayHomePageExtras() {
         displayStudentOfTheWeek();
         displayPhotoOfTheDay();
     }
+    
     async function handleSubmitPhoto() {
         const photoUrlInput = document.getElementById('photo-url-input');
         const photoStatus = document.getElementById('photo-status');
@@ -546,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
             photoStatus.className = 'error';
         }
     }
+
     async function displayStudentOfTheWeek() {
         try {
             const response = await fetch('/api/weekly-summary');
@@ -562,6 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) { console.error("Erreur:", error); }
     }
+
     async function displayPhotoOfTheDay() {
         try {
             const response = await fetch('/api/photo-of-the-day');
