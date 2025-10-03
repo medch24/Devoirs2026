@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
         }
     });
+
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(button);
         });
     }
+
     function displayStudentGrid(className) {
         const gridContainer = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
@@ -105,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.appendChild(card);
         });
     }
+
     function showBirthdayModal(className, student) {
         const modal = document.getElementById('birthday-modal');
         const monthSelect = document.getElementById('birthday-month-select');
@@ -148,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newConfirmBtn.addEventListener('click', handleConfirm);
         newCancelBtn.addEventListener('click', handleCancel);
     }
+    
     async function setupTeacherDashboard(isAdmin = false) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
@@ -179,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
     }
+    
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -195,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             iconsContainer.appendChild(card);
         });
     }
+    
     function displayWeekSelector(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const weekContainer = teacherDashboardView.querySelector('#week-buttons-container');
@@ -234,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             weekContainer.appendChild(button);
         });
     }
+    
     async function displayHomeworkCards(teacherName, weekNumber) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
@@ -276,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsContainer.appendChild(card);
         });
     }
+    
     async function renderEvaluationTable(className, date, subject, assignment) {
         const evaluationSection = document.getElementById('teacher-evaluation-section');
         const tableContainer = document.getElementById('teacher-table-container');
@@ -302,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`;
         }
     }
+
     async function submitTeacherEvaluations(event) {
         const button = event.currentTarget;
         const className = button.dataset.class;
@@ -324,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
+    
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -341,10 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
-                if (!response.ok) {
-                    const errorResult = await response.json();
-                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
-                }
+                if (!response.ok) { const errorResult = await response.json(); throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`); }
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
@@ -357,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
+    
     function parseFrenchDate(dateString) {
         let cleanString = dateString.toLowerCase().trim();
         const arabicMap = {
@@ -374,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
+    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -396,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
+    
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -405,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -414,6 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
+    
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
@@ -459,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
+    
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
@@ -508,10 +521,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
+
     async function displayHomePageExtras() {
         displayStudentOfTheWeek();
         displayPhotoOfTheDay();
     }
+    
     async function handleSubmitPhoto() {
         const photoUrlInput = document.getElementById('photo-url-input');
         const photoStatus = document.getElementById('photo-status');
@@ -539,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
             photoStatus.className = 'error';
         }
     }
+
     async function displayStudentOfTheWeek() {
         try {
             const response = await fetch('/api/weekly-summary');
@@ -555,6 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) { console.error("Erreur:", error); }
     }
+
     async function displayPhotoOfTheDay() {
         try {
             const response = await fetch('/api/photo-of-the-day');
