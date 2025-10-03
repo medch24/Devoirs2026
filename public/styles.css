@@ -97,7 +97,7 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .teacher-evaluation-table select, .teacher-evaluation-table input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 select, input[type="text"], input[type="password"], input[type="date"] { box-sizing: border-box; width: 100%; padding: 14px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
 button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
-.error-message { color: var(--red-status); font-weight: bold; text-align: center; }
+.error-message { color: var(--red-status); font-weight: bold; text-align: center; margin-top: 10px; }
 .parent-flow-main { padding: 25px; }
 .class-buttons-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 30px; }
 .class-button {
@@ -111,8 +111,6 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .student-card:hover { background-color: #f1f1f1; transform: translateY(-5px); }
 .student-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-color); }
 .student-card p { margin-top: 10px; font-weight: 600; color: var(--text-color); }
-
-/* NOUVEAU : Styles pour la vue enseignant */
 .teacher-main-content { padding: 25px; }
 .teacher-icons-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 30px; }
 .teacher-icon-card { text-align: center; cursor: pointer; padding: 10px; border-radius: 12px; transition: all 0.2s; }
@@ -125,16 +123,36 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .homework-card { border: 2px solid var(--border-color); border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .homework-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0, 119, 255, 0.1); }
 .homework-card.active { border-color: var(--accent-color); background-color: #f4f8fa; }
-/* NOUVEAU : Style pour l'indicateur "évalué" */
 .homework-card.evaluated { border-left: 5px solid var(--green-status); }
 .homework-card h4 { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary-color); }
 .homework-card p { margin: 4px 0; color: #555; }
 .homework-card span { font-weight: 600; }
 #teacher-evaluation-section { margin-top: 30px; }
+.homework-reminder { font-size: 1.1rem; font-weight: bold; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent-color); }
+
+/* NOUVEAU : Styles pour la fenêtre modale */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6); display: flex;
+    justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background-color: white; padding: 30px; border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 90%; max-width: 400px;
+    text-align: center;
+}
+.modal-content h3 { margin-top: 0; color: var(--primary-color); }
+.modal-content input[type="date"] { margin: 15px 0; }
+.modal-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+.modal-button {
+    padding: 10px 25px; border: none; border-radius: 8px;
+    font-weight: 600; font-size: 1rem; cursor: pointer;
+}
+.modal-button.primary { background-color: var(--secondary-color); color: white; }
+.modal-button.secondary { background-color: #eee; color: #333; }
 
 @media (max-width: 600px) {
-    body { padding: 0; }
-    .container { border-radius: 0; box-shadow: none; }
+    body { padding: 10px; } .container { border-radius: 0; box-shadow: none; }
     header h1 { font-size: 1.4rem; }
     .back-button { width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem; }
     .language-selector-home { top: 15px; right: 15px; }
