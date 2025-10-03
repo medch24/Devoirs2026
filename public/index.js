@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
-
         if (isAdmin) {
             setupTeacherDashboard(true);
             showView('teacher-dashboard-view');
@@ -75,6 +74,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function populateClassButtons() { /* ... */ }
+    function displayStudentGrid(className) { /* ... */ }
+    function showBirthdayModal(className, student) { /* ... */ }
+    async function setupTeacherDashboard(isAdmin, username) { /* ... */ }
+    function populateTeacherIcons(teachers) { /* ... */ }
+    function displayWeekSelector(teacherName) { /* ... */ }
+    async function displayHomeworkCards(teacherName, weekHomeworks) { /* ... */ }
+    async function renderEvaluationTable(className, date, subject, assignment) { /* ... */ }
+    async function submitTeacherEvaluations(event) { /* ... */ }
+    async function handleFileUpload(excelFileInput) { /* ... */ }
+    function parseFrenchDate(dateString) { /* ... */ }
+    function formatPlanData(jsonPlan) { /* ... */ }
+    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
+    function updateWeeklyStats(weeklyEvals) { /* ... */ }
+    async function displayHomePageExtras() { /* ... */ }
+    async function handleSubmitPhoto() { /* ... */ }
+    async function displayStudentOfTheWeek() { /* ... */ }
+    async function displayPhotoOfTheDay() { /* ... */ }
+    
+    // ================== REMPLISSAGE DES FONCTIONS ==================
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -226,20 +245,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const homeworksByWeek = {};
         homeworks.forEach(hw => {
-            const weekKey = moment(hw.Jour, 'YYYY-MM-DD').startOf('isoWeek').format('YYYY-MM-DD');
+            // Utiliser .startOf('week') qui commence par Dimanche (locale fr/ar)
+            const weekKey = moment(hw.Jour, 'YYYY-MM-DD').startOf('week').format('YYYY-MM-DD');
             if (!homeworksByWeek[weekKey]) {
                 homeworksByWeek[weekKey] = [];
             }
             homeworksByWeek[weekKey].push(hw);
         });
 
-        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(a) - new Date(b));
+        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(b) - new Date(a)); // Plus récent en premier
 
         sortedWeekKeys.forEach(weekKey => {
             const button = document.createElement('button');
             button.className = 'week-button';
             const startOfWeek = moment(weekKey).locale(document.documentElement.lang);
-            const endOfWeek = startOfWeek.clone().add(4, 'days');
+            const endOfWeek = startOfWeek.clone().add(4, 'days'); // Dimanche à Jeudi
             button.textContent = `${translations[document.documentElement.lang].weekLabel} (${startOfWeek.format('D MMM')} - ${endOfWeek.format('D MMM')})`;
             
             button.addEventListener('click', (e) => {
@@ -354,10 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
-                if (!response.ok) {
-                    const errorResult = await response.json();
-                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
-                }
+                if (!response.ok) { const errorResult = await response.json(); throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`); }
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
