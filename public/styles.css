@@ -87,8 +87,9 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .status-lamp.partiellement-fait { background-color: var(--orange-status); }
 .status-lamp.absent { background-color: var(--grey-status); }
 .upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
-#upload-status { font-weight: 600; margin-top: 15px; }
-#upload-status.success { color: var(--green-status); } #upload-status.error { color: var(--red-status); }
+#upload-status, #photo-status { font-weight: 600; margin-top: 15px; }
+#upload-status.success, #photo-status.success { color: var(--green-status); }
+#upload-status.error, #photo-status.error { color: var(--red-status); }
 .section-title { padding: 0 25px; margin: 20px 0 15px 0; color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; font-size: 1.3rem; }
 .teacher-evaluation-table { width: 100%; border-collapse: collapse; }
 .teacher-evaluation-table th, .teacher-evaluation-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; vertical-align: middle; }
@@ -129,40 +130,28 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .homework-card span { font-weight: 600; }
 #teacher-evaluation-section { margin-top: 30px; }
 .homework-reminder { font-size: 1.1rem; font-weight: bold; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent-color); }
-
-/* NOUVEAU : Styles pour l'élève de la semaine */
-.student-of-the-week-showcase {
-    width: 100%;
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #fffbe6;
-    border: 1px solid #ffeeba;
-    border-radius: 12px;
+/* NOUVEAU : Styles pour les sections de la page d'accueil */
+.home-showcase-container {
+    display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+    width: 100%; max-width: 800px; margin-top: 30px;
+}
+.student-of-the-week-showcase, .photo-of-the-day-showcase {
+    flex: 1; min-width: 250px;
+    padding: 20px; background-color: #fffbe6;
+    border: 1px solid #ffeeba; border-radius: 12px;
     text-align: center;
 }
-.sotw-title {
-    color: var(--orange-status);
-    font-size: 1.5rem;
-    margin: 0 0 15px 0;
+.sotw-title, .potd-title {
+    color: var(--orange-status); font-size: 1.3rem; margin: 0 0 15px 0;
 }
-.sotw-photo {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    border: 5px solid var(--yellow-star);
-    object-fit: cover;
+.sotw-photo, .potd-image {
+    width: 130px; height: 130px; border-radius: 50%;
+    border: 5px solid var(--yellow-star); object-fit: cover;
     margin-bottom: 10px;
 }
-.sotw-name {
-    font-size: 1.4rem;
-    color: var(--primary-color);
-    margin: 0;
-}
-.sotw-message {
-    font-size: 1rem;
-    color: #555;
-    margin-top: 5px;
-}
+.potd-image { border-color: var(--accent-color); }
+.sotw-name, .potd-name { font-size: 1.2rem; color: var(--primary-color); margin: 0; }
+.sotw-message, .potd-message { font-size: 1rem; color: #555; margin-top: 5px; }
 
 @media (max-width: 600px) {
     body { padding: 10px; } .container { border-radius: 0; box-shadow: none; }
