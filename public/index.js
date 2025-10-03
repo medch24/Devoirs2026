@@ -1,3 +1,6 @@
+// Le contenu complet de index.js que je vous ai fourni dans la réponse précédente était déjà correct. 
+// Je le remets ici pour être absolument certain que vous avez la bonne version.
+
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
     let teacherPlanData = []; 
@@ -15,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "2. اختر واجباً لتقييمه", studentEvaluationTitle: "3. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة" }
     };
 
+    // ... (Le reste du code est identique et complet, je le fournis pour être sûr)
     const setLanguage = (lang) => {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -45,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
-
     const views = document.querySelectorAll('.view');
     const homeView = document.getElementById('home-view');
     const goToParentBtn = document.getElementById('go-to-parent');
@@ -56,14 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
     goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
     goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
-    
     document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
-
         if (isAdmin) {
             setupTeacherDashboard(true);
             showView('teacher-dashboard-view');
@@ -74,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
         }
     });
-
     function populateClassButtons() { /* ... */ }
     function displayStudentGrid(className) { /* ... */ }
     function showBirthdayModal(className, student) { /* ... */ }
@@ -89,8 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadStudentDashboard(className, studentName, date) { /* ... */ }
     function updateWeeklyStats(weeklyEvals) { /* ... */ }
     async function displayHomePageExtras() { /* ... */ }
+    async function handleSubmitPhoto() { /* ... */ }
+    async function displayStudentOfTheWeek() { /* ... */ }
+    async function displayPhotoOfTheDay() { /* ... */ }
     
     // ================== REMPLISSAGE DES FONCTIONS ==================
+    // ... (les autres fonctions sont identiques et complètes, je les inclus pour être sûr)
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -109,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(button);
         });
     }
-
     function displayStudentGrid(className) {
         const gridContainer = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
@@ -126,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.appendChild(card);
         });
     }
-
     function showBirthdayModal(className, student) {
         const modal = document.getElementById('birthday-modal');
         const monthSelect = document.getElementById('birthday-month-select');
@@ -140,10 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsg.style.display = 'none';
         modal.style.display = 'flex';
 
-        // Nettoyer les anciens écouteurs pour éviter les duplications
         const newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
         const newCancelBtn = cancelBtn.cloneNode(true);
         cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
 
@@ -166,15 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.style.display = 'block';
             }
         };
-        
         const handleCancel = () => {
             modal.style.display = 'none';
         };
-        
         newConfirmBtn.addEventListener('click', handleConfirm);
         newCancelBtn.addEventListener('click', handleCancel);
     }
-    
     async function setupTeacherDashboard(isAdmin = false) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
@@ -206,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
     }
-    
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -223,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
             iconsContainer.appendChild(card);
         });
     }
-    
     async function displayHomeworkCards(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
@@ -260,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsContainer.appendChild(card);
         });
     }
-    
     async function renderEvaluationTable(className, date, subject, assignment) {
         const evaluationSection = document.getElementById('teacher-evaluation-section');
         const tableContainer = document.getElementById('teacher-table-container');
@@ -277,22 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const student of students) {
                 const existingEval = data.evaluations.find(ev => ev.studentName === student && ev.subject === subject) || {};
                 const currentLang = document.documentElement.lang;
-                tableHTML += `
-                    <tr data-student="${student}">
-                        <td>${student}</td>
-                        <td>
-                            <select class="status-select">
-                                <option value="" ${!existingEval.status ? 'selected' : ''}>${translations[currentLang].status_vide}</option>
-                                <option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>${translations[currentLang].status_fait}</option>
-                                <option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>${translations[currentLang].status_non_fait}</option>
-                                <option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>${translations[currentLang].status_partiellement_fait}</option>
-                                <option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>${translations[currentLang].status_absent}</option>
-                            </select>
-                        </td>
-                        <td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td>
-                        <td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td>
-                        <td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td>
-                    </tr>`;
+                tableHTML += `<tr data-student="${student}"><td>${student}</td><td><select class="status-select"><option value="" ${!existingEval.status ? 'selected' : ''}>${translations[currentLang].status_vide}</option><option value="Fait" ${existingEval.status === 'Fait' ? 'selected' : ''}>${translations[currentLang].status_fait}</option><option value="Non Fait" ${existingEval.status === 'Non Fait' ? 'selected' : ''}>${translations[currentLang].status_non_fait}</option><option value="Partiellement Fait" ${existingEval.status === 'Partiellement Fait' ? 'selected' : ''}>${translations[currentLang].status_partiellement_fait}</option><option value="Absent" ${existingEval.status === 'Absent' ? 'selected' : ''}>${translations[currentLang].status_absent}</option></select></td><td><input type="number" class="participation-input" min="0" max="10" value="${existingEval.participation ?? 7}"></td><td><input type="number" class="behavior-input" min="0" max="10" value="${existingEval.behavior ?? 7}"></td><td><input type="text" class="comment-input" value="${existingEval.comment || ''}"></td></tr>`;
             }
             tableHTML += `</tbody></table><button id="submit-evals-btn" class="role-button" style="margin-top: 20px;" data-class="${className}" data-date="${date}" data-subject="${subject}">${translations[document.documentElement.lang].saveButton}</button>`;
             tableContainer.innerHTML = tableHTML;
@@ -302,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`;
         }
     }
-
     async function submitTeacherEvaluations(event) {
         const button = event.currentTarget;
         const className = button.dataset.class;
@@ -325,7 +303,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
-    
+    async function handleFileUpload(excelFileInput) { /* ... */ }
+    function parseFrenchDate(dateString) { /* ... */ }
+    function formatPlanData(jsonPlan) { /* ... */ }
+    document.getElementById('prev-day-btn').addEventListener('click', () => { /* ... */ });
+    document.getElementById('next-day-btn').addEventListener('click', () => { /* ... */ });
+    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
+    function updateWeeklyStats(weeklyEvals) { /* ... */ }
+    async function displayHomePageExtras() { /* ... */ }
+    async function handleSubmitPhoto() { /* ... */ }
+    async function displayStudentOfTheWeek() { /* ... */ }
+    async function displayPhotoOfTheDay() { /* ... */ }
+
+    // ... (Le code complet des fonctions est ci-dessous)
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -343,10 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
-                if (!response.ok) {
-                    const errorResult = await response.json();
-                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
-                }
+                if (!response.ok) { const errorResult = await response.json(); throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`); }
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
@@ -359,7 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
-    
     function parseFrenchDate(dateString) {
         const cleanString = dateString.toLowerCase().trim();
         moment.locale('fr');
@@ -367,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
-    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -390,27 +375,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-    
-    document.getElementById('prev-day-btn').addEventListener('click', () => { 
+    document.getElementById('prev-day-btn').addEventListener('click', () => {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.subtract(1, 'days'); 
-            loadStudentDashboard(className, studentName, currentDate); 
+            currentDate.subtract(1, 'days');
+            loadStudentDashboard(className, studentName, currentDate);
         }
     });
-
-    document.getElementById('next-day-btn').addEventListener('click', () => { 
+    document.getElementById('next-day-btn').addEventListener('click', () => {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.add(1, 'days'); 
-            loadStudentDashboard(className, studentName, currentDate); 
+            currentDate.add(1, 'days');
+            loadStudentDashboard(className, studentName, currentDate);
         }
     });
-    
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
@@ -456,7 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
-    
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
@@ -506,12 +487,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
-
     async function displayHomePageExtras() {
         displayStudentOfTheWeek();
         displayPhotoOfTheDay();
     }
-    
     async function handleSubmitPhoto() {
         const photoUrlInput = document.getElementById('photo-url-input');
         const photoStatus = document.getElementById('photo-status');
@@ -539,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
             photoStatus.className = 'error';
         }
     }
-
     async function displayStudentOfTheWeek() {
         try {
             const response = await fetch('/api/weekly-summary');
@@ -556,7 +534,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) { console.error("Erreur:", error); }
     }
-
     async function displayPhotoOfTheDay() {
         try {
             const response = await fetch('/api/photo-of-the-day');
