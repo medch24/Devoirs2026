@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
-
     const views = document.querySelectorAll('.view');
     const homeView = document.getElementById('home-view');
     const goToParentBtn = document.getElementById('go-to-parent');
@@ -56,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
     goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
-    
     document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('username').value;
@@ -74,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ... (le reste du code est identique et complet, je le fournis pour être sûr)
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(button);
         });
     }
-
     function displayStudentGrid(className) {
         const gridContainer = document.getElementById('student-grid-container');
         const studentTitle = document.getElementById('student-selection-title');
@@ -109,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.appendChild(card);
         });
     }
-
     function showBirthdayModal(className, student) {
         const modal = document.getElementById('birthday-modal');
         const monthSelect = document.getElementById('birthday-month-select');
@@ -153,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         newConfirmBtn.addEventListener('click', handleConfirm);
         newCancelBtn.addEventListener('click', handleCancel);
     }
-    
     async function setupTeacherDashboard(isAdmin = false) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
@@ -185,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
     }
-    
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -202,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
             iconsContainer.appendChild(card);
         });
     }
-
     function displayWeekSelector(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const weekContainer = teacherDashboardView.querySelector('#week-buttons-container');
@@ -210,7 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
         const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
         const evaluationSection = teacherDashboardView.querySelector('#teacher-evaluation-section');
-
         weekContainer.innerHTML = '';
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
@@ -226,13 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             homeworksByWeek[weekNumber].push(hw);
         });
-
         const sortedWeeks = Object.keys(homeworksByWeek).sort((a, b) => a - b);
         if (sortedWeeks.length === 0) {
             weekContainer.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForDay}</p>`;
             return;
         }
-
         sortedWeeks.forEach(week => {
             const button = document.createElement('button');
             button.className = 'week-button';
@@ -245,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
             weekContainer.appendChild(button);
         });
     }
-    
     async function displayHomeworkCards(teacherName, weekNumber) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
@@ -254,19 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
-        
         const homeworks = teacherPlanData.filter(item => 
             item.Enseignant === teacherName && 
             item.Devoirs && 
             item.Jour && 
             moment(item.Jour, 'YYYY-MM-DD').isoWeek() == weekNumber
         );
-
         if (homeworks.length === 0) {
             cardsContainer.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForDay}</p>`;
             return;
         }
-        
         const allDates = [...new Set(homeworks.map(hw => hw.Jour))];
         const allClassNames = [...new Set(homeworks.map(hw => hw.Classe))];
         let allEvaluations = [];
@@ -277,9 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             allEvaluations = results.flatMap(result => result.evaluations);
         } catch (error) { console.error("Erreur de pré-chargement des évaluations:", error); }
-
         homeworks.sort((a, b) => new Date(a.Jour) - new Date(b.Jour));
-
         homeworks.forEach(hw => {
             const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
             const card = document.createElement('div');
@@ -293,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsContainer.appendChild(card);
         });
     }
-    
     async function renderEvaluationTable(className, date, subject, assignment) {
         const evaluationSection = document.getElementById('teacher-evaluation-section');
         const tableContainer = document.getElementById('teacher-table-container');
@@ -320,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`;
         }
     }
-
     async function submitTeacherEvaluations(event) {
         const button = event.currentTarget;
         const className = button.dataset.class;
@@ -337,13 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Évaluations enregistrées !");
             const activeTeacherCard = document.querySelector('.teacher-icon-card.active');
             if (activeTeacherCard) {
-                displayHomeworkCards(activeTeacherCard.dataset.teacherName, moment(date).isoWeek());
+                displayWeekSelector(activeTeacherCard.dataset.teacherName);
             }
         } catch (error) { 
             console.error("Erreur:", error); alert("Une erreur est survenue."); 
         }
     }
-    
     async function handleFileUpload(excelFileInput) {
         const uploadStatus = document.getElementById('upload-status');
         const file = excelFileInput.files[0];
@@ -377,7 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsArrayBuffer(file);
     }
-    
     function parseFrenchDate(dateString) {
         let cleanString = dateString.toLowerCase().trim();
         const arabicMap = {
@@ -395,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
-    
     function formatPlanData(jsonPlan) {
         if (!jsonPlan || jsonPlan.length < 2) throw new Error("Fichier Excel vide ou invalide.");
         const headers = jsonPlan[0].map(h => typeof h === 'string' ? h.trim() : h);
@@ -418,7 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
-    
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -428,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
-
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
@@ -438,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
-    
     async function loadStudentDashboard(className, studentName, date) {
         const studentDashboardView = document.getElementById('student-dashboard-view');
         studentDashboardView.dataset.className = className;
@@ -484,7 +461,6 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
         }
     }
-    
     function updateWeeklyStats(weeklyEvals) {
         let stars = 0;
         const dailyScores = {};
@@ -534,12 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
-
     async function displayHomePageExtras() {
         displayStudentOfTheWeek();
         displayPhotoOfTheDay();
     }
-    
     async function handleSubmitPhoto() {
         const photoUrlInput = document.getElementById('photo-url-input');
         const photoStatus = document.getElementById('photo-status');
@@ -567,7 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
             photoStatus.className = 'error';
         }
     }
-
     async function displayStudentOfTheWeek() {
         try {
             const response = await fetch('/api/weekly-summary');
@@ -584,7 +557,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) { console.error("Erreur:", error); }
     }
-
     async function displayPhotoOfTheDay() {
         try {
             const response = await fetch('/api/photo-of-the-day');
@@ -599,4 +571,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     displayHomePageExtras();
     setLanguage('fr');
-});
+});```
