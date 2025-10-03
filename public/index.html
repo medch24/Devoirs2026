@@ -24,12 +24,19 @@
                 <button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button>
                 <button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button>
                 
-                <!-- NOUVEAU : Section pour l'élève de la semaine -->
-                <div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;">
-                    <h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2>
-                    <img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo">
-                    <h3 id="sotw-name"></h3>
-                    <p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p>
+                <div class="home-showcase-container">
+                    <div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;">
+                        <h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2>
+                        <img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo">
+                        <h3 id="sotw-name"></h3>
+                        <p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p>
+                    </div>
+                    <!-- NOUVEAU : Section pour la photo de félicitations -->
+                    <div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;">
+                        <h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2>
+                        <img id="potd-image" src="" alt="Photo de félicitations" class="potd-image">
+                        <p id="potd-message" data-translate="potdMessage">Un projet ou un succès à célébrer !</p>
+                    </div>
                 </div>
             </main>
         </div>
@@ -49,7 +56,24 @@
         </div>
         <div id="teacher-dashboard-view" class="view" style="display: none;">
             <header><button class="back-button">&larr;</button><h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1></header>
-            <main><div class="upload-section"><h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p></div><div class="teacher-main-content"><h2 class="section-title" data-translate="teacherSelectTitle">1. Choisissez votre nom</h2><div id="teacher-icons-container" class="teacher-icons-container"></div><h2 class="section-title" id="homework-cards-title" style="display: none;">2. <span data-translate="homeworkToEvaluate">Choisissez un devoir à évaluer</span></h2><div id="homework-cards-container" class="homework-cards-container"></div><div id="teacher-evaluation-section" style="display: none;"><h2 class="section-title">3. <span data-translate="studentEvaluationTitle">Évaluez les élèves</span></h2><div id="teacher-table-container"></div></div></div></main>
+            <main>
+                <!-- NOUVEAU : Section visible uniquement par l'admin -->
+                <div id="admin-upload-section" class="upload-section" style="display: none;">
+                    <h3 class="section-title">📅 <span data-translate="updateSchedule">Mettre à jour le planning</span></h3><input type="file" id="excel-file-input" accept=".xlsx, .xls, .xlsb, .csv"><button id="upload-excel-btn" class="role-button" data-translate="uploadButton">Charger et Mettre à jour</button><p id="upload-status"></p>
+                </div>
+                <div class="teacher-main-content">
+                    <h2 class="section-title" data-translate="teacherSelectTitle">1. Choisissez votre nom</h2><div id="teacher-icons-container" class="teacher-icons-container"></div>
+                    <h2 class="section-title" id="homework-cards-title" style="display: none;">2. <span data-translate="homeworkToEvaluate">Choisissez un devoir à évaluer</span></h2><div id="homework-cards-container" class="homework-cards-container"></div>
+                    <div id="teacher-evaluation-section" style="display: none;"><h2 class="section-title">3. <span data-translate="studentEvaluationTitle">Évaluez les élèves</span></h2><div id="teacher-table-container"></div></div>
+                </div>
+                <!-- NOUVEAU : Panneau Admin pour la photo de félicitations -->
+                <div id="admin-photo-section" class="upload-section" style="display: none; margin-top: 30px; background-color: #e9f5ff;">
+                    <h3 class="section-title">🖼️ <span data-translate="adminPhotoTitle">Ajouter une Photo de Félicitations</span></h3>
+                    <input type="text" id="photo-url-input" placeholder="Collez le lien de l'image ici (lh3.googleusercontent.com)...">
+                    <button id="submit-photo-btn" class="role-button" data-translate="saveButton">Enregistrer</button>
+                    <p id="photo-status"></p>
+                </div>
+            </main>
         </div>
     </div>
     <script src="index.js"></script>
