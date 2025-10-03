@@ -100,13 +100,13 @@ select, input[type="text"], input[type="password"], input[type="date"] { box-siz
 button[type="submit"] { background: var(--secondary-color); color: white; border: none; font-weight: 600; }
 .error-message { color: var(--red-status); font-weight: bold; text-align: center; margin-top: 10px; }
 .parent-flow-main { padding: 25px; }
-.class-buttons-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 30px; }
-.class-button {
+.class-buttons-container, .week-buttons-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 30px; }
+.class-button, .week-button {
     padding: 12px 25px; font-size: 1.1rem; border: 1px solid var(--accent-color);
     cursor: pointer; background-color: #fff; color: var(--accent-color);
     border-radius: 30px; font-weight: 600; transition: all 0.2s;
 }
-.class-button:hover, .class-button.active { background-color: var(--accent-color); color: white; }
+.class-button:hover, .class-button.active, .week-button:hover, .week-button.active { background-color: var(--accent-color); color: white; }
 .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; padding: 10px; }
 .student-card { text-align: center; cursor: pointer; border-radius: 12px; padding: 10px; transition: background-color 0.2s, transform 0.2s; }
 .student-card:hover { background-color: #f1f1f1; transform: translateY(-5px); }
@@ -151,30 +151,6 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .potd-image { border-color: var(--accent-color); }
 .sotw-name, .potd-name { font-size: 1.2rem; color: var(--primary-color); margin: 0; }
 .sotw-message, .potd-message { font-size: 1rem; color: #555; margin-top: 5px; }
-
-/* Styles pour la fenêtre modale de date de naissance */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.6); display: flex;
-    justify-content: center; align-items: center; z-index: 1000;
-}
-.modal-content {
-    background-color: white; padding: 30px; border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 90%; max-width: 400px;
-    text-align: center;
-}
-.modal-content h3 { margin-top: 0; color: var(--primary-color); }
-.birthday-inputs {
-    display: flex; gap: 10px; margin: 15px 0;
-}
-.birthday-inputs select, .birthday-inputs input { width: 100%; }
-.modal-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
-.modal-button {
-    padding: 10px 25px; border: none; border-radius: 8px;
-    font-weight: 600; font-size: 1rem; cursor: pointer;
-}
-.modal-button.primary { background-color: var(--secondary-color); color: white; }
-.modal-button.secondary { background-color: #eee; color: #333; }
 
 @media (max-width: 600px) {
     body { padding: 10px; } .container { border-radius: 0; box-shadow: none; }
