@@ -2,17 +2,43 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
     let teacherPlanData = []; 
 
+    // MODIFICATION : Ajout des dates de naissance (birthday)
     const studentData = {
-        PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY" } ],
-        PEI2: [ { name: "Ahmed", photo: "https://lh3.googleusercontent.com/d/1cDF-yegSB2tqsWac0AoNttbi8qAALYT1" }, { name: "Yasser", photo: "https://lh3.googleusercontent.com/d/1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T" }, { name: "Eyad", photo: "https://lh3.googleusercontent.com/d/1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1" }, { name: "Ali", photo: "https://lh3.googleusercontent.com/d/1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr" } ],
-        PEI3: [ { name: "Seifeddine", photo: "https://lh3.googleusercontent.com/d/1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6" }, { name: "Mohamed", photo: "https://lh3.googleusercontent.com/d/1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn" }, { name: "Wajih", photo: "https://lh3.googleusercontent.com/d/1MH6M05mQamOHevmDffVFNpSFNnxqbxs3" }, { name: "Ahmad", photo: "https://lh3.googleusercontent.com/d/1zU-jBuAbYjHanzank9C1BAd00skS1Y5J" }, { name: "Adam", photo: "https://lh3.googleusercontent.com/d/15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF" } ],
-        PEI4: [ { name: "Mohamed Younes", photo: "https://lh3.googleusercontent.com/d/1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA" }, { name: "Mohamed Amine", photo: "https://lh3.googleusercontent.com/d/1UrBw6guz0oBTUy8COGeewIs3XAK773bR" }, { name: "Samir", photo: "https://lh3.googleusercontent.com/d/1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b" }, { name: "Abdulrahman", photo: "https://lh3.googleusercontent.com/d/1yCTO5StU2tnPY0BEynnWzUveljMIUcLE" }, { name: "Youssef", photo: "https://lh3.googleusercontent.com/d/1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e" } ],
-        DP2: [ { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF" }, { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu" } ]
+        PEI1: [
+            { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC", birthday: "12/4/2014" },
+            { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu", birthday: "24/2/2015" },
+            { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr", birthday: "9/8/2014" },
+            { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY", birthday: "15/8/2014" }
+        ],
+        PEI2: [
+            { name: "Ahmed", photo: "https://lh3.googleusercontent.com/d/1cDF-yegSB2tqsWac0AoNttbi8qAALYT1", birthday: "16/9/2013" },
+            { name: "Yasser", photo: "https://lh3.googleusercontent.com/d/1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T", birthday: "27/8/2013" },
+            { name: "Eyad", photo: "https://lh3.googleusercontent.com/d/1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1", birthday: "24/4/2013" },
+            { name: "Ali", photo: "https://lh3.googleusercontent.com/d/1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr", birthday: "17/4/2013" }
+        ],
+        PEI3: [
+            { name: "Seifeddine", photo: "https://lh3.googleusercontent.com/d/1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6", birthday: "29/1/2012" },
+            { name: "Mohamed", photo: "https://lh3.googleusercontent.com/d/1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn", birthday: "9/11/2011" },
+            { name: "Wajih", photo: "https://lh3.googleusercontent.com/d/1MH6M05mQamOHevmDffVFNpSFNnxqbxs3", birthday: "14/6/2012" },
+            { name: "Ahmad", photo: "https://lh3.googleusercontent.com/d/1zU-jBuAbYjHanzank9C1BAd00skS1Y5J", birthday: "27/2/2012" },
+            { name: "Adam", photo: "https://lh3.googleusercontent.com/d/15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF", birthday: "25/12/2012" }
+        ],
+        PEI4: [
+            { name: "Mohamed Younes", photo: "https://lh3.googleusercontent.com/d/1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA", birthday: "9/11/2011" },
+            { name: "Mohamed Amine", photo: "https://lh3.googleusercontent.com/d/1UrBw6guz0oBTUy8COGeewIs3XAK773bR", birthday: "23/12/2012" },
+            { name: "Samir", photo: "https://lh3.googleusercontent.com/d/1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b", birthday: "25/12/2012" },
+            { name: "Abdulrahman", photo: "https://lh3.googleusercontent.com/d/1yCTO5StU2tnPY0BEynnWzUveljMIUcLE", birthday: "19/4/2012" },
+            { name: "Youssef", photo: "https://lh3.googleusercontent.com/d/1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e", birthday: "28/11/2011" }
+        ],
+        DP2: [
+            { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF", birthday: "25/10/2008" },
+            { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu", birthday: "15/7/2008" }
+        ]
     };
     
     const translations = {
-        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "2. Choisissez un devoir à évaluer", studentEvaluationTitle: "3. Évaluez les élèves" },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "2. اختر واجباً لتقييمه", studentEvaluationTitle: "3. قيّم التلاميذ" }
+        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "2. Choisissez un devoir à évaluer", studentEvaluationTitle: "3. Évaluez les élèves", birthdayPrompt: "Veuillez entrer la date de naissance de votre enfant (JJ/MM/AAAA) :", birthdayError: "Date de naissance incorrecte. Veuillez réessayer." },
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "2. اختر واجباً لتقييمه", studentEvaluationTitle: "3. قيّم التلاميذ", birthdayPrompt: "الرجاء إدخال تاريخ ميلاد طفلك (يوم/شهر/سنة) :", birthdayError: "تاريخ الميلاد غير صحيح. الرجاء المحاولة مرة أخرى." }
     };
 
     const setLanguage = (lang) => {
@@ -100,9 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'student-card';
             card.innerHTML = `<img src="${student.photo}" alt="Photo de ${student.name}"><p>${student.name}</p>`;
             card.addEventListener('click', () => {
-                currentDate = moment();
-                loadStudentDashboard(className, student.name, currentDate);
-                showView('student-dashboard-view');
+                // MODIFICATION : Demander la date de naissance
+                const enteredBirthday = prompt(translations[document.documentElement.lang].birthdayPrompt);
+                if (enteredBirthday && enteredBirthday.trim() === student.birthday) {
+                    currentDate = moment();
+                    loadStudentDashboard(className, student.name, currentDate);
+                    showView('student-dashboard-view');
+                } else if (enteredBirthday !== null) { // Si l'utilisateur n'a pas cliqué sur "Annuler"
+                    alert(translations[document.documentElement.lang].birthdayError);
+                }
             });
             gridContainer.appendChild(card);
         });
@@ -124,7 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
     }
-
+    
+    // ... (le reste du code reste identique, je le fournis en entier pour être sûr)
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -147,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             iconsContainer.appendChild(card);
         });
     }
-
+    
     async function displayHomeworkCards(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
@@ -156,13 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
-        
         const homeworks = teacherPlanData.filter(item => item.Enseignant === teacherName && item.Devoirs && item.Jour);
         if (homeworks.length === 0) {
             cardsContainer.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForDay}</p>`;
             return;
         }
-        
         const allDates = [...new Set(homeworks.map(hw => hw.Jour))];
         const allClassNames = [...new Set(homeworks.map(hw => hw.Classe))];
         let allEvaluations = [];
@@ -175,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erreur de pré-chargement des évaluations:", error);
         }
-
         homeworks.forEach(hw => {
             const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
             const card = document.createElement('div');
@@ -188,29 +218,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', () => {
                 cardsContainer.querySelectorAll('.homework-card').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
-                // MODIFICATION : Passer la consigne du devoir
                 renderEvaluationTable(hw.Classe, hw.Jour, hw.Matière, hw.Devoirs);
             });
             cardsContainer.appendChild(card);
         });
     }
     
-    // MODIFICATION : La fonction accepte maintenant la consigne du devoir
     async function renderEvaluationTable(className, date, subject, assignment) {
         const evaluationSection = document.getElementById('teacher-evaluation-section');
         const tableContainer = document.getElementById('teacher-table-container');
         evaluationSection.style.display = 'block';
         tableContainer.innerHTML = `<p>${translations[document.documentElement.lang].loading}</p>`;
-        
-        // MODIFICATION : Défilement automatique vers la section d'évaluation
         evaluationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
         try {
             const response = await fetch(`/api/evaluations?class=${className}&date=${date}`);
             if (!response.ok) throw new Error('Erreur de chargement des données');
             const data = await response.json();
             const students = (studentData[className.split(' ')[0]] || []).map(s => s.name);
-            // MODIFICATION : Ajout de la consigne au-dessus du tableau
             let tableHTML = `<p class="homework-reminder"><strong>Devoir :</strong> ${assignment}</p>`;
             tableHTML += `<table class="teacher-evaluation-table"><thead><tr><th>${translations[document.documentElement.lang].evalTableHeaderStudent}</th><th>${translations[document.documentElement.lang].evalTableHeaderStatus}</th><th>${translations[document.documentElement.lang].evalTableHeaderParticipation}</th><th>${translations[document.documentElement.lang].evalTableHeaderBehavior}</th><th>${translations[document.documentElement.lang].evalTableHeaderComment}</th></tr></thead><tbody>`;
             for (const student of students) {
@@ -225,13 +249,12 @@ document.addEventListener('DOMContentLoaded', () => {
             tableContainer.innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}</p>`;
         }
     }
-
+    
     async function submitTeacherEvaluations(event) {
         const button = event.currentTarget;
         const className = button.dataset.class;
         const date = button.dataset.date;
         const subject = button.dataset.subject;
-
         const evaluations = Array.from(document.querySelectorAll('#teacher-table-container tbody tr')).map(row => ({
             studentName: row.dataset.student, class: className, date: date, subject: subject, status: row.querySelector('.status-select').value,
             participation: parseInt(row.querySelector('.participation-input').value, 10), behavior: parseInt(row.querySelector('.behavior-input').value, 10),
@@ -423,4 +446,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setLanguage('fr');
-});
+})
