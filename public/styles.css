@@ -24,7 +24,7 @@ header h1 { margin: 0; font-size: 1.8rem; }
     position: absolute; top: 50%; left: 20px; transform: translateY(-50%);
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;
     font-size: 1.5rem; cursor: pointer; border-radius: 50%; width: 45px; height: 45px; line-height: 45px; text-align: center;
-    transition: background-color: 0.2s;
+    transition: background-color 0.2s;
 }
 .back-button:hover { background: rgba(255,255,255,0.2); }
 .language-selector-home {
@@ -130,7 +130,6 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .homework-card span { font-weight: 600; }
 #teacher-evaluation-section { margin-top: 30px; }
 .homework-reminder { font-size: 1.1rem; font-weight: bold; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent-color); }
-/* NOUVEAU : Styles pour les sections de la page d'accueil */
 .home-showcase-container {
     display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
     width: 100%; max-width: 800px; margin-top: 30px;
@@ -152,6 +151,30 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .potd-image { border-color: var(--accent-color); }
 .sotw-name, .potd-name { font-size: 1.2rem; color: var(--primary-color); margin: 0; }
 .sotw-message, .potd-message { font-size: 1rem; color: #555; margin-top: 5px; }
+
+/* Styles pour la fenêtre modale de date de naissance */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6); display: flex;
+    justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background-color: white; padding: 30px; border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 90%; max-width: 400px;
+    text-align: center;
+}
+.modal-content h3 { margin-top: 0; color: var(--primary-color); }
+.birthday-inputs {
+    display: flex; gap: 10px; margin: 15px 0;
+}
+.birthday-inputs select, .birthday-inputs input { width: 100%; }
+.modal-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+.modal-button {
+    padding: 10px 25px; border: none; border-radius: 8px;
+    font-weight: 600; font-size: 1rem; cursor: pointer;
+}
+.modal-button.primary { background-color: var(--secondary-color); color: white; }
+.modal-button.secondary { background-color: #eee; color: #333; }
 
 @media (max-width: 600px) {
     body { padding: 10px; } .container { border-radius: 0; box-shadow: none; }
