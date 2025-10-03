@@ -571,4 +571,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     displayHomePageExtras();
     setLanguage('fr');
-});```
+});
