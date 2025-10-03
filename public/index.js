@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
-
+        
         if (isAdmin) {
             await setupTeacherDashboard(true);
             showView('teacher-dashboard-view');
