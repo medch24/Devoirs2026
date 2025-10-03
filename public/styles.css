@@ -24,7 +24,7 @@ header h1 { margin: 0; font-size: 1.8rem; }
     position: absolute; top: 50%; left: 20px; transform: translateY(-50%);
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;
     font-size: 1.5rem; cursor: pointer; border-radius: 50%; width: 45px; height: 45px; line-height: 45px; text-align: center;
-    transition: background-color: 0.2s;
+    transition: background-color 0.2s;
 }
 .back-button:hover { background: rgba(255,255,255,0.2); }
 .language-selector-home {
@@ -162,10 +162,8 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     text-align: center;
 }
 .modal-content h3 { margin-top: 0; color: var(--primary-color); }
-.birthday-inputs {
-    display: flex; gap: 10px; margin: 20px 0;
-}
-.birthday-inputs select, .birthday-inputs input { width: 100%; }
+.birthday-inputs { display: flex; gap: 10px; margin: 15px 0; }
+.birthday-inputs select, .birthday-inputs input { width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid var(--border-color); }
 .modal-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
 .modal-button {
     padding: 10px 25px; border: none; border-radius: 8px;
