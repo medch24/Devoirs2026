@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let teacherPlanData = []; 
 
     const studentData = {
-        PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC", birthday: "4/2014" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu", birthday: "2/2015" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr", birthday: "8/2014" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY", birthday: "8/2014" } ],
-        PEI2: [ { name: "Ahmed", photo: "https://lh3.googleusercontent.com/d/1cDF-yegSB2tqsWac0AoNttbi8qAALYT1", birthday: "9/2013" }, { name: "Yasser", photo: "https://lh3.googleusercontent.com/d/1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T", birthday: "8/2013" }, { name: "Eyad", photo: "https://lh3.googleusercontent.com/d/1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1", birthday: "4/2013" }, { name: "Ali", photo: "https://lh3.googleusercontent.com/d/1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr", birthday: "4/2013" } ],
-        PEI3: [ { name: "Seifeddine", photo: "https://lh3.googleusercontent.com/d/1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6", birthday: "1/2012" }, { name: "Mohamed", photo: "https://lh3.googleusercontent.com/d/1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn", birthday: "11/2011" }, { name: "Wajih", photo: "https://lh3.googleusercontent.com/d/1MH6M05mQamOHevmDffVFNpSFNnxqbxs3", birthday: "6/2012" }, { name: "Ahmad", photo: "https://lh3.googleusercontent.com/d/1zU-jBuAbYjHanzank9C1BAd00skS1Y5J", birthday: "2/2012" }, { name: "Adam", photo: "https://lh3.googleusercontent.com/d/15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF", birthday: "12/2012" } ],
-        PEI4: [ { name: "Mohamed Younes", photo: "https://lh3.googleusercontent.com/d/1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA", birthday: "11/2011" }, { name: "Mohamed Amine", photo: "https://lh3.googleusercontent.com/d/1UrBw6guz0oBTUy8COGeewIs3XAK773bR", birthday: "12/2012" }, { name: "Samir", photo: "https://lh3.googleusercontent.com/d/1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b", birthday: "12/2012" }, { name: "Abdulrahman", photo: "https://lh3.googleusercontent.com/d/1yCTO5StU2tnPY0BEynnWzUveljMIUcLE", birthday: "4/2012" }, { name: "Youssef", photo: "https://lh3.googleusercontent.com/d/1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e", birthday: "11/2011" } ],
-        DP2: [ { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF", birthday: "10/2008" }, { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu", birthday: "7/2008" } ]
+        PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC", birthday: "12/4/2014" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu", birthday: "24/2/2015" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr", birthday: "9/8/2014" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY", birthday: "15/8/2014" } ],
+        PEI2: [ { name: "Ahmed", photo: "https://lh3.googleusercontent.com/d/1cDF-yegSB2tqsWac0AoNttbi8qAALYT1", birthday: "16/9/2013" }, { name: "Yasser", photo: "https://lh3.googleusercontent.com/d/1UUrrAJV_bgFNktGDinDkSrpwSZz-e47T", birthday: "27/8/2013" }, { name: "Eyad", photo: "https://lh3.googleusercontent.com/d/1HGyWS4cC1jWWD25Ah3WcT_eIbUHqFzJ1", birthday: "24/4/2013" }, { name: "Ali", photo: "https://lh3.googleusercontent.com/d/1bN-fDf_IWkXoW3WjSOXI5_M4KkL3FDKr", birthday: "17/4/2013" } ],
+        PEI3: [ { name: "Seifeddine", photo: "https://lh3.googleusercontent.com/d/1tWdPSbtCAsTMB86WzDgqh3Xw01ahm9s6", birthday: "29/1/2012" }, { name: "Mohamed", photo: "https://lh3.googleusercontent.com/d/1lB8ObGOvQDVT6FITL2y7C5TYmAGyggFn", birthday: "9/11/2011" }, { name: "Wajih", photo: "https://lh3.googleusercontent.com/d/1MH6M05mQamOHevmDffVFNpSFNnxqbxs3", birthday: "14/6/2012" }, { name: "Ahmad", photo: "https://lh3.googleusercontent.com/d/1zU-jBuAbYjHanzank9C1BAd00skS1Y5J", birthday: "27/2/2012" }, { name: "Adam", photo: "https://lh3.googleusercontent.com/d/15I9p6VSnn1yVmPxRRbGsUkM-fsBKYOWF", birthday: "25/12/2012" } ],
+        PEI4: [ { name: "Mohamed Younes", photo: "https://lh3.googleusercontent.com/d/1wzraoZY_lRafcDXeaxSBeX5cIU57p4xA", birthday: "9/11/2011" }, { name: "Mohamed Amine", photo: "https://lh3.googleusercontent.com/d/1UrBw6guz0oBTUy8COGeewIs3XAK773bR", birthday: "23/12/2012" }, { name: "Samir", photo: "https://lh3.googleusercontent.com/d/1NdaCH8CU0DJFHXw4D0lItP-QnCswl23b", birthday: "25/12/2012" }, { name: "Abdulrahman", photo: "https://lh3.googleusercontent.com/d/1yCTO5StU2tnPY0BEynnWzUveljMIUcLE", birthday: "19/4/2012" }, { name: "Youssef", photo: "https://lh3.googleusercontent.com/d/1Bygg5-PYrjjMOZdI5hAe16eZ8ltn772e", birthday: "28/11/2011" } ],
+        DP2: [ { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF", birthday: "25/10/2008" }, { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu", birthday: "15/7/2008" } ]
     };
     
     const translations = {
@@ -15,7 +15,39 @@ document.addEventListener('DOMContentLoaded', () => {
         ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "2. اختر واجباً لتقييمه", studentEvaluationTitle: "3. قيّم التلاميذ", birthdayPrompt: "للتحقق، الرجاء إدخال شهر وسنة ميلاد طفلك (مثال: 4/2014) :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة" }
     };
 
-    const setLanguage = (lang) => {
+    const setLanguage = (lang) => { /* ... (Contenu identique, fourni ci-dessous) */ };
+    const views = document.querySelectorAll('.view');
+    const homeView = document.getElementById('home-view');
+    const goToParentBtn = document.getElementById('go-to-parent');
+    const goToTeacherBtn = document.getElementById('go-to-teacher');
+    const backButtons = document.querySelectorAll('.back-button');
+    const showView = (viewId) => { homeView.style.display = 'none'; views.forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; };
+    const goHome = () => { homeView.style.display = 'block'; views.forEach(v => v.style.display = 'none'); displayHomePageExtras(); };
+
+    goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
+    goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
+    backButtons.forEach(btn => btn.addEventListener('click', goHome));
+
+    // ================== CORRECTION DE LA LOGIQUE DE CONNEXION ==================
+    document.getElementById('teacher-login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
+        // Connexion simple pour les enseignants
+        const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
+
+        if (isAdmin || isTeacher) {
+            setupTeacherDashboard(isAdmin, user);
+            showView('teacher-dashboard-view');
+        } else {
+            document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
+        }
+    });
+
+    // ... (le reste du code est identique et complet)
+
+    function setLanguage(lang) {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         moment.locale(lang);
@@ -42,45 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayHomeworkCards(activeTeacher.dataset.teacherName);
             }
         }
-    };
+    }
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
     document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
-
-    const views = document.querySelectorAll('.view');
-    const homeView = document.getElementById('home-view');
-    const goToParentBtn = document.getElementById('go-to-parent');
-    const goToTeacherBtn = document.getElementById('go-to-teacher');
-    const backButtons = document.querySelectorAll('.back-button');
-    const showView = (viewId) => { homeView.style.display = 'none'; views.forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; };
-    const goHome = () => { homeView.style.display = 'block'; views.forEach(v => v.style.display = 'none'); displayHomePageExtras(); };
-    goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
-    goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
-    backButtons.forEach(btn => btn.addEventListener('click', goHome));
-    document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
-
-        // Attendre que les données du planning soient chargées pour vérifier les enseignants
-        if (teacherPlanData.length === 0) {
-            try {
-                const response = await fetch('/api/initial-data');
-                const initialData = await response.json();
-                teacherPlanData = initialData.planData;
-            } catch (error) {
-                console.error("Impossible de vérifier les enseignants:", error);
-            }
-        }
-        const isTeacher = teacherPlanData.some(d => d.Enseignant === user) && pass === 'Alkawthar@!!!';
-
-        if (isAdmin || isTeacher) {
-            setupTeacherDashboard(isAdmin, user);
-            showView('teacher-dashboard-view');
-        } else {
-            document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
-        }
-    });
 
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
@@ -130,11 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminUploadSection = document.getElementById('admin-upload-section');
         const adminPhotoSection = document.getElementById('admin-photo-section');
         const teacherIconsContainer = document.getElementById('teacher-icons-container');
-        const teacherSelectTitle = document.querySelector('[data-translate="teacherSelectTitle"]');
-
+        const teacherSelectTitle = teacherDashboardView.querySelector('[data-translate="teacherSelectTitle"]');
         adminUploadSection.style.display = isAdmin ? 'block' : 'none';
         adminPhotoSection.style.display = isAdmin ? 'block' : 'none';
-        
         if (isAdmin) {
             const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
             const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
@@ -142,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
             submitPhotoBtn.addEventListener('click', handleSubmitPhoto);
         }
-
         try {
             if (teacherPlanData.length === 0) {
                 const response = await fetch('/api/initial-data');
@@ -152,8 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const allTeachers = [...new Set(teacherPlanData.map(item => item.Enseignant).filter(Boolean))].sort();
             populateTeacherIcons(allTeachers);
-
-            if (!isAdmin && username) {
+            if (!isAdmin) {
                 teacherIconsContainer.style.display = 'none';
                 teacherSelectTitle.style.display = 'none';
                 displayHomeworkCards(username);
@@ -161,14 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 teacherIconsContainer.style.display = 'flex';
                 teacherSelectTitle.style.display = 'block';
             }
-
         } catch (error) {
             console.error(error);
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
         }
     }
     
-    // ... (le reste du code est identique et complet)
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
@@ -267,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeTeacherCard) {
                 displayHomeworkCards(activeTeacherCard.dataset.teacherName);
             } else {
-                // Si l'enseignant n'a pas d'icônes (vue simplifiée)
                 const username = document.getElementById('username').value;
                 displayHomeworkCards(username);
             }
@@ -300,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
-                await setupTeacherDashboard(true); // Recharger en mode admin
+                await setupTeacherDashboard(true);
             } catch (error) {
                 console.error("Erreur d'upload:", error);
                 uploadStatus.textContent = `Erreur : ${error.message}.`;
