@@ -1,6 +1,3 @@
-// Le contenu complet de index.js que je vous ai fourni dans la réponse précédente était déjà correct. 
-// Je le remets ici pour être absolument certain que vous avez la bonne version.
-
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
     let teacherPlanData = []; 
