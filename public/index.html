@@ -19,7 +19,24 @@
         <!-- Vue Principale (Accueil) -->
         <div id="home-view">
             <header class="main-header"><div class="language-selector-home"><button id="lang-fr">Français</button><button id="lang-ar">العربية</button></div><h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1></header>
-            <main class="main-menu"><img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo"><button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button><button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button><div class="home-showcase-container"><div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;"><h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2><img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo"><h3 id="sotw-name"></h3><p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p></div><div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2><img id="potd-image" src="" alt="Photo de félicitations" class="potd-image"><p id="potd-message" data-translate="potdMessage">Un projet ou un succès à célébrer !</p></div></div></main>
+            <main class="main-menu">
+                <img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo">
+                <button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button>
+                <button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button>
+                <div class="home-showcase-container">
+                    <div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;">
+                        <h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2>
+                        <img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo">
+                        <h3 id="sotw-name"></h3>
+                        <p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p>
+                    </div>
+                    <div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;">
+                        <h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2>
+                        <img id="potd-image" src="" alt="Photo de félicitations" class="potd-image">
+                        <p id="potd-message" data-translate="potdMessage">Un projet ou un succès à célébrer !</p>
+                    </div>
+                </div>
+            </main>
         </div>
 
         <!-- Vue Espace Parent -->
@@ -47,7 +64,7 @@
         </div>
     </div>
 
-    <!-- NOUVEAU : Fenêtre Modale pour la Date de Naissance avec listes déroulantes -->
+    <!-- Fenêtre Modale pour la Date de Naissance -->
     <div id="birthday-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 data-translate="birthdayModalTitle">Vérification</h3>
