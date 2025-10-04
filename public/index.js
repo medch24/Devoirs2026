@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const translations = {
         fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "3. Choisissez un devoir à évaluer", weekSelectionTitle: "2. Choisissez une semaine", studentEvaluationTitle: "4. Évaluez les élèves", birthdayModalTitle: "Vérification", birthdayPrompt: "Veuillez choisir le mois et l'année de naissance de votre enfant :", birthdayError: "Date incorrecte. Veuillez réessayer.", cancelButton: "Annuler", confirmButton: "Confirmer", status_vide: "Vide", status_fait: "Fait", status_non_fait: "Non Fait", status_partiellement_fait: "Partiellement Fait", status_absent: "Absent", sotwTitle: "⭐ Élève de la semaine ⭐", sotwMessage: "Félicitations pour tes excellents efforts !", potdTitle: "🎉 Félicitations ! 🎉", potdMessage: "Un projet ou un succès à célébrer !", adminPhotoTitle: "Ajouter une Photo de Félicitations", monthPlaceholder: "Mois", yearPlaceholder: "Année", weekLabel: "Semaine" },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "3. اختر واجباً لتقييمه", weekSelectionTitle: "2. اختر أسبوعاً", studentEvaluationTitle: "4. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة", weekLabel: "الأسبوع" }
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار כל المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "3. اختر واجباً لتقييمه", weekSelectionTitle: "2. اختر أسبوعاً", studentEvaluationTitle: "4. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة", weekLabel: "الأسبوع" }
     };
 
     const setLanguage = (lang) => {
@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
+
         if (isAdmin) {
             setupTeacherDashboard(true);
             showView('teacher-dashboard-view');
@@ -74,26 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function populateClassButtons() { /* ... */ }
-    function displayStudentGrid(className) { /* ... */ }
-    function showBirthdayModal(className, student) { /* ... */ }
-    async function setupTeacherDashboard(isAdmin, username) { /* ... */ }
-    function populateTeacherIcons(teachers) { /* ... */ }
-    function displayWeekSelector(teacherName) { /* ... */ }
-    async function displayHomeworkCards(teacherName, weekHomeworks) { /* ... */ }
-    async function renderEvaluationTable(className, date, subject, assignment) { /* ... */ }
-    async function submitTeacherEvaluations(event) { /* ... */ }
-    async function handleFileUpload(excelFileInput) { /* ... */ }
-    function parseFrenchDate(dateString) { /* ... */ }
-    function formatPlanData(jsonPlan) { /* ... */ }
-    async function loadStudentDashboard(className, studentName, date) { /* ... */ }
-    function updateWeeklyStats(weeklyEvals) { /* ... */ }
-    async function displayHomePageExtras() { /* ... */ }
-    async function handleSubmitPhoto() { /* ... */ }
-    async function displayStudentOfTheWeek() { /* ... */ }
-    async function displayPhotoOfTheDay() { /* ... */ }
-    
-    // ================== REMPLISSAGE DES FONCTIONS ==================
     function populateClassButtons() {
         const container = document.getElementById('class-buttons-container');
         const studentGrid = document.getElementById('student-grid-container');
@@ -245,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const homeworksByWeek = {};
         homeworks.forEach(hw => {
-            // Utiliser .startOf('week') qui commence par Dimanche (locale fr/ar)
             const weekKey = moment(hw.Jour, 'YYYY-MM-DD').startOf('week').format('YYYY-MM-DD');
             if (!homeworksByWeek[weekKey]) {
                 homeworksByWeek[weekKey] = [];
@@ -253,13 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
             homeworksByWeek[weekKey].push(hw);
         });
 
-        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(b) - new Date(a)); // Plus récent en premier
+        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(b) - new Date(a));
 
         sortedWeekKeys.forEach(weekKey => {
             const button = document.createElement('button');
             button.className = 'week-button';
             const startOfWeek = moment(weekKey).locale(document.documentElement.lang);
-            const endOfWeek = startOfWeek.clone().add(4, 'days'); // Dimanche à Jeudi
+            const endOfWeek = startOfWeek.clone().add(4, 'days');
             button.textContent = `${translations[document.documentElement.lang].weekLabel} (${startOfWeek.format('D MMM')} - ${endOfWeek.format('D MMM')})`;
             
             button.addEventListener('click', (e) => {
@@ -374,7 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formattedPlan.length === 0) throw new Error("Aucune donnée valide trouvée.");
                 uploadStatus.textContent = `Fichier lu. ${formattedPlan.length} devoirs trouvés. Envoi en cours...`;
                 const response = await fetch('/api/upload-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formattedPlan) });
-                if (!response.ok) { const errorResult = await response.json(); throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`); }
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(`Erreur du serveur (statut ${response.status}). ${errorResult.message || ''}`);
+                }
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
@@ -389,13 +372,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function parseFrenchDate(dateString) {
-        let cleanString = dateString.toLowerCase().trim();
-        const arabicMap = { 'يناير': 'january', 'فبراير': 'february', 'مارس': 'march', 'أبريل': 'april', 'ماي': 'may', 'يونيو': 'june', 'يوليو': 'july', 'أغسطس': 'august', 'سبتمبر': 'september', 'أكتوبر': 'october', 'نوفمبر': 'november', 'ديسمبر': 'december', 'الأحد': 'sunday', 'الاثنين': 'monday', 'الثلاثاء': 'tuesday', 'الأربعاء': 'wednesday', 'الخميس': 'thursday', 'الجمعة': 'friday', 'السبت': 'saturday' };
+        let cleanString = String(dateString).toLowerCase().trim();
+        const arabicMap = { 'يناير': 'january', 'فبراير': 'february', 'مارس': 'march', 'أبريل': 'april', 'ماي': 'may', 'يونيو': 'june', 'يوليو': 'july', 'أغسطس': 'august', 'سبتمبر': 'september', 'أكتوبر': 'october', 'نوفمبر': 'november', 'ديسمبر': 'december', 'الأحد': 'sunday', 'الاثنين': 'monday', 'الثلاثاء': 'tuesday', 'الأربعاء': 'wednesday', 'الخميس': 'thursday', 'الجمعة': 'friday', 'السبت': 'saturday', 'موافق': '', 'ل': '' };
         for (const [key, value] of Object.entries(arabicMap)) {
             cleanString = cleanString.replace(new RegExp(key, 'g'), value);
         }
+        cleanString = cleanString.replace(/\s+/g, ' ').trim();
         moment.locale('fr');
-        const formats = ["dddd D MMMM YYYY", "D MMMM YYYY", "DD/MM/YYYY", "YYYY-MM-DD", "DD-MM-YYYY"];
+        const formats = ["dddd D MMMM YYYY", "D-M-YYYY", "D MMMM YYYY", "DD/MM/YYYY", "YYYY-MM-DD"];
         const momentDate = moment(cleanString, formats, 'fr', true);
         return momentDate.isValid() ? momentDate.format('YYYY-MM-DD') : 'Invalid date';
     }
