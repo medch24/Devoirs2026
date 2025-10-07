@@ -6,34 +6,36 @@ module.exports = async (req, res) => {
     try {
         await client.connect();
         const db = client.db('test');
-        const collection = db.collection('settings');
+        // MODIFICATION: Utilisation d'une nouvelle collection pour stocker plusieurs photos
+        const collection = db.collection('photos_of_the_day');
         
-        const photoSettingId = "photo_of_the_day";
-
         if (req.method === 'POST') {
-            const { imageUrl } = req.body;
+            // MODIFICATION: Accepte maintenant une URL et un commentaire
+            const { imageUrl, comment } = req.body;
             
-            // Sécurité simple pour l'admin
             const { username, password } = req.headers;
             if (username !== 'Mohamed86' || password !== 'Mohamed86') {
                 return res.status(401).json({ error: 'Non autorisé' });
             }
 
-            if (typeof imageUrl !== 'string') {
+            if (typeof imageUrl !== 'string' || !imageUrl) {
                 return res.status(400).json({ error: 'URL invalide' });
             }
 
-            await collection.updateOne(
-                { _id: photoSettingId },
-                { $set: { url: imageUrl } },
-                { upsert: true }
-            );
-            return res.status(200).json({ message: 'Photo mise à jour avec succès.' });
+            // MODIFICATION: Insère une nouvelle photo au lieu de la mettre à jour
+            await collection.insertOne({
+                url: imageUrl,
+                comment: comment || "", // Ajoute le commentaire
+                createdAt: new Date() // Ajoute une date pour le tri
+            });
+            return res.status(200).json({ message: 'Photo ajoutée avec succès.' });
         }
 
         if (req.method === 'GET') {
-            const setting = await collection.findOne({ _id: photoSettingId });
-            return res.status(200).json({ url: setting ? setting.url : null });
+            // MODIFICATION: Récupère la photo la plus récente
+            const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
+            const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
+            return res.status(200).json(photoData); // Renvoie l'objet photo complet (url, comment, etc.)
         }
         
         return res.status(405).json({ message: 'Méthode non autorisée' });
