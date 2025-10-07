@@ -104,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'student-card';
             card.innerHTML = `<img src="${student.photo}" alt="Photo de ${student.name}"><p>${student.name}</p>`;
             card.addEventListener('click', () => {
-                // ACCÈS DIRECT SANS VÉRIFICATION
                 currentDate = moment();
                 loadStudentDashboard(className, student.name, currentDate);
                 showView('student-dashboard-view');
@@ -162,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // MODIFICATION: Organisation des devoirs par semaine numérotée
     function displayWeekSelector(teacherName) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const weekContainer = teacherDashboardView.querySelector('#week-buttons-container');
@@ -174,30 +174,53 @@ document.addEventListener('DOMContentLoaded', () => {
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'none';
         weekTitle.style.display = 'block';
+        
         const homeworks = teacherPlanData.filter(item => item.Enseignant === teacherName && item.Devoirs && item.Jour && item.Jour !== 'Invalid date');
         if (homeworks.length === 0) {
             weekContainer.innerHTML = `<p>${translations[document.documentElement.lang].noHomeworkForDay}</p>`;
             return;
         }
+
         const homeworksByWeek = {};
+        // Date de référence pour la semaine 5
+        const weekAnchor = moment.utc('2025-09-28').startOf('day'); 
+
         homeworks.forEach(hw => {
-            const weekKey = moment(hw.Jour, 'YYYY-MM-DD').startOf('week').format('YYYY-MM-DD');
+            const hwDate = moment.utc(hw.Jour, 'YYYY-MM-DD');
+            // La semaine scolaire commence le dimanche
+            const startOfWeekForHw = hwDate.clone().startOf('week');
+            
+            const weekDiff = startOfWeekForHw.diff(weekAnchor, 'weeks');
+            const weekNumber = 5 + weekDiff;
+            const weekKey = `Semaine ${weekNumber}`;
+
             if (!homeworksByWeek[weekKey]) {
-                homeworksByWeek[weekKey] = [];
+                homeworksByWeek[weekKey] = {
+                    homeworks: [],
+                    startDate: startOfWeekForHw
+                };
             }
-            homeworksByWeek[weekKey].push(hw);
+            homeworksByWeek[weekKey].homeworks.push(hw);
         });
-        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => new Date(b) - new Date(a));
+
+        const sortedWeekKeys = Object.keys(homeworksByWeek).sort((a, b) => {
+            return homeworksByWeek[b].startDate.diff(homeworksByWeek[a].startDate);
+        });
+        
         sortedWeekKeys.forEach(weekKey => {
+            const weekData = homeworksByWeek[weekKey];
             const button = document.createElement('button');
             button.className = 'week-button';
-            const startOfWeek = moment(weekKey).locale(document.documentElement.lang);
-            const endOfWeek = startOfWeek.clone().add(4, 'days');
-            button.textContent = `${translations[document.documentElement.lang].weekLabel} (${startOfWeek.format('D MMM')} - ${endOfWeek.format('D MMM')})`;
+            const startOfWeek = weekData.startDate.clone().locale(document.documentElement.lang);
+            const endOfWeek = startOfWeek.clone().add(4, 'days'); // Dimanche à Jeudi
+            
+            const weekNumberFromName = weekKey.split(' ')[1];
+            button.textContent = `${translations[document.documentElement.lang].weekLabel} ${weekNumberFromName} (${startOfWeek.format('D MMM')} - ${endOfWeek.format('D MMM')})`;
+            
             button.addEventListener('click', (e) => {
                 weekContainer.querySelectorAll('.week-button').forEach(btn => btn.classList.remove('active'));
                 e.currentTarget.classList.add('active');
-                displayHomeworkCards(teacherName, homeworksByWeek[weekKey]);
+                displayHomeworkCards(teacherName, weekData.homeworks);
             });
             weekContainer.appendChild(button);
         });
@@ -279,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Évaluations enregistrées !");
             const activeTeacherCard = document.querySelector('.teacher-icon-card.active');
             if (activeTeacherCard) {
+                // Rafraîchir l'affichage des semaines pour mettre à jour l'indicateur "evaluated"
                 displayWeekSelector(activeTeacherCard.dataset.teacherName);
             }
         } catch (error) { 
@@ -307,6 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 uploadStatus.textContent = result.message;
                 uploadStatus.className = 'success';
+                // Recharger les données pour refléter les changements
+                teacherPlanData = []; // Vider le cache
                 await setupTeacherDashboard(true);
             } catch (error) {
                 console.error("Erreur d'upload:", error);
@@ -353,22 +379,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }).filter(row => row.Devoirs && row.Jour && row.Jour !== 'Invalid date');
     }
     
+    // MODIFICATION: Logique pour sauter le week-end (vendredi/samedi)
     document.getElementById('prev-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.subtract(1, 'days'); 
+            currentDate.subtract(1, 'days');
+            // Si on tombe sur un samedi (6) ou un vendredi (5), on recule jusqu'à jeudi (4)
+            if (currentDate.day() === 6) { // Samedi -> Vendredi
+                currentDate.subtract(1, 'days');
+            }
+            if (currentDate.day() === 5) { // Vendredi -> Jeudi
+                currentDate.subtract(1, 'days');
+            }
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
 
+    // MODIFICATION: Logique pour sauter le week-end (vendredi/samedi)
     document.getElementById('next-day-btn').addEventListener('click', () => { 
         const studentDashboardView = document.getElementById('student-dashboard-view');
         const className = studentDashboardView.dataset.className;
         const studentName = studentDashboardView.dataset.studentName;
         if (className && studentName) {
-            currentDate.add(1, 'days'); 
+            currentDate.add(1, 'days');
+            // Si on tombe sur un vendredi (5) ou un samedi (6), on avance jusqu'à dimanche (0)
+            if (currentDate.day() === 5) { // Vendredi -> Dimanche
+                currentDate.add(2, 'days');
+            }
+            if (currentDate.day() === 6) { // Samedi -> Dimanche
+                currentDate.add(1, 'days');
+            }
             loadStudentDashboard(className, studentName, currentDate); 
         }
     });
@@ -404,9 +446,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         return status.toLowerCase().replace(/ /g, '-');
                     };
                     const statusClass = getStatusClass(dailyEval.status);
+                    
+                    // MODIFICATION: Ajout du texte de statut pour plus de clarté
+                    const statusKey = (dailyEval.status || 'vide').toLowerCase().replace(/ /g, '_');
+                    const statusText = translations[currentLang]['status_' + statusKey] || dailyEval.status || '';
+
                     const card = document.createElement('div');
                     card.className = 'subject-card';
-                    card.innerHTML = `<h3><span>${hw.subject}</span><span class="status-lamp ${statusClass}"></span></h3><div class="content"><div class="assignment">${hw.assignment}</div><div class="comment-box">${dailyEval.comment || "..."}</div><div class="scores"><div><span>${translations[currentLang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div><div><span>${translations[currentLang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div></div></div>`;
+                    card.innerHTML = `<h3>
+                                        <span>${hw.subject}</span>
+                                        <div class="status-container">
+                                            <span class="status-text ${statusClass}">${statusText}</span>
+                                            <span class="status-lamp ${statusClass}"></span>
+                                        </div>
+                                      </h3>
+                                      <div class="content">
+                                        <div class="assignment">${hw.assignment}</div>
+                                        <div class="comment-box">${dailyEval.comment || "..."}</div>
+                                        <div class="scores">
+                                            <div><span>${translations[currentLang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div>
+                                            <div><span>${translations[currentLang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div>
+                                        </div>
+                                      </div>`;
                     homeworkGrid.appendChild(card);
                 });
             } else {
@@ -424,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dailyScores = {};
         (weeklyEvals || []).forEach(ev => {
             const dayOfWeek = moment(ev.date).day();
-            if (dayOfWeek >= 0 && dayOfWeek <= 4) {
+            if (dayOfWeek >= 0 && dayOfWeek <= 4) { // Dimanche (0) à Jeudi (4)
                 const dayKey = ev.date;
                 if (!dailyScores[dayKey]) { dailyScores[dayKey] = { allDone: true, participationSum: 0, behaviorSum: 0, count: 0, hasHomework: true }; }
                 if (ev.status !== 'Fait' && ev.status !== 'Absent') { dailyScores[dayKey].allDone = false; }
@@ -474,10 +535,14 @@ document.addEventListener('DOMContentLoaded', () => {
         displayPhotoOfTheDay();
     }
     
+    // MODIFICATION: Envoi du commentaire avec l'URL de la photo
     async function handleSubmitPhoto() {
         const photoUrlInput = document.getElementById('photo-url-input');
+        const commentInput = document.getElementById('photo-comment-input');
         const photoStatus = document.getElementById('photo-status');
         const imageUrl = photoUrlInput.value.trim();
+        const comment = commentInput.value.trim();
+
         if (!imageUrl) {
             photoStatus.textContent = 'Veuillez coller un lien.';
             photoStatus.className = 'error';
@@ -489,12 +554,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/photo-of-the-day', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'username': 'Mohamed86', 'password': 'Mohamed86' },
-                body: JSON.stringify({ imageUrl })
+                body: JSON.stringify({ imageUrl, comment })
             });
             if (!response.ok) throw new Error('Échec de la mise à jour');
             photoStatus.textContent = 'Photo enregistrée !';
             photoStatus.className = 'success';
             photoUrlInput.value = '';
+            commentInput.value = '';
+            // Rafraîchir la photo sur la page d'accueil
+            displayPhotoOfTheDay();
         } catch (error) {
             console.error("Erreur d'enregistrement:", error);
             photoStatus.textContent = 'Une erreur est survenue.';
@@ -507,26 +575,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/weekly-summary');
             if (!response.ok) return;
             const sotw = await response.json();
+            const sotwShowcase = document.getElementById('sotw-showcase');
             if (sotw && sotw.name && sotw.class) {
                 const classKey = sotw.class.split(' ')[0];
                 const studentInfo = (studentData[classKey] || []).find(s => s.name === sotw.name);
                 if (studentInfo) {
                     document.getElementById('sotw-photo').src = studentInfo.photo;
                     document.getElementById('sotw-name').textContent = sotw.name;
-                    document.getElementById('sotw-showcase').style.display = 'block';
+                    sotwShowcase.style.display = 'block';
+                } else {
+                    sotwShowcase.style.display = 'none';
                 }
+            } else {
+                sotwShowcase.style.display = 'none';
             }
         } catch (error) { console.error("Erreur:", error); }
     }
-
+    
+    // MODIFICATION: Affichage de la photo et de son commentaire
     async function displayPhotoOfTheDay() {
         try {
             const response = await fetch('/api/photo-of-the-day');
             if (!response.ok) return;
             const data = await response.json();
+            const potdShowcase = document.getElementById('potd-showcase');
             if (data && data.url) {
                 document.getElementById('potd-image').src = data.url;
-                document.getElementById('potd-showcase').style.display = 'block';
+                const messageElement = document.getElementById('potd-message');
+                if (data.comment) {
+                    messageElement.textContent = data.comment;
+                } else {
+                    // Message par défaut si aucun commentaire n'a été ajouté
+                    messageElement.textContent = translations[document.documentElement.lang].potdMessage;
+                }
+                potdShowcase.style.display = 'block';
+            } else {
+                potdShowcase.style.display = 'none';
             }
         } catch (error) { console.error("Erreur:", error); }
     }
