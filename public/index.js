@@ -174,13 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsTitle.style.display = 'none';
         weekTitle.style.display = 'block';
         
-        // MODIFICATION: Filtrer les devoirs pour n'inclure que les jours de dimanche à jeudi
         const homeworks = teacherPlanData.filter(item => {
             if (!item.Enseignant || item.Enseignant !== teacherName || !item.Devoirs || !item.Jour || item.Jour === 'Invalid date') {
                 return false;
             }
-            const dayOfWeek = moment.utc(item.Jour, 'YYYY-MM-DD').day(); // Dimanche=0, Samedi=6
-            return dayOfWeek >= 0 && dayOfWeek <= 4; // Inclure Dimanche, Lundi, Mardi, Mercredi, Jeudi
+            const dayOfWeek = moment.utc(item.Jour, 'YYYY-MM-DD').day();
+            return dayOfWeek >= 0 && dayOfWeek <= 4;
         });
 
         if (homeworks.length === 0) {
@@ -193,7 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         homeworks.forEach(hw => {
             const hwDate = moment.utc(hw.Jour, 'YYYY-MM-DD');
-            const startOfWeekForHw = hwDate.clone().startOf('week');
+            
+            // --- CORRECTION CLÉ ---
+            // Force le début de la semaine au dimanche (jour 0) pour être indépendant de la langue
+            const startOfWeekForHw = hwDate.clone().day(0); 
             
             const weekDiff = startOfWeekForHw.diff(weekAnchor, 'weeks');
             const weekNumber = 5 + weekDiff;
@@ -449,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const statusKey = (dailyEval.status || 'vide').toLowerCase().replace(/ /g, '_');
                     let statusText = translations[currentLang]['status_' + statusKey] || dailyEval.status || '';
 
-                    // MODIFICATION: Rendre le texte du statut vide s'il n'est pas défini
                     if (statusKey === 'vide') {
                         statusText = '';
                     }
