@@ -94,6 +94,10 @@ header h1 { margin: 0; font-size: 1.8rem; }
     margin-right: 8px;
     white-space: nowrap;
 }
+/* MODIFICATION: Cache le conteneur de texte s'il est vide */
+.status-text:empty {
+    display: none;
+}
 .status-text.fait { background-color: var(--green-status); color: white; }
 .status-text.non-fait { background-color: var(--red-status); color: white; }
 .status-text.partiellement-fait { background-color: var(--orange-status); color: white; }
@@ -196,4 +200,4 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     .main-menu, .login-form { padding: 25px; }
     .role-button { padding: 15px; font-size: 1.2rem; }
     .dashboard-nav { justify-content: center; }
-}
+}```
