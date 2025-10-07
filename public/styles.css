@@ -77,16 +77,40 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .scores span { display: block; }
 .scores span:first-child { font-weight: 600; color: var(--text-color); }
 .scores span:last-child { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
+
+/* --- Styles pour le statut des devoirs (texte + ampoule) --- */
+.status-container {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.status-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    color: #333;
+    background-color: #e9ecef;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+.status-text.fait { background-color: var(--green-status); color: white; }
+.status-text.non-fait { background-color: var(--red-status); color: white; }
+.status-text.partiellement-fait { background-color: var(--orange-status); color: white; }
+.status-text.absent { background-color: var(--grey-status); color: white; }
 .status-lamp {
     width: 15px; height: 15px; border-radius: 50%;
-    background-color: transparent; flex-shrink: 0; margin-left: 10px;
+    background-color: #e9ecef;
+    flex-shrink: 0;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 .status-lamp.fait { background-color: var(--green-status); }
 .status-lamp.non-fait { background-color: var(--red-status); }
 .status-lamp.partiellement-fait { background-color: var(--orange-status); }
 .status-lamp.absent { background-color: var(--grey-status); }
+
 .upload-section { padding: 25px; background: #edf2f7; border-bottom: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
+.upload-section input[type="text"] { margin-bottom: 10px; }
 #upload-status, #photo-status { font-weight: 600; margin-top: 15px; }
 #upload-status.success, #photo-status.success { color: var(--green-status); }
 #upload-status.error, #photo-status.error { color: var(--red-status); }
@@ -136,21 +160,32 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 }
 .student-of-the-week-showcase, .photo-of-the-day-showcase {
     flex: 1; min-width: 250px;
-    padding: 20px; background-color: #fffbe6;
-    border: 1px solid #ffeeba; border-radius: 12px;
+    padding: 20px; background-color: #f0f7ff;
+    border: 1px solid #bde0ff; border-radius: 12px;
     text-align: center;
 }
+.student-of-the-week-showcase { background-color: #fffbe6; border-color: #ffeeba; }
 .sotw-title, .potd-title {
-    color: var(--orange-status); font-size: 1.3rem; margin: 0 0 15px 0;
+    color: var(--primary-color); font-size: 1.3rem; margin: 0 0 15px 0;
 }
-.sotw-photo, .potd-image {
+.sotw-title { color: var(--orange-status); }
+
+/* --- Styles pour les photos --- */
+.sotw-photo {
     width: 130px; height: 130px; border-radius: 50%;
     border: 5px solid var(--yellow-star); object-fit: cover;
     margin-bottom: 10px;
 }
-.potd-image { border-color: var(--accent-color); }
-.sotw-name, .potd-name { font-size: 1.2rem; color: var(--primary-color); margin: 0; }
-.sotw-message, .potd-message { font-size: 1rem; color: #555; margin-top: 5px; }
+.potd-image {
+    width: 100%; 
+    max-height: 250px;
+    border-radius: 12px;
+    border: 5px solid var(--accent-color);
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+.sotw-name { font-size: 1.2rem; color: var(--primary-color); margin: 0; }
+.sotw-message, .potd-message { font-size: 1rem; color: #555; margin-top: 5px; min-height: 20px; }
 
 @media (max-width: 600px) {
     body { padding: 10px; } .container { border-radius: 0; box-shadow: none; }
