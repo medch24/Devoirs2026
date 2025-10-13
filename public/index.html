@@ -19,7 +19,7 @@
         <!-- Vue Principale (Accueil) -->
         <div id="home-view">
             <header class="main-header"><div class="language-selector-home"><button id="lang-fr">Français</button><button id="lang-ar">العربية</button></div><h1 data-translate="portalTitle">Portail de Suivi des Devoirs</h1></header>
-            <main class="main-menu"><img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo"><button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button><button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button><div class="home-showcase-container"><div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;"><h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2><img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo"><h3 id="sotw-name"></h3><p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p></div><div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2><img id="potd-image" src="" alt="Photo de félicitations" class="potd-image"><p id="potd-message"></p></div></div></main>
+            <main class="main-menu"><img src="https://lh3.googleusercontent.com/d/1lQ3Babrs3Wgv4rakVmkK0oCWcM0cTKPK" alt="Logo École" id="home-logo"><button id="go-to-parent" class="role-button" data-translate="parentSpace">Espace Parent</button><button id="go-to-teacher" class="role-button" data-translate="teacherSpace">Espace Enseignant</button><div class="home-showcase-container"><div id="sotw-showcase" class="student-of-the-week-showcase" style="display: none;"><h2 class="sotw-title" data-translate="sotwTitle">⭐ Élève de la semaine ⭐</h2><img id="sotw-photo" src="" alt="Élève de la semaine" class="sotw-photo"><h3 id="sotw-name"></h3><p id="sotw-message" data-translate="sotwMessage">Félicitations pour tes excellents efforts !</p></div><div id="potd-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="potdTitle">🎉 Félicitations ! 🎉</h2><img id="potd-image" src="" alt="Photo de félicitations" class="potd-image"><p id="potd-message"></p></div><div id="photo2-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="photo2Title">🌟 Bravo ! 🌟</h2><img id="photo2-image" src="" alt="Photo de célébration 2" class="potd-image"><p id="photo2-message"></p></div><div id="photo3-showcase" class="photo-of-the-day-showcase" style="display: none;"><h2 class="potd-title" data-translate="photo3Title">🏆 Excellent ! 🏆</h2><img id="photo3-image" src="" alt="Photo de célébration 3" class="potd-image"><p id="photo3-message"></p></div></div></main>
         </div>
 
         <!-- Vue Espace Parent -->
@@ -51,6 +51,24 @@
                 <input type="text" id="photo-comment-input" placeholder="Ajoutez un commentaire (optionnel)...">
                 <button id="submit-photo-btn" class="role-button" data-translate="saveButton">Enregistrer</button>
                 <p id="photo-status"></p>
+            </div>
+            
+            <!-- Photo de célébration 2 -->
+            <div id="admin-photo2-section" class="upload-section" style="display: none; margin-top: 30px; background-color: #fff9e6;">
+                <h3 class="section-title">🌟 <span data-translate="adminPhoto2Title">Ajouter une Photo de Célébration 2</span></h3>
+                <input type="text" id="photo2-url-input" placeholder="Collez le lien de l'image ici (lh3.googleusercontent.com)...">
+                <input type="text" id="photo2-comment-input" placeholder="Ajoutez un commentaire (optionnel)...">
+                <button id="submit-photo2-btn" class="role-button" data-translate="saveButton">Enregistrer</button>
+                <p id="photo2-status"></p>
+            </div>
+            
+            <!-- Photo de célébration 3 -->
+            <div id="admin-photo3-section" class="upload-section" style="display: none; margin-top: 30px; background-color: #f0fff0;">
+                <h3 class="section-title">🏆 <span data-translate="adminPhoto3Title">Ajouter une Photo de Célébration 3</span></h3>
+                <input type="text" id="photo3-url-input" placeholder="Collez le lien de l'image ici (lh3.googleusercontent.com)...">
+                <input type="text" id="photo3-comment-input" placeholder="Ajoutez un commentaire (optionnel)...">
+                <button id="submit-photo3-btn" class="role-button" data-translate="saveButton">Enregistrer</button>
+                <p id="photo3-status"></p>
             </div>
             </main>
         </div>

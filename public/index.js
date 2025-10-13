@@ -116,16 +116,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
         const adminPhotoSection = document.getElementById('admin-photo-section');
+        const adminPhoto2Section = document.getElementById('admin-photo2-section');
+        const adminPhoto3Section = document.getElementById('admin-photo3-section');
         const teacherIconsContainer = document.getElementById('teacher-icons-container');
         const teacherSelectTitle = teacherDashboardView.querySelector('[data-translate="teacherSelectTitle"]');
         adminUploadSection.style.display = isAdmin ? 'block' : 'none';
         adminPhotoSection.style.display = isAdmin ? 'block' : 'none';
+        adminPhoto2Section.style.display = isAdmin ? 'block' : 'none';
+        adminPhoto3Section.style.display = isAdmin ? 'block' : 'none';
         if (isAdmin) {
             const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
             const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
             const submitPhotoBtn = document.getElementById('submit-photo-btn');
+            const submitPhoto2Btn = document.getElementById('submit-photo2-btn');
+            const submitPhoto3Btn = document.getElementById('submit-photo3-btn');
             uploadExcelBtn.addEventListener('click', () => handleFileUpload(excelFileInput));
             submitPhotoBtn.addEventListener('click', handleSubmitPhoto);
+            submitPhoto2Btn.addEventListener('click', handleSubmitPhoto2);
+            submitPhoto3Btn.addEventListener('click', handleSubmitPhoto3);
         }
         try {
             if (teacherPlanData.length === 0) {
@@ -484,31 +492,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function updateWeeklyStats(weeklyEvals) {
+    async function updateWeeklyStats(weeklyEvals) {
+        // First try to get stars from the persistent daily stars system
+        const studentDashboardView = document.getElementById('student-dashboard-view');
+        const className = studentDashboardView.dataset.className;
+        const studentName = studentDashboardView.dataset.studentName;
+        
         let stars = 0;
-        const dailyScores = {};
-        (weeklyEvals || []).forEach(ev => {
-            const dayOfWeek = moment(ev.date).day();
-            if (dayOfWeek >= 0 && dayOfWeek <= 4) {
-                const dayKey = ev.date;
-                if (!dailyScores[dayKey]) { dailyScores[dayKey] = { allDone: true, participationSum: 0, behaviorSum: 0, count: 0, hasHomework: true }; }
-                if (ev.status !== 'Fait' && ev.status !== 'Absent') { dailyScores[dayKey].allDone = false; }
-                dailyScores[dayKey].participationSum += ev.participation || 0;
-                dailyScores[dayKey].behaviorSum += ev.behavior || 0;
-                dailyScores[dayKey].count++;
+        
+        try {
+            const response = await fetch(`/api/daily-stars?studentName=${encodeURIComponent(studentName)}&className=${encodeURIComponent(className)}&week=true`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.stars && data.stars.length > 0) {
+                    // Use persistent daily star records
+                    stars = data.stars.filter(record => record.earnedStar).length;
+                } else {
+                    // Fallback to legacy calculation with enhanced criteria
+                    stars = calculateStarsLegacy(weeklyEvals || []);
+                }
+            } else {
+                // Fallback to legacy calculation
+                stars = calculateStarsLegacy(weeklyEvals || []);
             }
-        });
-        Object.values(dailyScores).forEach(day => {
-            if (day.hasHomework && day.allDone) {
-                const avgParticipation = day.count > 0 ? day.participationSum / day.count : 0;
-                const avgBehavior = day.count > 0 ? day.behaviorSum / day.count : 0;
-                if (avgParticipation >= 5 && avgBehavior >= 5) { stars++; }
-            }
-        });
+        } catch (error) {
+            console.error("Error fetching daily stars:", error);
+            // Fallback to legacy calculation
+            stars = calculateStarsLegacy(weeklyEvals || []);
+        }
+        
+        // Update star display
         const starContainer = document.getElementById('star-rating');
         starContainer.innerHTML = Array.from({ length: 5 }, (_, i) => `<span class="star ${i < stars ? 'filled' : ''}">&#9733;</span>`).join('');
+        
+        // Update "student of the week" banner
         const studentOfWeekBanner = document.getElementById('student-of-week-banner');
-        if (stars >= 4) { studentOfWeekBanner.classList.add('active'); } else { studentOfWeekBanner.classList.remove('active'); }
+        if (stars >= 4) { 
+            studentOfWeekBanner.classList.add('active'); 
+        } else { 
+            studentOfWeekBanner.classList.remove('active'); 
+        }
+        
+        // Calculate overall weekly progress
         let totalScore = 0;
         let maxScore = 0;
         (weeklyEvals || []).forEach(ev => {
@@ -520,6 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+        
         const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
         const progressBar = document.getElementById('overall-progress-bar');
         progressBar.style.width = `${percentage}%`;
@@ -533,10 +559,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
     }
+    
+    // Legacy star calculation function (fallback)
+    function calculateStarsLegacy(weeklyEvals) {
+        const dailyScores = {};
+        (weeklyEvals || []).forEach(ev => {
+            const dayOfWeek = moment(ev.date).day();
+            if (dayOfWeek >= 0 && dayOfWeek <= 4) {
+                const dayKey = ev.date;
+                if (!dailyScores[dayKey]) { 
+                    dailyScores[dayKey] = { 
+                        evaluations: [], 
+                        participationSum: 0, 
+                        behaviorSum: 0, 
+                        count: 0, 
+                        hasHomework: true 
+                    }; 
+                }
+                dailyScores[dayKey].evaluations.push(ev);
+                dailyScores[dayKey].participationSum += ev.participation || 0;
+                dailyScores[dayKey].behaviorSum += ev.behavior || 0;
+                dailyScores[dayKey].count++;
+            }
+        });
+        
+        let stars = 0;
+        Object.values(dailyScores).forEach(day => {
+            if (day.hasHomework && day.count > 0) {
+                // Enhanced criteria: >70% completion + participation>5 + behavior>5
+                const completedHomework = day.evaluations.filter(ev => 
+                    ev.status === 'Fait' || ev.status === 'Partiellement Fait'
+                ).length;
+                const completionRate = (completedHomework / day.count) * 100;
+                
+                const hasGoodCompletion = completionRate > 70;
+                const avgParticipation = day.participationSum / day.count;
+                const avgBehavior = day.behaviorSum / day.count;
+                
+                if (hasGoodCompletion && avgParticipation > 5 && avgBehavior > 5) { 
+                    stars++; 
+                }
+            }
+        });
+        
+        return stars;
+    }
 
     async function displayHomePageExtras() {
         displayStudentOfTheWeek();
         displayPhotoOfTheDay();
+        displayPhoto2();
+        displayPhoto3();
     }
     
     async function handleSubmitPhoto() {
@@ -565,6 +638,72 @@ document.addEventListener('DOMContentLoaded', () => {
             photoUrlInput.value = '';
             commentInput.value = '';
             displayPhotoOfTheDay();
+        } catch (error) {
+            console.error("Erreur d'enregistrement:", error);
+            photoStatus.textContent = 'Une erreur est survenue.';
+            photoStatus.className = 'error';
+        }
+    }
+
+    async function handleSubmitPhoto2() {
+        const photoUrlInput = document.getElementById('photo2-url-input');
+        const commentInput = document.getElementById('photo2-comment-input');
+        const photoStatus = document.getElementById('photo2-status');
+        const imageUrl = photoUrlInput.value.trim();
+        const comment = commentInput.value.trim();
+
+        if (!imageUrl) {
+            photoStatus.textContent = 'Veuillez coller un lien.';
+            photoStatus.className = 'error';
+            return;
+        }
+        photoStatus.textContent = 'Enregistrement...';
+        photoStatus.className = '';
+        try {
+            const response = await fetch('/api/photo-2', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'username': 'Mohamed86', 'password': 'Mohamed86' },
+                body: JSON.stringify({ imageUrl, comment })
+            });
+            if (!response.ok) throw new Error('Échec de la mise à jour');
+            photoStatus.textContent = 'Photo de célébration 2 enregistrée !';
+            photoStatus.className = 'success';
+            photoUrlInput.value = '';
+            commentInput.value = '';
+            displayPhoto2();
+        } catch (error) {
+            console.error("Erreur d'enregistrement:", error);
+            photoStatus.textContent = 'Une erreur est survenue.';
+            photoStatus.className = 'error';
+        }
+    }
+
+    async function handleSubmitPhoto3() {
+        const photoUrlInput = document.getElementById('photo3-url-input');
+        const commentInput = document.getElementById('photo3-comment-input');
+        const photoStatus = document.getElementById('photo3-status');
+        const imageUrl = photoUrlInput.value.trim();
+        const comment = commentInput.value.trim();
+
+        if (!imageUrl) {
+            photoStatus.textContent = 'Veuillez coller un lien.';
+            photoStatus.className = 'error';
+            return;
+        }
+        photoStatus.textContent = 'Enregistrement...';
+        photoStatus.className = '';
+        try {
+            const response = await fetch('/api/photo-3', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'username': 'Mohamed86', 'password': 'Mohamed86' },
+                body: JSON.stringify({ imageUrl, comment })
+            });
+            if (!response.ok) throw new Error('Échec de la mise à jour');
+            photoStatus.textContent = 'Photo de célébration 3 enregistrée !';
+            photoStatus.className = 'success';
+            photoUrlInput.value = '';
+            commentInput.value = '';
+            displayPhoto3();
         } catch (error) {
             console.error("Erreur d'enregistrement:", error);
             photoStatus.textContent = 'Une erreur est survenue.';
@@ -606,11 +745,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.comment) {
                     messageElement.textContent = data.comment;
                 } else {
-                    messageElement.textContent = translations[document.documentElement.lang].potdMessage;
+                    messageElement.textContent = translations[document.documentElement.lang].potdMessage || "Projet ou succès à célébrer !";
                 }
                 potdShowcase.style.display = 'block';
             } else {
                 potdShowcase.style.display = 'none';
+            }
+        } catch (error) { console.error("Erreur:", error); }
+    }
+
+    async function displayPhoto2() {
+        try {
+            const response = await fetch('/api/photo-2');
+            if (!response.ok) return;
+            const data = await response.json();
+            const photo2Showcase = document.getElementById('photo2-showcase');
+            if (data && data.url) {
+                document.getElementById('photo2-image').src = data.url;
+                const messageElement = document.getElementById('photo2-message');
+                if (data.comment) {
+                    messageElement.textContent = data.comment;
+                } else {
+                    messageElement.textContent = "Une autre belle réussite à célébrer !";
+                }
+                photo2Showcase.style.display = 'block';
+            } else {
+                photo2Showcase.style.display = 'none';
+            }
+        } catch (error) { console.error("Erreur:", error); }
+    }
+
+    async function displayPhoto3() {
+        try {
+            const response = await fetch('/api/photo-3');
+            if (!response.ok) return;
+            const data = await response.json();
+            const photo3Showcase = document.getElementById('photo3-showcase');
+            if (data && data.url) {
+                document.getElementById('photo3-image').src = data.url;
+                const messageElement = document.getElementById('photo3-message');
+                if (data.comment) {
+                    messageElement.textContent = data.comment;
+                } else {
+                    messageElement.textContent = "Un accomplissement remarquable !";
+                }
+                photo3Showcase.style.display = 'block';
+            } else {
+                photo3Showcase.style.display = 'none';
             }
         } catch (error) { console.error("Erreur:", error); }
     }

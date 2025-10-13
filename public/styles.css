@@ -159,16 +159,24 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 #teacher-evaluation-section { margin-top: 30px; }
 .homework-reminder { font-size: 1.1rem; font-weight: bold; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent-color); }
 .home-showcase-container {
-    display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
-    width: 100%; max-width: 800px; margin-top: 30px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; 
+    justify-content: center; width: 100%; max-width: 1200px; margin-top: 30px;
 }
 .student-of-the-week-showcase, .photo-of-the-day-showcase {
-    flex: 1; min-width: 250px;
     padding: 20px; background-color: #f0f7ff;
     border: 1px solid #bde0ff; border-radius: 12px;
-    text-align: center;
+    text-align: center; min-height: 300px;
+    display: flex; flex-direction: column; justify-content: center;
 }
-.student-of-the-week-showcase { background-color: #fffbe6; border-color: #ffeeba; }
+.student-of-the-week-showcase { 
+    background-color: #fffbe6; border-color: #ffeeba; 
+}
+.photo-of-the-day-showcase:nth-of-type(3) { 
+    background-color: #fff9e6; border-color: #ffecb3; 
+}
+.photo-of-the-day-showcase:nth-of-type(4) { 
+    background-color: #f0fff0; border-color: #c8e6c8; 
+}
 .sotw-title, .potd-title {
     color: var(--primary-color); font-size: 1.3rem; margin: 0 0 15px 0;
 }
@@ -200,4 +208,15 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     .main-menu, .login-form { padding: 25px; }
     .role-button { padding: 15px; font-size: 1.2rem; }
     .dashboard-nav { justify-content: center; }
+    .home-showcase-container { 
+        grid-template-columns: 1fr; 
+        max-width: 400px; 
+    }
+    .student-of-the-week-showcase, .photo-of-the-day-showcase {
+        min-height: 250px;
+    }
+    .potd-image, .sotw-photo { 
+        max-width: 90%; 
+        height: auto;
+    }
 }```
