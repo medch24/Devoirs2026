@@ -43,6 +43,7 @@ module.exports = async (req, res) => {
         const db = client.db('test');
         const evaluationsCollection = db.collection('evaluations');
         const dailyStarsCollection = db.collection('daily_stars');
+        const studentsOfWeekCollection = db.collection('students_of_the_week');
 
         // Définir la semaine scolaire : du dimanche précédent au jeudi précédent
         const today = moment().startOf('day');
@@ -54,74 +55,131 @@ module.exports = async (req, res) => {
             $lte: endOfWeek.format('YYYY-MM-DD'),
         };
 
-        // First, try to get stars from the daily_stars collection
+        // Check if we already have students of the week for this week
+        const weekIdentifier = startOfWeek.format('YYYY-[W]WW');
+        const existingStudentsOfWeek = await studentsOfWeekCollection.find({ weekIdentifier }).toArray();
+        
+        // If we have existing records and we're still in the same week, return them
+        if (existingStudentsOfWeek.length > 0) {
+            return res.status(200).json({ studentsOfWeek: existingStudentsOfWeek });
+        }
+
+        // Calculate students of the week for each class
         const dailyStars = await dailyStarsCollection.find({ date: dateQuery }).toArray();
+        const allEvals = await evaluationsCollection.find({ date: dateQuery }).toArray();
         
-        let studentOfTheWeek = null;
-        let maxStars = 0;
+        const studentsByClass = {};
         
+        // Group by class
         if (dailyStars.length > 0) {
-            // Use persistent daily star records
-            const starsByStudent = {};
-            
             dailyStars.forEach(starRecord => {
-                if (!starsByStudent[starRecord.studentName]) {
-                    starsByStudent[starRecord.studentName] = {
+                const classKey = starRecord.className;
+                if (!studentsByClass[classKey]) {
+                    studentsByClass[classKey] = {};
+                }
+                if (!studentsByClass[classKey][starRecord.studentName]) {
+                    studentsByClass[classKey][starRecord.studentName] = {
                         stars: 0,
-                        class: starRecord.className,
-                        dailyRecords: []
+                        dailyRecords: [],
+                        progressPercentage: 0
                     };
                 }
                 if (starRecord.earnedStar) {
-                    starsByStudent[starRecord.studentName].stars++;
+                    studentsByClass[classKey][starRecord.studentName].stars++;
                 }
-                starsByStudent[starRecord.studentName].dailyRecords.push(starRecord);
+                studentsByClass[classKey][starRecord.studentName].dailyRecords.push(starRecord);
             });
-
-            // Find student with most stars (minimum 4 for "student of the week")
-            for (const studentName in starsByStudent) {
-                const studentInfo = starsByStudent[studentName];
-                if (studentInfo.stars >= 4 && studentInfo.stars > maxStars) {
-                    maxStars = studentInfo.stars;
-                    studentOfTheWeek = {
-                        name: studentName,
-                        class: studentInfo.class,
-                        stars: maxStars,
-                        dailyRecords: studentInfo.dailyRecords
+        } else {
+            // Fallback to evaluation-based calculation
+            allEvals.forEach(ev => {
+                const classKey = ev.class;
+                if (!studentsByClass[classKey]) {
+                    studentsByClass[classKey] = {};
+                }
+                if (!studentsByClass[classKey][ev.studentName]) {
+                    studentsByClass[classKey][ev.studentName] = {
+                        evals: [],
+                        class: ev.class
                     };
                 }
-            }
-        } else {
-            // Fallback to legacy evaluation-based calculation
-            const allEvals = await evaluationsCollection.find({ date: dateQuery }).toArray();
-            
-            if (allEvals.length > 0) {
-                const evalsByStudent = {};
-                allEvals.forEach(ev => {
-                    if (!evalsByStudent[ev.studentName]) {
-                        evalsByStudent[ev.studentName] = { evals: [], class: ev.class };
+                studentsByClass[classKey][ev.studentName].evals.push(ev);
+            });
+        }
+
+        // Calculate progress percentage for each student
+        for (const classKey in studentsByClass) {
+            const students = studentsByClass[classKey];
+            for (const studentName in students) {
+                const studentData = students[studentName];
+                
+                // Get student's evaluations for this week
+                const studentEvals = allEvals.filter(ev => 
+                    ev.class === classKey && ev.studentName === studentName
+                );
+                
+                let totalScore = 0;
+                let maxScore = 0;
+                
+                studentEvals.forEach(ev => {
+                    const dayOfWeek = moment(ev.date).day();
+                    if (dayOfWeek >= 0 && dayOfWeek <= 4 && ev.status !== 'Absent') {
+                        totalScore += (ev.status === 'Fait' ? 10 : ev.status === 'Partiellement Fait' ? 5 : 0) + 
+                                      (ev.participation || 0) + (ev.behavior || 0);
+                        maxScore += 30;
                     }
-                    evalsByStudent[ev.studentName].evals.push(ev);
                 });
-
-                for (const studentName in evalsByStudent) {
-                    const studentInfo = evalsByStudent[studentName];
-                    const stars = calculateStarsLegacy(studentInfo.evals);
-
-                    if (stars >= 4 && stars > maxStars) {
-                        maxStars = stars;
-                        studentOfTheWeek = {
-                            name: studentName,
-                            class: studentInfo.class,
-                            stars: maxStars,
-                            method: 'legacy'
-                        };
-                    }
+                
+                studentData.progressPercentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
+                
+                // Calculate stars if not already done
+                if (!studentData.stars && studentData.evals) {
+                    studentData.stars = calculateStarsLegacy(studentData.evals);
                 }
             }
         }
 
-        res.status(200).json(studentOfTheWeek || {});
+        // Select student of the week for each class (based on stars + progress)
+        const studentsOfWeek = [];
+        
+        for (const classKey in studentsByClass) {
+            const students = studentsByClass[classKey];
+            let topStudent = null;
+            let topScore = -1;
+            
+            for (const studentName in students) {
+                const studentData = students[studentName];
+                const stars = studentData.stars || 0;
+                const progress = studentData.progressPercentage || 0;
+                
+                // Combined score: stars (weighted 70%) + progress (weighted 30%)
+                const combinedScore = (stars * 20) + (progress * 0.3);
+                
+                if (combinedScore > topScore) {
+                    topScore = combinedScore;
+                    topStudent = {
+                        name: studentName,
+                        class: classKey,
+                        stars: stars,
+                        progressPercentage: progress,
+                        weekIdentifier: weekIdentifier,
+                        startDate: startOfWeek.format('YYYY-MM-DD'),
+                        endDate: endOfWeek.format('YYYY-MM-DD'),
+                        createdAt: new Date()
+                    };
+                }
+            }
+            
+            if (topStudent) {
+                studentsOfWeek.push(topStudent);
+            }
+        }
+
+        // Save students of the week to database
+        if (studentsOfWeek.length > 0) {
+            await studentsOfWeekCollection.insertMany(studentsOfWeek);
+        }
+
+        res.status(200).json({ studentsOfWeek });
 
     } catch (error) {
         console.error("[weekly-summary] ERREUR:", error);
