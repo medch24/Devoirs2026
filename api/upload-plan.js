@@ -38,5 +38,10 @@ module.exports = async (req, res) => {
     } catch (error) {
         console.error("[upload-plan] ERREUR:", error);
         res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
+    } finally {
+        // La connexion client doit être fermée après chaque exécution pour éviter les fuites de connexion
+        if (client) {
+            await client.close();
+        }
     }
 };
