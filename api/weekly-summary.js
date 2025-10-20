@@ -47,21 +47,37 @@ module.exports = async (req, res) => {
 
         // Définir la semaine scolaire : du dimanche précédent au jeudi précédent
         const today = moment().startOf('day');
-        const startOfWeek = today.clone().day(0); // Dimanche
-        const endOfWeek = today.clone().day(4);   // Jeudi
+        const dayOfWeek = today.day(); // 0 = Dimanche
+        
+        // Si c'est dimanche, on affiche l'élève de la semaine dernière
+        // Sinon on n'affiche rien (seulement le dimanche)
+        let targetWeekStart, targetWeekEnd;
+        
+        if (dayOfWeek === 0) { // Dimanche
+            // Afficher l'élève de la semaine dernière (dimanche-jeudi précédents)
+            targetWeekStart = today.clone().subtract(7, 'days').day(0); // Dimanche de la semaine dernière
+            targetWeekEnd = today.clone().subtract(7, 'days').day(4);   // Jeudi de la semaine dernière
+        } else {
+            // Pas dimanche, ne rien afficher
+            return res.status(200).json({ studentsOfWeek: [], showDisplay: false, message: 'Élève de la semaine affiché uniquement le dimanche' });
+        }
 
         const dateQuery = {
-            $gte: startOfWeek.format('YYYY-MM-DD'),
-            $lte: endOfWeek.format('YYYY-MM-DD'),
+            $gte: targetWeekStart.format('YYYY-MM-DD'),
+            $lte: targetWeekEnd.format('YYYY-MM-DD'),
         };
 
         // Check if we already have students of the week for this week
-        const weekIdentifier = startOfWeek.format('YYYY-[W]WW');
+        const weekIdentifier = targetWeekStart.format('YYYY-[W]WW');
         const existingStudentsOfWeek = await studentsOfWeekCollection.find({ weekIdentifier }).toArray();
         
-        // If we have existing records and we're still in the same week, return them
+        // If we have existing records, return them with showDisplay flag
         if (existingStudentsOfWeek.length > 0) {
-            return res.status(200).json({ studentsOfWeek: existingStudentsOfWeek });
+            return res.status(200).json({ 
+                studentsOfWeek: existingStudentsOfWeek, 
+                showDisplay: true,
+                isLastWeek: true 
+            });
         }
 
         // Calculate students of the week for each class
@@ -138,7 +154,8 @@ module.exports = async (req, res) => {
             }
         }
 
-        // Select student of the week for each class (based on stars + progress)
+        // Select student of the week for each class
+        // CRITÈRES: Au moins 3 étoiles ET plus de 79% d'avancement
         const studentsOfWeek = [];
         
         for (const classKey in studentsByClass) {
@@ -151,21 +168,24 @@ module.exports = async (req, res) => {
                 const stars = studentData.stars || 0;
                 const progress = studentData.progressPercentage || 0;
                 
-                // Combined score: stars (weighted 70%) + progress (weighted 30%)
-                const combinedScore = (stars * 20) + (progress * 0.3);
-                
-                if (combinedScore > topScore) {
-                    topScore = combinedScore;
-                    topStudent = {
-                        name: studentName,
-                        class: classKey,
-                        stars: stars,
-                        progressPercentage: progress,
-                        weekIdentifier: weekIdentifier,
-                        startDate: startOfWeek.format('YYYY-MM-DD'),
-                        endDate: endOfWeek.format('YYYY-MM-DD'),
-                        createdAt: new Date()
-                    };
+                // CRITÈRES OBLIGATOIRES: >= 3 étoiles ET > 79% de progression
+                if (stars >= 3 && progress > 79) {
+                    // Combined score: stars (weighted 70%) + progress (weighted 30%)
+                    const combinedScore = (stars * 20) + (progress * 0.3);
+                    
+                    if (combinedScore > topScore) {
+                        topScore = combinedScore;
+                        topStudent = {
+                            name: studentName,
+                            class: classKey,
+                            stars: stars,
+                            progressPercentage: progress,
+                            weekIdentifier: weekIdentifier,
+                            startDate: targetWeekStart.format('YYYY-MM-DD'),
+                            endDate: targetWeekEnd.format('YYYY-MM-DD'),
+                            createdAt: new Date()
+                        };
+                    }
                 }
             }
             
@@ -179,7 +199,11 @@ module.exports = async (req, res) => {
             await studentsOfWeekCollection.insertMany(studentsOfWeek);
         }
 
-        res.status(200).json({ studentsOfWeek });
+        res.status(200).json({ 
+            studentsOfWeek, 
+            showDisplay: true,
+            isLastWeek: true 
+        });
 
     } catch (error) {
         console.error("[weekly-summary] ERREUR:", error);

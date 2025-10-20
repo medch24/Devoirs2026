@@ -209,6 +209,22 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .sotw-stars {
     font-size: 1.5rem;
     color: var(--yellow-star);
+    display: flex;
+    gap: 3px;
+}
+.sotw-star-count {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-top: -5px;
+}
+.sotw-progress {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+    background: rgba(0, 123, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 12px;
 }
 .sotw-class {
     font-size: 1rem;

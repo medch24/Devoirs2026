@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const translations = {
-        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "3. Choisissez un devoir à évaluer", weekSelectionTitle: "2. Choisissez une semaine", studentEvaluationTitle: "4. Évaluez les élèves", birthdayModalTitle: "Vérification", birthdayPrompt: "Veuillez choisir le mois et l'année de naissance de votre enfant :", birthdayError: "Date incorrecte. Veuillez réessayer.", cancelButton: "Annuler", confirmButton: "Confirmer", status_vide: "Vide", status_fait: "Fait", status_non_fait: "Non Fait", status_partiellement_fait: "Partiellement Fait", status_absent: "Absent", sotwTitle: "⭐ Élève de la semaine ⭐", sotwMessage: "Félicitations pour tes excellents efforts !", potdTitle: "🎉 Félicitations ! 🎉", potdMessage: "Un projet ou un succès à célébrer !", adminPhotoTitle: "Ajouter une Photo de Félicitations", monthPlaceholder: "Mois", yearPlaceholder: "Année", weekLabel: "Semaine" },
-        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "3. اختر واجباً لتقييمه", weekSelectionTitle: "2. اختر أسبوعاً", studentEvaluationTitle: "4. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة", weekLabel: "الأسبوع" }
+        fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "3. Choisissez un devoir à évaluer", weekSelectionTitle: "2. Choisissez une semaine", studentEvaluationTitle: "4. Évaluez les élèves", birthdayModalTitle: "Vérification", birthdayPrompt: "Veuillez choisir le mois et l'année de naissance de votre enfant :", birthdayError: "Date incorrecte. Veuillez réessayer.", cancelButton: "Annuler", confirmButton: "Confirmer", status_vide: "Vide", status_fait: "Fait", status_non_fait: "Non Fait", status_partiellement_fait: "Partiellement Fait", status_absent: "Absent", sotwTitle: "⭐ Élève de la semaine ⭐", sotwLastWeekTitle: "⭐ Élève de la semaine dernière ⭐", sotwMessage: "Félicitations pour tes excellents efforts !", potdTitle: "🎉 Félicitations ! 🎉", potdMessage: "Un projet ou un succès à célébrer !", adminPhotoTitle: "Ajouter une Photo de Félicitations", monthPlaceholder: "Mois", yearPlaceholder: "Année", weekLabel: "Semaine" },
+        ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "3. اختر واجباً لتقييمه", weekSelectionTitle: "2. اختر أسبوعاً", studentEvaluationTitle: "4. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwLastWeekTitle: "⭐ تلميذ الأسبوع الماضي ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة", weekLabel: "الأسبوع" }
     };
 
     const setLanguage = (lang) => {
@@ -721,67 +721,87 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear existing content
             sotwShowcase.innerHTML = '';
             
-            if (data.studentsOfWeek && data.studentsOfWeek.length > 0) {
-                // Create title
-                const title = document.createElement('h2');
-                title.className = 'sotw-title';
-                title.setAttribute('data-translate', 'sotwTitle');
-                title.textContent = translations[document.documentElement.lang].sotwTitle || '⭐ Élève de la semaine ⭐';
-                sotwShowcase.appendChild(title);
-                
-                // Create container for all students
-                const studentsContainer = document.createElement('div');
-                studentsContainer.style.display = 'grid';
-                studentsContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
-                studentsContainer.style.gap = '20px';
-                studentsContainer.style.marginTop = '15px';
-                
-                data.studentsOfWeek.forEach(sotw => {
-                    const classKey = sotw.class.split(' ')[0];
-                    const studentInfo = (studentData[classKey] || []).find(s => s.name === sotw.name);
-                    
-                    if (studentInfo) {
-                        const studentCard = document.createElement('div');
-                        studentCard.className = 'sotw-info';
-                        
-                        // Photo
-                        const photo = document.createElement('img');
-                        photo.src = studentInfo.photo;
-                        photo.alt = sotw.name;
-                        photo.className = 'sotw-photo';
-                        
-                        // Name
-                        const name = document.createElement('h3');
-                        name.className = 'sotw-name';
-                        name.textContent = sotw.name;
-                        
-                        // Stars display
-                        const starsDiv = document.createElement('div');
-                        starsDiv.className = 'sotw-stars';
-                        const starCount = sotw.stars || 0;
-                        starsDiv.innerHTML = Array.from({length: 5}, (_, i) => 
-                            `<span class="star ${i < starCount ? 'filled' : ''}">&#9733;</span>`
-                        ).join('');
-                        
-                        // Class
-                        const classDiv = document.createElement('div');
-                        classDiv.className = 'sotw-class';
-                        classDiv.textContent = sotw.class;
-                        
-                        studentCard.appendChild(photo);
-                        studentCard.appendChild(name);
-                        studentCard.appendChild(starsDiv);
-                        studentCard.appendChild(classDiv);
-                        
-                        studentsContainer.appendChild(studentCard);
-                    }
-                });
-                
-                sotwShowcase.appendChild(studentsContainer);
-                sotwShowcase.style.display = 'block';
-            } else {
+            // Vérifier si on doit afficher (seulement le dimanche)
+            if (!data.showDisplay || !data.studentsOfWeek || data.studentsOfWeek.length === 0) {
                 sotwShowcase.style.display = 'none';
+                return;
             }
+            
+            // Create title - "Élève de la semaine dernière" si c'est dimanche
+            const title = document.createElement('h2');
+            title.className = 'sotw-title';
+            title.setAttribute('data-translate', 'sotwLastWeekTitle');
+            const currentLang = document.documentElement.lang;
+            if (currentLang === 'ar') {
+                title.textContent = '⭐ تلميذ الأسبوع الماضي ⭐';
+            } else {
+                title.textContent = '⭐ Élève de la semaine dernière ⭐';
+            }
+            sotwShowcase.appendChild(title);
+            
+            // Create container for all students
+            const studentsContainer = document.createElement('div');
+            studentsContainer.style.display = 'grid';
+            studentsContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
+            studentsContainer.style.gap = '20px';
+            studentsContainer.style.marginTop = '15px';
+            
+            data.studentsOfWeek.forEach(sotw => {
+                const classKey = sotw.class.split(' ')[0];
+                const studentInfo = (studentData[classKey] || []).find(s => s.name === sotw.name);
+                
+                if (studentInfo) {
+                    const studentCard = document.createElement('div');
+                    studentCard.className = 'sotw-info';
+                    
+                    // Photo
+                    const photo = document.createElement('img');
+                    photo.src = studentInfo.photo;
+                    photo.alt = sotw.name;
+                    photo.className = 'sotw-photo';
+                    
+                    // Name
+                    const name = document.createElement('h3');
+                    name.className = 'sotw-name';
+                    name.textContent = sotw.name;
+                    
+                    // Stars display - Afficher le nombre réel d'étoiles gagnées
+                    const starsDiv = document.createElement('div');
+                    starsDiv.className = 'sotw-stars';
+                    const starCount = sotw.stars || 0;
+                    // Afficher uniquement les étoiles gagnées (pas sur 5)
+                    starsDiv.innerHTML = Array.from({length: starCount}, () => 
+                        `<span class="star filled">&#9733;</span>`
+                    ).join('');
+                    
+                    // Star count text
+                    const starCountText = document.createElement('div');
+                    starCountText.className = 'sotw-star-count';
+                    starCountText.textContent = `${starCount} ${starCount > 1 ? 'étoiles' : 'étoile'}`;
+                    
+                    // Progress percentage
+                    const progressDiv = document.createElement('div');
+                    progressDiv.className = 'sotw-progress';
+                    progressDiv.textContent = `${sotw.progressPercentage}%`;
+                    
+                    // Class
+                    const classDiv = document.createElement('div');
+                    classDiv.className = 'sotw-class';
+                    classDiv.textContent = sotw.class;
+                    
+                    studentCard.appendChild(photo);
+                    studentCard.appendChild(name);
+                    studentCard.appendChild(starsDiv);
+                    studentCard.appendChild(starCountText);
+                    studentCard.appendChild(progressDiv);
+                    studentCard.appendChild(classDiv);
+                    
+                    studentsContainer.appendChild(studentCard);
+                }
+            });
+            
+            sotwShowcase.appendChild(studentsContainer);
+            sotwShowcase.style.display = 'block';
         } catch (error) { 
             console.error("Erreur:", error); 
             document.getElementById('sotw-showcase').style.display = 'none';
