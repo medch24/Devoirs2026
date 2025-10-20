@@ -1,6 +1,23 @@
 const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
+
+let cachedClient = null;
+
+async function connectToDatabase() {
+    if (cachedClient) {
+        return cachedClient;
+    }
+
+    const uri = process.env.MONGODB_URI;
+    
+    if (!uri) {
+        throw new Error('MONGODB_URI environment variable is not defined');
+    }
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    cachedClient = client;
+    return client;
+}
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
@@ -8,8 +25,8 @@ module.exports = async (req, res) => {
     }
 
     try {
-        await client.connect();
-        const db = client.db('test');
+        const client = await connectToDatabase();
+        const db = client.db('devoirs');
         const collection = db.collection('plans');
 
         const planData = req.body;
