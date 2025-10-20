@@ -1,11 +1,28 @@
 const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
+
+let cachedClient = null;
+
+async function connectToDatabase() {
+    if (cachedClient) {
+        return cachedClient;
+    }
+
+    const uri = process.env.MONGODB_URI;
+    
+    if (!uri) {
+        throw new Error('MONGODB_URI environment variable is not defined');
+    }
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    cachedClient = client;
+    return client;
+}
 
 module.exports = async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db('test');
+        const client = await connectToDatabase();
+        const db = client.db('devoirs');
         // Collection pour stocker les photos de célébration 2
         const collection = db.collection('photos_celebration_2');
         
@@ -47,8 +64,6 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         console.error("[photo-2] ERREUR:", error);
-        return res.status(500).json({ error: 'Erreur interne du serveur.' });
-    } finally {
-        await client.close();
+        return res.status(500).json({ error: 'Erreur interne du serveur.', details: error.message });
     }
 };
