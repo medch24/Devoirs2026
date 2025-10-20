@@ -32,6 +32,11 @@ module.exports = async (req, res) => {
         }
 
         if (req.method === 'GET') {
+            // Auto-delete photos older than 3 days
+            const threeDaysAgo = new Date();
+            threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+            await collection.deleteMany({ createdAt: { $lt: threeDaysAgo } });
+            
             // MODIFICATION: Récupère la photo la plus récente
             const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
             const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};

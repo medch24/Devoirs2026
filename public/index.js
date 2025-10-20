@@ -715,22 +715,77 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/weekly-summary');
             if (!response.ok) return;
-            const sotw = await response.json();
+            const data = await response.json();
             const sotwShowcase = document.getElementById('sotw-showcase');
-            if (sotw && sotw.name && sotw.class) {
-                const classKey = sotw.class.split(' ')[0];
-                const studentInfo = (studentData[classKey] || []).find(s => s.name === sotw.name);
-                if (studentInfo) {
-                    document.getElementById('sotw-photo').src = studentInfo.photo;
-                    document.getElementById('sotw-name').textContent = sotw.name;
-                    sotwShowcase.style.display = 'block';
-                } else {
-                    sotwShowcase.style.display = 'none';
-                }
+            
+            // Clear existing content
+            sotwShowcase.innerHTML = '';
+            
+            if (data.studentsOfWeek && data.studentsOfWeek.length > 0) {
+                // Create title
+                const title = document.createElement('h2');
+                title.className = 'sotw-title';
+                title.setAttribute('data-translate', 'sotwTitle');
+                title.textContent = translations[document.documentElement.lang].sotwTitle || '⭐ Élève de la semaine ⭐';
+                sotwShowcase.appendChild(title);
+                
+                // Create container for all students
+                const studentsContainer = document.createElement('div');
+                studentsContainer.style.display = 'grid';
+                studentsContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
+                studentsContainer.style.gap = '20px';
+                studentsContainer.style.marginTop = '15px';
+                
+                data.studentsOfWeek.forEach(sotw => {
+                    const classKey = sotw.class.split(' ')[0];
+                    const studentInfo = (studentData[classKey] || []).find(s => s.name === sotw.name);
+                    
+                    if (studentInfo) {
+                        const studentCard = document.createElement('div');
+                        studentCard.className = 'sotw-info';
+                        
+                        // Photo
+                        const photo = document.createElement('img');
+                        photo.src = studentInfo.photo;
+                        photo.alt = sotw.name;
+                        photo.className = 'sotw-photo';
+                        
+                        // Name
+                        const name = document.createElement('h3');
+                        name.className = 'sotw-name';
+                        name.textContent = sotw.name;
+                        
+                        // Stars display
+                        const starsDiv = document.createElement('div');
+                        starsDiv.className = 'sotw-stars';
+                        const starCount = sotw.stars || 0;
+                        starsDiv.innerHTML = Array.from({length: 5}, (_, i) => 
+                            `<span class="star ${i < starCount ? 'filled' : ''}">&#9733;</span>`
+                        ).join('');
+                        
+                        // Class
+                        const classDiv = document.createElement('div');
+                        classDiv.className = 'sotw-class';
+                        classDiv.textContent = sotw.class;
+                        
+                        studentCard.appendChild(photo);
+                        studentCard.appendChild(name);
+                        studentCard.appendChild(starsDiv);
+                        studentCard.appendChild(classDiv);
+                        
+                        studentsContainer.appendChild(studentCard);
+                    }
+                });
+                
+                sotwShowcase.appendChild(studentsContainer);
+                sotwShowcase.style.display = 'block';
             } else {
                 sotwShowcase.style.display = 'none';
             }
-        } catch (error) { console.error("Erreur:", error); }
+        } catch (error) { 
+            console.error("Erreur:", error); 
+            document.getElementById('sotw-showcase').style.display = 'none';
+        }
     }
     
     async function displayPhotoOfTheDay() {
