@@ -83,7 +83,7 @@ const calculateStarsLegacy = (evaluations) => {
 // Handler: /api/evaluations
 async function handleEvaluations(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const { class: className, student: studentName, date: dateQuery, week } = req.query;
 
     if (req.method === 'POST') {
@@ -155,7 +155,7 @@ async function handleEvaluations(req, res) {
 // Handler: /api/weekly-summary
 async function handleWeeklySummary(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const evaluationsCollection = db.collection('evaluations');
     const dailyStarsCollection = db.collection('daily_stars');
     const studentsOfWeekCollection = db.collection('students_of_the_week');
@@ -306,7 +306,7 @@ async function handleWeeklySummary(req, res) {
 // Handler: /api/daily-stars
 async function handleDailyStars(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const evaluationsCollection = db.collection('evaluations');
     const dailyStarsCollection = db.collection('daily_stars');
     
@@ -408,7 +408,7 @@ async function handleDailyStars(req, res) {
 // Handler: /api/photo-of-the-day
 async function handlePhotoOfTheDay(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const collection = db.collection('photos_of_the_day');
     
     if (req.method === 'POST') {
@@ -447,7 +447,7 @@ async function handlePhotoOfTheDay(req, res) {
 // Handler: /api/photo-2
 async function handlePhoto2(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const collection = db.collection('photos_celebration_2');
     
     if (req.method === 'POST') {
@@ -486,7 +486,7 @@ async function handlePhoto2(req, res) {
 // Handler: /api/photo-3
 async function handlePhoto3(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const collection = db.collection('photos_celebration_3');
     
     if (req.method === 'POST') {
@@ -529,7 +529,7 @@ async function handleUploadPlan(req, res) {
     }
 
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const collection = db.collection('plans');
 
     const planData = req.body;
@@ -556,7 +556,7 @@ async function handleUploadPlan(req, res) {
 // Handler: /api/initial-data
 async function handleInitialData(req, res) {
     const client = await connectToDatabase();
-    const db = client.db('test');
+    const db = client.db('devoirs');
     const collection = db.collection('plans');
     
     const planData = await collection.find({}).toArray();
