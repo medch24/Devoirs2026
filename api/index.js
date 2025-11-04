@@ -27,6 +27,95 @@ async function connectToDatabase() {
 // HELPER FUNCTIONS
 // ============================================================================
 
+/**
+ * 🔢 Convertir les chiffres arabes en chiffres latins
+ */
+function convertArabicToLatin(str) {
+    const arabicNumerals = '٠١٢٣٤٥٦٧٨٩';
+    const latinNumerals = '0123456789';
+    
+    let result = String(str);
+    for (let i = 0; i < arabicNumerals.length; i++) {
+        result = result.replace(new RegExp(arabicNumerals[i], 'g'), latinNumerals[i]);
+    }
+    return result;
+}
+
+/**
+ * 📅 Parser intelligent de dates - supporte TOUS les formats
+ */
+function parseUniversalDate(dateStr) {
+    if (!dateStr) return null;
+    
+    // Convertir en string et nettoyer
+    dateStr = String(dateStr).trim();
+    
+    // Convertir les chiffres arabes en latins
+    dateStr = convertArabicToLatin(dateStr);
+    
+    // Si c'est déjà au format YYYY-MM-DD valide, retourner tel quel
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        const testDate = moment(dateStr, 'YYYY-MM-DD', true);
+        if (testDate.isValid()) {
+            return dateStr;
+        }
+    }
+    
+    // Liste exhaustive des formats à essayer
+    const formats = [
+        // ISO et standards
+        'YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY.MM.DD',
+        
+        // Formats européens (jour en premier)
+        'DD/MM/YYYY', 'DD-MM-YYYY', 'DD.MM.YYYY',
+        'DD/MM/YY', 'DD-MM-YY', 'DD.MM.YY',
+        
+        // Formats américains (mois en premier)
+        'MM/DD/YYYY', 'MM-DD-YYYY', 'MM.DD.YYYY',
+        'MM/DD/YY', 'MM-DD-YY', 'MM.DD.YY',
+        
+        // Formats avec texte
+        'DD MMMM YYYY', 'D MMMM YYYY',
+        'DD MMM YYYY', 'D MMM YYYY',
+        'MMMM DD, YYYY', 'MMM DD, YYYY',
+        
+        // Formats compacts
+        'DDMMYYYY', 'YYYYMMDD',
+        
+        // ISO avec heure
+        moment.ISO_8601
+    ];
+    
+    // Essayer tous les formats
+    for (const format of formats) {
+        // Français
+        let parsed = moment(dateStr, format, 'fr', true);
+        if (parsed.isValid()) {
+            return parsed.format('YYYY-MM-DD');
+        }
+        
+        // Anglais
+        parsed = moment(dateStr, format, 'en', true);
+        if (parsed.isValid()) {
+            return parsed.format('YYYY-MM-DD');
+        }
+        
+        // Sans locale
+        parsed = moment(dateStr, format, true);
+        if (parsed.isValid()) {
+            return parsed.format('YYYY-MM-DD');
+        }
+    }
+    
+    // Dernier recours : parsing automatique
+    const autoParsed = moment(dateStr);
+    if (autoParsed.isValid() && autoParsed.year() > 2000 && autoParsed.year() < 2100) {
+        return autoParsed.format('YYYY-MM-DD');
+    }
+    
+    return null;
+}
+
 // Calculate if a student deserves a star for a given day
 // Returns: 1 (full star), 0.5 (half star), or 0 (no star)
 const calculateDailyStar = (evaluations) => {
@@ -583,7 +672,28 @@ async function handleUploadPlan(req, res) {
         return res.status(400).json({ message: 'Aucune donnée à enregistrer.' });
     }
 
-    const operations = planData.map(plan => ({
+    // 🌍 NORMALISATION AUTOMATIQUE DES DATES lors de l'upload
+    const normalizedPlanData = planData.map(plan => {
+        if (plan.Jour) {
+            const normalizedDate = parseUniversalDate(plan.Jour);
+            if (normalizedDate) {
+                return { ...plan, Jour: normalizedDate };
+            } else {
+                console.warn(`⚠️ Date non parsable ignorée : "${plan.Jour}"`);
+                return null;
+            }
+        }
+        return plan;
+    }).filter(Boolean); // Filtrer les entrées null
+
+    if (normalizedPlanData.length === 0) {
+        return res.status(400).json({ 
+            message: 'Aucune date valide trouvée dans les données.',
+            tip: 'Formats supportés : YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, chiffres arabes, etc.'
+        });
+    }
+
+    const operations = normalizedPlanData.map(plan => ({
         updateOne: {
             filter: { Jour: plan.Jour, Classe: plan.Classe, Matière: plan.Matière },
             update: { $set: plan },
@@ -595,7 +705,17 @@ async function handleUploadPlan(req, res) {
         await collection.bulkWrite(operations);
     }
 
-    res.status(200).json({ message: `Planning mis à jour avec ${planData.length} enregistrements.` });
+    const skipped = planData.length - normalizedPlanData.length;
+    let message = `Planning mis à jour avec ${normalizedPlanData.length} enregistrements.`;
+    if (skipped > 0) {
+        message += ` (${skipped} entrées avec dates invalides ignorées)`;
+    }
+
+    res.status(200).json({ 
+        message: message,
+        normalized: normalizedPlanData.length,
+        skipped: skipped
+    });
 }
 
 // Handler: /api/initial-data
