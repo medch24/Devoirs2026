@@ -49,7 +49,14 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .student-info { text-align: center; flex-shrink: 0; }
 .student-photo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--secondary-color); object-fit: cover; }
 .star-rating { margin: 10px 0; font-size: 2rem; }
-.star-rating .star { color: #ccc; } .star-rating .star.filled { color: var(--yellow-star); }
+.star-rating .star { color: #ccc; } 
+.star-rating .star.filled { color: var(--yellow-star); }
+.star-rating .star.half-filled { 
+    background: linear-gradient(90deg, var(--yellow-star) 50%, #ccc 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
 .student-of-week { display: none; background: var(--orange-status); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
 .student-of-week.active { display: inline-block; }
 .weekly-stats { flex-grow: 1; min-width: 250px; }
@@ -217,6 +224,33 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     color: var(--text-color);
     font-weight: 600;
     margin-top: -5px;
+}
+.sotw-progress-comment {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin: 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.sotw-progress-comment:contains('amélioration'),
+.sotw-progress-comment:contains('تحسن') {
+    background-color: #d4edda;
+    color: #155724;
+    border: 2px solid #28a745;
+}
+.sotw-progress-comment:contains('régression'),
+.sotw-progress-comment:contains('تراجع') {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 2px solid #dc3545;
+}
+.sotw-progress-comment:contains('Excellent'),
+.sotw-progress-comment:contains('ممتاز') {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 2px solid #ffc107;
 }
 .sotw-progress {
     font-size: 1.1rem;

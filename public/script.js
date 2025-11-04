@@ -54,8 +54,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const showView = (viewId) => { homeView.style.display = 'none'; views.forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; };
     const goHome = () => { homeView.style.display = 'block'; views.forEach(v => v.style.display = 'none'); displayHomePageExtras(); };
     goToParentBtn.addEventListener('click', () => { populateClassButtons(); showView('parent-selection-view'); });
-    goToTeacherBtn.addEventListener('click', () => showView('teacher-login-view'));
+    goToTeacherBtn.addEventListener('click', () => {
+        // Vérifier si l'utilisateur est déjà connecté
+        const savedLogin = checkSavedLogin();
+        if (savedLogin) {
+            // Auto-login avec les credentials sauvegardés
+            if (savedLogin.isAdmin) {
+                setupTeacherDashboard(true);
+                addLogoutButton();
+                showView('teacher-dashboard-view');
+            } else if (savedLogin.isTeacher) {
+                setupTeacherDashboard(false);
+                addLogoutButton();
+                showView('teacher-dashboard-view');
+            }
+        } else {
+            showView('teacher-login-view');
+        }
+    });
     backButtons.forEach(btn => btn.addEventListener('click', goHome));
+    
+    // Vérifier si l'utilisateur est déjà connecté (localStorage)
+    const checkSavedLogin = () => {
+        const savedUser = localStorage.getItem('devoirs_username');
+        const savedPass = localStorage.getItem('devoirs_password');
+        
+        if (savedUser && savedPass) {
+            const isAdmin = (savedUser === 'Mohamed86' && savedPass === 'Mohamed86');
+            const isTeacher = (savedUser === 'Alkawthar@!!!' && savedPass === 'Alkawthar@!!!');
+            
+            if (isAdmin || isTeacher) {
+                return { isAdmin, isTeacher, savedUser };
+            }
+        }
+        return null;
+    };
+    
+    // Ajouter un bouton de déconnexion dans le dashboard enseignant
+    const addLogoutButton = () => {
+        const teacherDashboardView = document.getElementById('teacher-dashboard-view');
+        const header = teacherDashboardView.querySelector('header');
+        
+        // Vérifier si le bouton n'existe pas déjà
+        if (!header.querySelector('.logout-button')) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.className = 'logout-button';
+            logoutBtn.textContent = '🚪 Déconnexion';
+            logoutBtn.style.cssText = 'position: absolute; right: 20px; top: 20px; padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;';
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('devoirs_username');
+                localStorage.removeItem('devoirs_password');
+                goHome();
+            });
+            header.appendChild(logoutBtn);
+        }
+    };
+    
+    // Vérifier la connexion au chargement de la page
+    const savedLogin = checkSavedLogin();
     
     document.getElementById('teacher-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -64,10 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
         if (isAdmin) {
+            // Enregistrer dans localStorage
+            localStorage.setItem('devoirs_username', user);
+            localStorage.setItem('devoirs_password', pass);
             setupTeacherDashboard(true);
+            addLogoutButton();
             showView('teacher-dashboard-view');
         } else if (isTeacher) {
+            // Enregistrer dans localStorage
+            localStorage.setItem('devoirs_username', user);
+            localStorage.setItem('devoirs_password', pass);
             setupTeacherDashboard(false);
+            addLogoutButton();
             showView('teacher-dashboard-view');
         } else {
             document.getElementById('login-error').textContent = translations[document.documentElement.lang].loginError;
@@ -765,19 +829,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     name.className = 'sotw-name';
                     name.textContent = sotw.name;
                     
-                    // Stars display - Afficher le nombre réel d'étoiles gagnées
+                    // Stars display - Afficher le nombre réel d'étoiles gagnées (avec demi-étoiles)
                     const starsDiv = document.createElement('div');
                     starsDiv.className = 'sotw-stars';
                     const starCount = sotw.stars || 0;
-                    // Afficher uniquement les étoiles gagnées (pas sur 5)
-                    starsDiv.innerHTML = Array.from({length: starCount}, () => 
-                        `<span class="star filled">&#9733;</span>`
-                    ).join('');
+                    const fullStars = Math.floor(starCount);
+                    const hasHalfStar = (starCount % 1) >= 0.5;
+                    
+                    let starsHTML = '';
+                    for (let i = 0; i < fullStars; i++) {
+                        starsHTML += `<span class="star filled">&#9733;</span>`;
+                    }
+                    if (hasHalfStar) {
+                        starsHTML += `<span class="star half-filled">&#9733;</span>`;
+                    }
+                    starsDiv.innerHTML = starsHTML;
                     
                     // Star count text
                     const starCountText = document.createElement('div');
                     starCountText.className = 'sotw-star-count';
                     starCountText.textContent = `${starCount} ${starCount > 1 ? 'étoiles' : 'étoile'}`;
+                    
+                    // Progress comment (NEW: showing improvement/regression/excellent)
+                    const progressCommentDiv = document.createElement('div');
+                    progressCommentDiv.className = 'sotw-progress-comment';
+                    if (sotw.progressComment) {
+                        progressCommentDiv.textContent = currentLang === 'ar' 
+                            ? sotw.progressComment.ar 
+                            : sotw.progressComment.fr;
+                    }
                     
                     // Progress percentage
                     const progressDiv = document.createElement('div');
@@ -793,6 +873,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     studentCard.appendChild(name);
                     studentCard.appendChild(starsDiv);
                     studentCard.appendChild(starCountText);
+                    studentCard.appendChild(progressCommentDiv);
                     studentCard.appendChild(progressDiv);
                     studentCard.appendChild(classDiv);
                     

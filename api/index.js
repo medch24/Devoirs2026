@@ -28,19 +28,28 @@ async function connectToDatabase() {
 // ============================================================================
 
 // Calculate if a student deserves a star for a given day
+// Returns: 1 (full star), 0.5 (half star), or 0 (no star)
 const calculateDailyStar = (evaluations) => {
-    if (!evaluations || evaluations.length === 0) return false;
+    if (!evaluations || evaluations.length === 0) return 0;
     
-    const completedHomework = evaluations.filter(ev => 
-        ev.status === 'Fait' || ev.status === 'Partiellement Fait'
-    ).length;
+    const completedHomework = evaluations.filter(ev => ev.status === 'Fait').length;
+    const partiallyCompleted = evaluations.filter(ev => ev.status === 'Partiellement Fait').length;
     
-    const completionRate = (completedHomework / evaluations.length) * 100;
-    const hasGoodCompletion = completionRate > 70;
     const hasGoodParticipation = evaluations.every(ev => (ev.participation || 0) > 5);
     const hasGoodBehavior = evaluations.every(ev => (ev.behavior || 0) > 5);
     
-    return hasGoodCompletion && hasGoodParticipation && hasGoodBehavior;
+    // 1 étoile: tous les devoirs faits + comportement/participation > 5
+    if (completedHomework === evaluations.length && hasGoodParticipation && hasGoodBehavior) {
+        return 1;
+    }
+    
+    // 0.5 étoile: au moins la moitié des devoirs faits ou partiellement faits + notes >= 5
+    const halfOrMore = (completedHomework + partiallyCompleted) >= (evaluations.length / 2);
+    if (halfOrMore && hasGoodParticipation && hasGoodBehavior) {
+        return 0.5;
+    }
+    
+    return 0;
 };
 
 // Calculate stars from daily records
@@ -165,11 +174,14 @@ async function handleWeeklySummary(req, res) {
     
     let targetWeekStart, targetWeekEnd;
     
-    if (dayOfWeek === 0) { // Dimanche
+    // Afficher uniquement le dimanche (jour 0) et le lundi (jour 1) - soit 2 jours
+    if (dayOfWeek === 0 || dayOfWeek === 1) { // Dimanche ou Lundi
+        // Si dimanche, on prend la semaine précédente
+        // Si lundi, on prend aussi la semaine précédente (pour continuité)
         targetWeekStart = today.clone().subtract(7, 'days').day(0);
         targetWeekEnd = today.clone().subtract(7, 'days').day(4);
     } else {
-        return res.status(200).json({ studentsOfWeek: [], showDisplay: false, message: 'Élève de la semaine affiché uniquement le dimanche' });
+        return res.status(200).json({ studentsOfWeek: [], showDisplay: false, message: 'Élève de la semaine affiché uniquement dimanche et lundi' });
     }
 
     const dateQuery = {
@@ -256,28 +268,60 @@ async function handleWeeklySummary(req, res) {
         }
     }
 
-    const studentsOfWeek = [];
+    // MODIFICATION: Sélectionner UN SEUL élève de toutes les classes (celui avec le plus d'étoiles)
+    let topStudentOverall = null;
+    let topStarsOverall = -1;
+    let previousWeekStars = {}; // Pour calculer la progression
+    
+    // Récupérer les étoiles de la semaine précédente pour calculer la progression
+    const previousWeekStart = targetWeekStart.clone().subtract(7, 'days');
+    const previousWeekEnd = targetWeekEnd.clone().subtract(7, 'days');
+    const previousWeekQuery = {
+        $gte: previousWeekStart.format('YYYY-MM-DD'),
+        $lte: previousWeekEnd.format('YYYY-MM-DD'),
+    };
+    const previousDailyStars = await dailyStarsCollection.find({ date: previousWeekQuery }).toArray();
+    
+    // Calculer les étoiles de la semaine précédente par étudiant
+    previousDailyStars.forEach(starRecord => {
+        const key = `${starRecord.studentName}_${starRecord.className}`;
+        if (!previousWeekStars[key]) {
+            previousWeekStars[key] = 0;
+        }
+        previousWeekStars[key] += (starRecord.earnedStar || 0);
+    });
     
     for (const classKey in studentsByClass) {
         const students = studentsByClass[classKey];
-        let topStudent = null;
-        let topScore = -1;
         
         for (const studentName in students) {
             const studentData = students[studentName];
             const stars = studentData.stars || 0;
             const progress = studentData.progressPercentage || 0;
             
+            // Critère: au moins 3 étoiles et progression > 79%
             if (stars >= 3 && progress > 79) {
-                const combinedScore = (stars * 20) + (progress * 0.3);
-                
-                if (combinedScore > topScore) {
-                    topScore = combinedScore;
-                    topStudent = {
+                // On cherche celui avec le PLUS d'étoiles de toutes les classes
+                if (stars > topStarsOverall) {
+                    topStarsOverall = stars;
+                    
+                    // Calculer le commentaire de progression
+                    const previousStarsKey = `${studentName}_${classKey}`;
+                    const previousStars = previousWeekStars[previousStarsKey] || 0;
+                    let progressComment = { fr: 'Excellent', ar: 'ممتاز' };
+                    
+                    if (stars > previousStars) {
+                        progressComment = { fr: 'En amélioration', ar: 'في تحسن' };
+                    } else if (stars < previousStars) {
+                        progressComment = { fr: 'En régression', ar: 'في تراجع' };
+                    }
+                    
+                    topStudentOverall = {
                         name: studentName,
                         class: classKey,
                         stars: stars,
                         progressPercentage: progress,
+                        progressComment: progressComment,
                         weekIdentifier: weekIdentifier,
                         startDate: targetWeekStart.format('YYYY-MM-DD'),
                         endDate: targetWeekEnd.format('YYYY-MM-DD'),
@@ -286,12 +330,10 @@ async function handleWeeklySummary(req, res) {
                 }
             }
         }
-        
-        if (topStudent) {
-            studentsOfWeek.push(topStudent);
-        }
     }
 
+    const studentsOfWeek = topStudentOverall ? [topStudentOverall] : [];
+    
     if (studentsOfWeek.length > 0) {
         await studentsOfWeekCollection.insertMany(studentsOfWeek);
     }
@@ -361,11 +403,14 @@ async function handleDailyStars(req, res) {
             const studentData = evalsByStudent[key];
             const earnedStar = calculateDailyStar(studentData.evaluations);
             
+            // Calculate earned star (now can be 0, 0.5, or 1)
+            const earnedStarValue = calculateDailyStar(studentData.evaluations);
+            
             const starRecord = {
                 date: targetDate,
                 studentName: studentData.studentName,
                 className: studentData.className,
-                earnedStar: earnedStar,
+                earnedStar: earnedStarValue,
                 evaluationCount: studentData.evaluations.length,
                 completionRate: studentData.evaluations.length > 0 
                     ? Math.round((studentData.evaluations.filter(ev => 
