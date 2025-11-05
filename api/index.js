@@ -5,6 +5,8 @@ const moment = require('moment');
 // SHARED DATABASE CONNECTION (avec cache pour réutilisation)
 // ============================================================================
 let cachedClient = null;
+let cachedDb = null;
+let cachedDbName = null;
 
 async function connectToDatabase() {
     if (cachedClient) {
@@ -26,12 +28,41 @@ async function connectToDatabase() {
     const client = new MongoClient(uri);
     await client.connect();
     cachedClient = client;
+
+    // Determine database name: env var > URI path > default
+    const match = uri.match(/mongodb(?:\+srv)?:\/\/[^/]+\/([^?]+)/i);
+    const dbFromUri = match && match[1] ? match[1] : null;
+    cachedDbName = process.env.MONGODB_DB_NAME || dbFromUri || 'devoirs';
+
     return client;
+}
+
+async function getDb() {
+    const client = await connectToDatabase();
+    if (!cachedDb) {
+        cachedDb = client.db(cachedDbName || 'devoirs');
+    }
+    return cachedDb;
 }
 
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
+
+/**
+ * Ensure JSON body is parsed for POST/PUT requests in all runtimes
+ */
+async function readJsonBody(req) {
+    if (req.body && typeof req.body === 'object') return req.body;
+    return await new Promise((resolve) => {
+        let data = '';
+        req.on('data', chunk => { data += chunk; });
+        req.on('end', () => {
+            try { resolve(data ? JSON.parse(data) : {}); } catch { resolve({}); }
+        });
+        req.on('error', () => resolve({}));
+    });
+}
 
 /**
  * 🔢 Convertir les chiffres arabes en chiffres latins
@@ -186,8 +217,7 @@ const calculateStarsLegacy = (evaluations) => {
 
 // Handler: /api/evaluations
 async function handleEvaluations(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const { class: className, student: studentName, date: dateQuery, week } = req.query;
 
     if (req.method === 'POST') {
@@ -258,8 +288,7 @@ async function handleEvaluations(req, res) {
 
 // Handler: /api/weekly-summary
 async function handleWeeklySummary(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const evaluationsCollection = db.collection('evaluations');
     const dailyStarsCollection = db.collection('daily_stars');
     const studentsOfWeekCollection = db.collection('students_of_the_week');
@@ -442,8 +471,7 @@ async function handleWeeklySummary(req, res) {
 
 // Handler: /api/daily-stars
 async function handleDailyStars(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const evaluationsCollection = db.collection('evaluations');
     const dailyStarsCollection = db.collection('daily_stars');
     
@@ -547,8 +575,7 @@ async function handleDailyStars(req, res) {
 
 // Handler: /api/photo-of-the-day
 async function handlePhotoOfTheDay(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const collection = db.collection('photos_of_the_day');
     
     if (req.method === 'POST') {
@@ -586,8 +613,7 @@ async function handlePhotoOfTheDay(req, res) {
 
 // Handler: /api/photo-2
 async function handlePhoto2(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const collection = db.collection('photos_celebration_2');
     
     if (req.method === 'POST') {
@@ -625,8 +651,7 @@ async function handlePhoto2(req, res) {
 
 // Handler: /api/photo-3
 async function handlePhoto3(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const collection = db.collection('photos_celebration_3');
     
     if (req.method === 'POST') {
@@ -668,8 +693,7 @@ async function handleUploadPlan(req, res) {
         return res.status(405).json({ message: 'Méthode non autorisée' });
     }
 
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const collection = db.collection('plans');
 
     const planData = req.body;
@@ -726,8 +750,7 @@ async function handleUploadPlan(req, res) {
 
 // Handler: /api/initial-data
 async function handleInitialData(req, res) {
-    const client = await connectToDatabase();
-    const db = client.db('devoirs');
+    const db = await getDb();
     const collection = db.collection('plans');
     
     const planData = await collection.find({}).toArray();
