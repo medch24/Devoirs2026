@@ -11,10 +11,16 @@ async function connectToDatabase() {
         return cachedClient;
     }
 
-    const uri = process.env.MONGODB_URI;
+    // Support multiple env var names to avoid deployment misconfigurations
+    const uri = process.env.MONGODB_URI
+        || process.env.MONGODB_ATLAS_URI
+        || process.env.MONGODB_URL
+        || process.env.MONGO_URI
+        || process.env.MONGODB_REAL_URI
+        || process.env.MONGODB_TEST_URI;
     
     if (!uri) {
-        throw new Error('MONGODB_URI environment variable is not defined');
+        throw new Error('Missing MongoDB connection string. Please set MONGODB_URI in Vercel Environment Variables.');
     }
 
     const client = new MongoClient(uri);
@@ -738,6 +744,16 @@ module.exports = async (req, res) => {
         // Parse l'URL pour déterminer la route
         const url = new URL(req.url, `http://${req.headers.host}`);
         const pathname = url.pathname;
+
+        // Assurer la présence de req.query (certains runtimes ne le remplissent pas)
+        if (!req.query) {
+            req.query = Object.fromEntries(url.searchParams.entries());
+        }
+
+        // Assurer la présence de req.query (certains runtimes ne le remplissent pas)
+        if (!req.query) {
+            req.query = Object.fromEntries(url.searchParams.entries());
+        }
 
         // Router basé sur le pathname
         if (pathname === '/api/evaluations' || pathname === '/api/evaluations/') {
