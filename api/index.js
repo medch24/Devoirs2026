@@ -221,6 +221,7 @@ async function handleEvaluations(req, res) {
     const { class: className, student: studentName, date: dateQuery, week } = req.query;
 
     if (req.method === 'POST') {
+        if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
         const { evaluations } = req.body;
         if (!evaluations || evaluations.length === 0) {
             return res.status(200).json({ message: 'Aucune évaluation à enregistrer.' });
@@ -498,6 +499,7 @@ async function handleDailyStars(req, res) {
         res.status(200).json({ stars });
         
     } else if (req.method === 'POST') {
+        if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
         const { date } = req.body;
         const targetDate = date || moment().format('YYYY-MM-DD');
         
@@ -579,6 +581,7 @@ async function handlePhotoOfTheDay(req, res) {
     const collection = db.collection('photos_of_the_day');
     
     if (req.method === 'POST') {
+        if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
         const { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
@@ -617,6 +620,7 @@ async function handlePhoto2(req, res) {
     const collection = db.collection('photos_celebration_2');
     
     if (req.method === 'POST') {
+        if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
         const { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
@@ -655,6 +659,7 @@ async function handlePhoto3(req, res) {
     const collection = db.collection('photos_celebration_3');
     
     if (req.method === 'POST') {
+        if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
         const { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
@@ -696,6 +701,7 @@ async function handleUploadPlan(req, res) {
     const db = await getDb();
     const collection = db.collection('plans');
 
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
     const planData = req.body;
 
     if (!planData || planData.length === 0) {
