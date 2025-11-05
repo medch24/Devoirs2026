@@ -39,9 +39,37 @@ async function connectToDatabase() {
 
 async function getDb() {
     const client = await connectToDatabase();
-    if (!cachedDb) {
-        cachedDb = client.db(cachedDbName || 'devoirs');
+    if (cachedDb) return cachedDb;
+
+    // Preferred DB
+    let dbName = cachedDbName || 'devoirs';
+    let db = client.db(dbName);
+
+    try {
+        const hasPlans = await db.listCollections({ name: 'plans' }).hasNext();
+        if (hasPlans) {
+            cachedDb = db;
+            return cachedDb;
+        }
+    } catch (_) {}
+
+    // Smart fallbacks: common names used in this project/cluster
+    const candidates = ['test', 'devoirs2026', 'devoirs'];
+    for (const name of candidates) {
+        if (name === dbName) continue;
+        try {
+            const candidateDb = client.db(name);
+            const ok = await candidateDb.listCollections({ name: 'plans' }).hasNext();
+            if (ok) {
+                cachedDbName = name;
+                cachedDb = candidateDb;
+                return cachedDb;
+            }
+        } catch (_) { /* ignore */ }
     }
+
+    // If nothing found, keep the initial db
+    cachedDb = db;
     return cachedDb;
 }
 
