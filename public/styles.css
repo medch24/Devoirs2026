@@ -11,7 +11,7 @@ body {
     margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
 }
 .container {
-    width: 100%; max-width: 1200px; background-color: var(--card-bg-color);
+    width: 100%; max-width: 1400px; background-color: var(--card-bg-color);
     border-radius: 16px; box-shadow: 0 8px 30px rgba(0, 74, 153, 0.1); overflow: hidden;
 }
 header {
@@ -167,7 +167,7 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .homework-reminder { font-size: 1.1rem; font-weight: bold; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent-color); }
 .home-showcase-container {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; 
-    justify-content: center; width: 100%; max-width: 1200px; margin-top: 30px;
+    justify-content: center; width: 100%; max-width: 1400px; margin-top: 30px;
 }
 .student-of-the-week-showcase, .photo-of-the-day-showcase {
     padding: 20px; background-color: #f0f7ff;
@@ -179,8 +179,9 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 .photos-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 25px;
     align-items: stretch;
+    width: 100%;
 }
 @media (max-width: 900px) {
     .photos-row { grid-template-columns: 1fr 1fr; }
@@ -210,7 +211,7 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 }
 .potd-image {
     width: 100%; 
-    height: 220px;
+    height: 280px;
     border-radius: 12px;
     border: 5px solid var(--accent-color);
     object-fit: cover;
