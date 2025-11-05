@@ -175,6 +175,19 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     text-align: center; min-height: 300px;
     display: flex; flex-direction: column; justify-content: center;
 }
+/* Row container to display the 3 celebration photos side by side */
+.photos-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+@media (max-width: 900px) {
+    .photos-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+    .photos-row { grid-template-columns: 1fr; }
+}
 .student-of-the-week-showcase { 
     background-color: #fffbe6; border-color: #ffeeba; 
 }
@@ -197,7 +210,7 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 }
 .potd-image {
     width: 100%; 
-    max-height: 250px;
+    height: 220px;
     border-radius: 12px;
     border: 5px solid var(--accent-color);
     object-fit: cover;

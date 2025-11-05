@@ -630,10 +630,7 @@ async function handlePhotoOfTheDay(req, res) {
     }
 
     if (req.method === 'GET') {
-        const threeDaysAgo = new Date();
-        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-        await collection.deleteMany({ createdAt: { $lt: threeDaysAgo } });
-        
+        // Ne plus supprimer automatiquement les anciennes photos.
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);
@@ -669,10 +666,7 @@ async function handlePhoto2(req, res) {
     }
 
     if (req.method === 'GET') {
-        const threeDaysAgo = new Date();
-        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-        await collection.deleteMany({ createdAt: { $lt: threeDaysAgo } });
-        
+        // Ne plus supprimer automatiquement les anciennes photos.
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);
@@ -708,10 +702,7 @@ async function handlePhoto3(req, res) {
     }
 
     if (req.method === 'GET') {
-        const threeDaysAgo = new Date();
-        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-        await collection.deleteMany({ createdAt: { $lt: threeDaysAgo } });
-        
+        // Ne plus supprimer automatiquement les anciennes photos.
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);

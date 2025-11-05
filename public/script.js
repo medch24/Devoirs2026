@@ -219,11 +219,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateTeacherIcons(teachers) {
         const iconsContainer = document.getElementById('teacher-icons-container');
         iconsContainer.innerHTML = '';
+        const avatars = {
+            'Abas': 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
+            'Zine': 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
+            'Tonga': 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
+            'Sylvano': 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
+            'Morched': 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
+            'Saeed': 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07'
+        };
         (teachers || []).forEach(teacherName => {
             const card = document.createElement('div');
             card.className = 'teacher-icon-card';
             card.dataset.teacherName = teacherName;
-            card.innerHTML = `<div class="teacher-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg></div><p>${teacherName}</p>`;
+            const avatar = avatars[teacherName];
+            const iconHtml = avatar
+                ? `<img src="${avatar}" alt="${teacherName}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`
+                : `<svg width=\"40\" height=\"40\" viewBox=\"0 0 24 24\" fill=\"white\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z\"/></svg>`;
+            card.innerHTML = `<div class="teacher-icon">${iconHtml}</div><p>${teacherName}</p>`;
             card.addEventListener('click', () => {
                 iconsContainer.querySelectorAll('.teacher-icon-card').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
@@ -622,6 +634,36 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBar.classList.add('green');
         }
         document.getElementById('overall-progress-text').textContent = `${percentage}%`;
+        // daily progress note under stars
+        const noteEl = document.getElementById('daily-progress-note');
+        const lang = document.documentElement.lang;
+        if (noteEl) {
+            // previous day percentage
+            let prevTotal = 0, prevMax = 0;
+            const prevDayStr = moment().subtract(1, 'day').format('YYYY-MM-DD');
+            (weeklyEvals || []).forEach(ev => {
+                if (ev.date === prevDayStr) {
+                    const d = moment(ev.date).day();
+                    if (d >= 0 && d <= 4 && ev.status !== 'Absent') {
+                        prevTotal += (ev.status === 'Fait' ? 10 : ev.status === 'Partiellement Fait' ? 5 : 0) + (ev.participation || 0) + (ev.behavior || 0);
+                        prevMax += 30;
+                    }
+                }
+            });
+            const previousPct = prevMax > 0 ? Math.round((prevTotal / prevMax) * 100) : null;
+
+            let label = '';
+            if (previousPct === null) {
+                label = '';
+            } else if (percentage > previousPct) {
+                label = lang === 'ar' ? 'في تحسن' : 'En amélioration';
+            } else if (percentage < previousPct) {
+                label = lang === 'ar' ? 'في تراجع' : 'En régression';
+            } else {
+                label = lang === 'ar' ? 'ممتاز' : 'Excellent';
+            }
+            noteEl.textContent = label;
+        }
     }
     
     // Legacy star calculation function (fallback)
@@ -904,6 +946,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     messageElement.textContent = translations[document.documentElement.lang].potdMessage || "Projet ou succès à célébrer !";
                 }
                 potdShowcase.style.display = 'block';
+                const row = document.getElementById('photos-row');
+                if (row) row.style.display = 'grid';
             } else {
                 potdShowcase.style.display = 'none';
             }
@@ -925,6 +969,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     messageElement.textContent = "Une autre belle réussite à célébrer !";
                 }
                 photo2Showcase.style.display = 'block';
+                const row = document.getElementById('photos-row');
+                if (row) row.style.display = 'grid';
             } else {
                 photo2Showcase.style.display = 'none';
             }
@@ -946,6 +992,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     messageElement.textContent = "Un accomplissement remarquable !";
                 }
                 photo3Showcase.style.display = 'block';
+                const row = document.getElementById('photos-row');
+                if (row) row.style.display = 'grid';
             } else {
                 photo3Showcase.style.display = 'none';
             }
