@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Tonga': 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
             'Sylvano': 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
             'Morched': 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
-            'Saeed': 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07'
+            'Saeed': 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
             'Jaber': 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_'
         };
         (teachers || []).forEach(teacherName => {
