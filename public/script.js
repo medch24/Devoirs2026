@@ -229,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Majed': 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
             'Kamel': 'https://lh3.googleusercontent.com/d/1abpixTtg5FKMPRVtiNrkB0oS9jZc10d-',
             'Youssouf': 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
+            'Mohamed Cherif': 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
             'Jaber': 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_'
         };
         (teachers || []).forEach(teacherName => {
