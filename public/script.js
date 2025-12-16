@@ -1012,47 +1012,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const teachersContactData = {
         'Abas': { 
             photo: 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
-            subjects: ['Mathématiques', 'Sciences']
+            subjects: ['Langues et Littératures']
         },
         'Zine': { 
             photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
-            subjects: ['Français', 'Arabe']
+            subjects: ['Science', 'Biologie']
         },
         'Tonga': { 
             photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
-            subjects: ['Sport']
+            subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths']
         },
         'Sylvano': { 
             photo: 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
-            subjects: ['Anglais']
-        },
-        'Morched': { 
-            photo: 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
-            subjects: ['Religion']
+            subjects: ['Maths', 'Physique-Chimie']
         },
         'Saeed': { 
             photo: 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
-            subjects: ['Histoire', 'Géographie']
+            subjects: ['Arabe']
         },
         'Majed': { 
             photo: 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
-            subjects: ['Informatique']
+            subjects: ['Islamique']
         },
         'Kamel': { 
             photo: 'https://lh3.googleusercontent.com/d/1abpixTtg5FKMPRVtiNrkB0oS9jZc10d-',
-            subjects: ['Arts']
+            subjects: ['Anglais']
         },
         'Youssouf': { 
             photo: 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
-            subjects: ['Musique']
+            subjects: ['Individus et Sociétés']
         },
         'Mohamed Cherif': { 
             photo: 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
-            subjects: ['Physique', 'Chimie']
+            subjects: ['Coordinateur']
         },
         'Jaber': { 
             photo: 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_',
-            subjects: ['Biologie']
+            subjects: ['KSA']
         }
     };
     
