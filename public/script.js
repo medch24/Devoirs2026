@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Morched': 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
             'Saeed': 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
             'Majed': 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
-            'Kamel': 'https://lh3.googleusercontent.com/d/1abpixTtg5FKMPRVtiNrkB0oS9jZc10d-',
+            'Kamel': 'https://lh3.googleusercontent.com/d/1uRNBTnFXiYDZuHbM__wkc1Dij7M7HSKR',
             'Youssouf': 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
             'Mohamed Cherif': 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
             'Jaber': 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_'
