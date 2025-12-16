@@ -1005,6 +1005,258 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) { console.error("Erreur:", error); }
     }
 
+    // ============================================================================
+    // TEACHER CONTACT SYSTEM
+    // ============================================================================
+    
+    const teachersContactData = {
+        'Abas': { 
+            photo: 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
+            subjects: ['Mathématiques', 'Sciences']
+        },
+        'Zine': { 
+            photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
+            subjects: ['Français', 'Arabe']
+        },
+        'Tonga': { 
+            photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
+            subjects: ['Sport']
+        },
+        'Sylvano': { 
+            photo: 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
+            subjects: ['Anglais']
+        },
+        'Morched': { 
+            photo: 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
+            subjects: ['Religion']
+        },
+        'Saeed': { 
+            photo: 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
+            subjects: ['Histoire', 'Géographie']
+        },
+        'Majed': { 
+            photo: 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
+            subjects: ['Informatique']
+        },
+        'Kamel': { 
+            photo: 'https://lh3.googleusercontent.com/d/1abpixTtg5FKMPRVtiNrkB0oS9jZc10d-',
+            subjects: ['Arts']
+        },
+        'Youssouf': { 
+            photo: 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
+            subjects: ['Musique']
+        },
+        'Mohamed Cherif': { 
+            photo: 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
+            subjects: ['Physique', 'Chimie']
+        },
+        'Jaber': { 
+            photo: 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_',
+            subjects: ['Biologie']
+        }
+    };
+    
+    // Populate teachers contact grid
+    function populateTeachersContact() {
+        const grid = document.getElementById('teachers-contact-grid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        
+        for (const [name, data] of Object.entries(teachersContactData)) {
+            const card = document.createElement('div');
+            card.className = 'teacher-contact-card';
+            card.innerHTML = `
+                <img src="${data.photo}" alt="${name}" class="teacher-contact-photo">
+                <h3 class="teacher-contact-name">${name}</h3>
+                <p class="teacher-contact-subjects">${data.subjects.join(', ')}</p>
+                <div class="teacher-contact-icon">✉️</div>
+            `;
+            card.addEventListener('click', () => openContactModal(name, data));
+            grid.appendChild(card);
+        }
+    }
+    
+    // Open contact modal
+    function openContactModal(teacherName, teacherData) {
+        const modal = document.getElementById('contact-teacher-modal');
+        document.getElementById('modal-teacher-photo').src = teacherData.photo;
+        document.getElementById('modal-teacher-name').textContent = teacherName;
+        document.getElementById('modal-teacher-subjects').textContent = teacherData.subjects.join(', ');
+        document.getElementById('contact-teacher-form').dataset.teacherName = teacherName;
+        modal.style.display = 'flex';
+    }
+    
+    // Close modal
+    document.querySelector('.close-modal')?.addEventListener('click', () => {
+        document.getElementById('contact-teacher-modal').style.display = 'none';
+        document.getElementById('contact-teacher-form').reset();
+        document.getElementById('message-status').textContent = '';
+    });
+    
+    // Close modal on outside click
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('contact-teacher-modal');
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.getElementById('contact-teacher-form').reset();
+            document.getElementById('message-status').textContent = '';
+        }
+    });
+    
+    // Handle contact form submission
+    document.getElementById('contact-teacher-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const teacherName = form.dataset.teacherName;
+        const parentName = document.getElementById('parent-name').value;
+        const messageContent = document.getElementById('message-content').value;
+        const statusEl = document.getElementById('message-status');
+        
+        statusEl.textContent = 'Envoi en cours...';
+        statusEl.className = '';
+        
+        try {
+            const response = await fetch('/api/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teacherName,
+                    parentName,
+                    message: messageContent,
+                    timestamp: new Date().toISOString()
+                })
+            });
+            
+            if (!response.ok) throw new Error('Échec de l\'envoi');
+            
+            statusEl.textContent = '✅ Message envoyé avec succès !';
+            statusEl.className = 'success';
+            form.reset();
+            
+            setTimeout(() => {
+                document.getElementById('contact-teacher-modal').style.display = 'none';
+                statusEl.textContent = '';
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            statusEl.textContent = '❌ Erreur lors de l\'envoi. Réessayez.';
+            statusEl.className = 'error';
+        }
+    });
+    
+    // View messages button (for teachers)
+    document.getElementById('view-messages-btn')?.addEventListener('click', () => {
+        loadTeacherMessages();
+        showView('teacher-messages-view');
+    });
+    
+    // Load teacher messages
+    async function loadTeacherMessages() {
+        const savedLogin = checkSavedLogin();
+        if (!savedLogin) return;
+        
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.innerHTML = '<p>Chargement des messages...</p>';
+        
+        try {
+            // Get teacher name from active card or saved login
+            const activeTeacherCard = document.querySelector('.teacher-icon-card.active');
+            const teacherName = activeTeacherCard ? activeTeacherCard.dataset.teacherName : null;
+            
+            const response = await fetch(`/api/get-messages?teacherName=${encodeURIComponent(teacherName || 'all')}`);
+            if (!response.ok) throw new Error('Erreur de chargement');
+            
+            const data = await response.json();
+            
+            if (data.messages.length === 0) {
+                messagesContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">Aucun message pour le moment.</p>';
+                return;
+            }
+            
+            messagesContainer.innerHTML = '';
+            data.messages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = `message-card ${msg.read ? '' : 'unread'}`;
+                card.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-from">De: ${msg.parentName}</span>
+                        <span class="message-date">${new Date(msg.timestamp).toLocaleString('fr-FR')}</span>
+                    </div>
+                    <div class="message-content">${msg.message}</div>
+                `;
+                messagesContainer.appendChild(card);
+            });
+            
+            // Mark messages as read
+            if (!savedLogin.isAdmin) {
+                await fetch('/api/mark-messages-read', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teacherName })
+                });
+                updateUnreadCount(0);
+            }
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            messagesContainer.innerHTML = '<p class="error-message">Erreur de chargement des messages.</p>';
+        }
+    }
+    
+    // Update unread message count
+    async function updateUnreadCount(teacherName) {
+        if (!teacherName) return;
+        
+        try {
+            const response = await fetch(`/api/unread-count?teacherName=${encodeURIComponent(teacherName)}`);
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            const badge = document.getElementById('unread-count');
+            const messagesBtn = document.getElementById('view-messages-btn');
+            
+            if (data.count > 0) {
+                badge.textContent = data.count;
+                badge.style.display = 'flex';
+                messagesBtn.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+    
+    // Populate teachers contact when parent view is shown
+    goToParentBtn.addEventListener('click', () => {
+        populateTeachersContact();
+    });
+    
+    // Update translations for teacher contact
+    translations.fr = {
+        ...translations.fr,
+        contactTeachersTitle: '📧 Contacter les Enseignants',
+        sendMessageTitle: 'Envoyer un message',
+        parentNameLabel: 'Votre nom (père/mère de quel élève) :',
+        messageLabel: 'Votre message :',
+        sendButton: 'Envoyer',
+        messagesButton: 'Messages',
+        teacherMessagesTitle: 'Mes Messages'
+    };
+    
+    translations.ar = {
+        ...translations.ar,
+        contactTeachersTitle: '📧 التواصل مع المربين',
+        sendMessageTitle: 'إرسال رسالة',
+        parentNameLabel: 'اسمك (أب/أم أي تلميذ) :',
+        messageLabel: 'رسالتك :',
+        sendButton: 'إرسال',
+        messagesButton: 'الرسائل',
+        teacherMessagesTitle: 'رسائلي'
+    };
+
     displayHomePageExtras();
     setLanguage('fr');
 });

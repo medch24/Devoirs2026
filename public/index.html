@@ -63,6 +63,12 @@
                 <div id="class-buttons-container" class="class-buttons-container"></div>
                 <h2 class="section-title" id="student-selection-title" data-translate="studentSelectionTitle" style="display: none;">2. Choisissez votre enfant</h2>
                 <div id="student-grid-container" class="student-grid"></div>
+                
+                <!-- Section Contact Enseignants -->
+                <div class="teacher-contact-section">
+                    <h2 class="section-title" data-translate="contactTeachersTitle">📧 Contacter les Enseignants</h2>
+                    <div id="teachers-contact-grid" class="teachers-contact-grid"></div>
+                </div>
             </main>
         </div>
         
@@ -118,6 +124,10 @@
             <header>
                 <button class="back-button">&larr;</button>
                 <h1 data-translate="teacherDashboardTitle">Tableau de Bord Enseignant</h1>
+                <button id="view-messages-btn" class="messages-button" style="display: none;">
+                    📬 <span data-translate="messagesButton">Messages</span>
+                    <span id="unread-count" class="unread-badge" style="display: none;">0</span>
+                </button>
             </header>
             <main>
                 <div id="admin-upload-section" class="upload-section" style="display: none;">
@@ -166,6 +176,42 @@
                 </div>
             </main>
         </div>
+    </div>
+
+    <!-- Modal pour contacter un enseignant -->
+    <div id="contact-teacher-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title" data-translate="sendMessageTitle">Envoyer un message</h2>
+            <div class="teacher-modal-info">
+                <img id="modal-teacher-photo" src="" alt="Photo enseignant" class="modal-teacher-photo">
+                <div>
+                    <h3 id="modal-teacher-name"></h3>
+                    <p id="modal-teacher-subjects"></p>
+                </div>
+            </div>
+            <form id="contact-teacher-form">
+                <label for="parent-name" data-translate="parentNameLabel">Votre nom (père/mère de quel élève) :</label>
+                <input type="text" id="parent-name" required placeholder="Ex: Père de Ahmed">
+                
+                <label for="message-content" data-translate="messageLabel">Votre message :</label>
+                <textarea id="message-content" rows="6" required placeholder="Écrivez votre message ici..."></textarea>
+                
+                <button type="submit" class="role-button" data-translate="sendButton">Envoyer</button>
+                <p id="message-status"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vue Messages Enseignant (dans le dashboard enseignant) -->
+    <div id="teacher-messages-view" class="view" style="display: none;">
+        <header>
+            <button class="back-button">&larr;</button>
+            <h1 data-translate="teacherMessagesTitle">Mes Messages</h1>
+        </header>
+        <main class="messages-main">
+            <div id="messages-container" class="messages-container"></div>
+        </main>
     </div>
 
     <script src="script.js"></script>

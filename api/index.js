@@ -603,6 +603,39 @@ async function handleDailyStars(req, res) {
     }
 }
 
+/**
+ * 🔄 Convertir les liens Google Drive en liens directs
+ */
+function convertGoogleDriveUrl(url) {
+    if (!url) return url;
+    
+    // Pattern: https://drive.google.com/file/d/FILE_ID/view?usp=drive_link
+    // Convert to: https://lh3.googleusercontent.com/d/FILE_ID
+    const drivePattern = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(drivePattern);
+    
+    if (match && match[1]) {
+        const fileId = match[1];
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+    }
+    
+    return url;
+}
+
+/**
+ * 🗑️ Supprimer les photos de plus de 3 jours
+ */
+async function deleteOldPhotos(collection) {
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    
+    const result = await collection.deleteMany({
+        createdAt: { $lt: threeDaysAgo }
+    });
+    
+    return result.deletedCount;
+}
+
 // Handler: /api/photo-of-the-day
 async function handlePhotoOfTheDay(req, res) {
     const db = await getDb();
@@ -610,7 +643,7 @@ async function handlePhotoOfTheDay(req, res) {
     
     if (req.method === 'POST') {
         if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
-        const { imageUrl, comment } = req.body;
+        let { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
         if (username !== 'Mohamed86' || password !== 'Mohamed86') {
@@ -621,16 +654,21 @@ async function handlePhotoOfTheDay(req, res) {
             return res.status(400).json({ error: 'URL invalide' });
         }
 
+        // Convertir automatiquement les liens Google Drive
+        imageUrl = convertGoogleDriveUrl(imageUrl);
+
         await collection.insertOne({
             url: imageUrl,
             comment: comment || "",
             createdAt: new Date()
         });
-        return res.status(200).json({ message: 'Photo ajoutée avec succès.' });
+        return res.status(200).json({ message: 'Photo ajoutée avec succès.', convertedUrl: imageUrl });
     }
 
     if (req.method === 'GET') {
-        // Ne plus supprimer automatiquement les anciennes photos.
+        // Supprimer automatiquement les photos de plus de 3 jours
+        await deleteOldPhotos(collection);
+        
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);
@@ -646,7 +684,7 @@ async function handlePhoto2(req, res) {
     
     if (req.method === 'POST') {
         if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
-        const { imageUrl, comment } = req.body;
+        let { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
         if (username !== 'Mohamed86' || password !== 'Mohamed86') {
@@ -657,16 +695,21 @@ async function handlePhoto2(req, res) {
             return res.status(400).json({ error: 'URL invalide' });
         }
 
+        // Convertir automatiquement les liens Google Drive
+        imageUrl = convertGoogleDriveUrl(imageUrl);
+
         await collection.insertOne({
             url: imageUrl,
             comment: comment || "Une autre belle réussite à célébrer !",
             createdAt: new Date()
         });
-        return res.status(200).json({ message: 'Photo de célébration 2 ajoutée avec succès.' });
+        return res.status(200).json({ message: 'Photo de célébration 2 ajoutée avec succès.', convertedUrl: imageUrl });
     }
 
     if (req.method === 'GET') {
-        // Ne plus supprimer automatiquement les anciennes photos.
+        // Supprimer automatiquement les photos de plus de 3 jours
+        await deleteOldPhotos(collection);
+        
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);
@@ -682,7 +725,7 @@ async function handlePhoto3(req, res) {
     
     if (req.method === 'POST') {
         if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
-        const { imageUrl, comment } = req.body;
+        let { imageUrl, comment } = req.body;
         
         const { username, password } = req.headers;
         if (username !== 'Mohamed86' || password !== 'Mohamed86') {
@@ -693,16 +736,21 @@ async function handlePhoto3(req, res) {
             return res.status(400).json({ error: 'URL invalide' });
         }
 
+        // Convertir automatiquement les liens Google Drive
+        imageUrl = convertGoogleDriveUrl(imageUrl);
+
         await collection.insertOne({
             url: imageUrl,
             comment: comment || "Un accomplissement remarquable !",
             createdAt: new Date()
         });
-        return res.status(200).json({ message: 'Photo de célébration 3 ajoutée avec succès.' });
+        return res.status(200).json({ message: 'Photo de célébration 3 ajoutée avec succès.', convertedUrl: imageUrl });
     }
 
     if (req.method === 'GET') {
-        // Ne plus supprimer automatiquement les anciennes photos.
+        // Supprimer automatiquement les photos de plus de 3 jours
+        await deleteOldPhotos(collection);
+        
         const latestPhoto = await collection.find().sort({ createdAt: -1 }).limit(1).toArray();
         const photoData = latestPhoto.length > 0 ? latestPhoto[0] : {};
         return res.status(200).json(photoData);
@@ -784,6 +832,100 @@ async function handleInitialData(req, res) {
     res.status(200).json({ teachers, planData });
 }
 
+// Handler: /api/send-message
+async function handleSendMessage(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_messages');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { teacherName, parentName, message, timestamp } = req.body;
+    
+    if (!teacherName || !parentName || !message) {
+        return res.status(400).json({ error: 'Données incomplètes' });
+    }
+    
+    await collection.insertOne({
+        teacherName,
+        parentName,
+        message,
+        timestamp: timestamp || new Date().toISOString(),
+        read: false,
+        createdAt: new Date()
+    });
+    
+    return res.status(200).json({ message: 'Message envoyé avec succès' });
+}
+
+// Handler: /api/get-messages
+async function handleGetMessages(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_messages');
+    const { teacherName } = req.query;
+    
+    let query = {};
+    if (teacherName && teacherName !== 'all') {
+        query.teacherName = teacherName;
+    }
+    
+    const messages = await collection.find(query).sort({ createdAt: -1 }).toArray();
+    
+    return res.status(200).json({ messages });
+}
+
+// Handler: /api/mark-messages-read
+async function handleMarkMessagesRead(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_messages');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { teacherName } = req.body;
+    
+    if (!teacherName) {
+        return res.status(400).json({ error: 'Nom d\'enseignant requis' });
+    }
+    
+    await collection.updateMany(
+        { teacherName, read: false },
+        { $set: { read: true } }
+    );
+    
+    return res.status(200).json({ message: 'Messages marqués comme lus' });
+}
+
+// Handler: /api/unread-count
+async function handleUnreadCount(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_messages');
+    const { teacherName } = req.query;
+    
+    if (!teacherName) {
+        return res.status(400).json({ error: 'Nom d\'enseignant requis' });
+    }
+    
+    const count = await collection.countDocuments({
+        teacherName,
+        read: false
+    });
+    
+    return res.status(200).json({ count });
+}
+
 // ============================================================================
 // MAIN ROUTER
 // ============================================================================
@@ -820,11 +962,19 @@ module.exports = async (req, res) => {
             await handleUploadPlan(req, res);
         } else if (pathname === '/api/initial-data' || pathname === '/api/initial-data/') {
             await handleInitialData(req, res);
+        } else if (pathname === '/api/send-message' || pathname === '/api/send-message/') {
+            await handleSendMessage(req, res);
+        } else if (pathname === '/api/get-messages' || pathname === '/api/get-messages/') {
+            await handleGetMessages(req, res);
+        } else if (pathname === '/api/mark-messages-read' || pathname === '/api/mark-messages-read/') {
+            await handleMarkMessagesRead(req, res);
+        } else if (pathname === '/api/unread-count' || pathname === '/api/unread-count/') {
+            await handleUnreadCount(req, res);
         } else if (pathname === '/api' || pathname === '/api/') {
             // Route par défaut pour /api
             res.status(200).json({ 
                 message: 'API Devoirs2026',
-                version: '1.0.0',
+                version: '2.0.0',
                 endpoints: [
                     '/api/evaluations',
                     '/api/weekly-summary',
@@ -833,7 +983,11 @@ module.exports = async (req, res) => {
                     '/api/photo-2',
                     '/api/photo-3',
                     '/api/upload-plan',
-                    '/api/initial-data'
+                    '/api/initial-data',
+                    '/api/send-message',
+                    '/api/get-messages',
+                    '/api/mark-messages-read',
+                    '/api/unread-count'
                 ]
             });
         } else {
