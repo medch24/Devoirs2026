@@ -10,6 +10,70 @@ document.addEventListener('DOMContentLoaded', () => {
         DP2: [ { name: "Habib", photo: "https://lh3.googleusercontent.com/d/13u4y6JIyCBVQ_9PCwYhh837byyK9g8pF", birthday: "10/2008" }, { name: "Salah", photo: "https://lh3.googleusercontent.com/d/1IG8S_i6jD8O6C2QD_nwLxrG932QgIVXu", birthday: "7/2008" } ]
     };
     
+    // DONNÉES DES ENSEIGNANTS - Défini avant toute utilisation
+    const teachersContactData = {
+        'Abas': { 
+            photo: 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
+            subjects: ['Langues et Littératures'],
+            username: 'Abas',
+            password: 'Abas'
+        },
+        'Zine': { 
+            photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
+            subjects: ['Science', 'Biologie'],
+            username: 'Zine',
+            password: 'Zine'
+        },
+        'Tonga': { 
+            photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
+            subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths'],
+            username: 'Tonga',
+            password: 'Tonga'
+        },
+        'Sylvano': { 
+            photo: 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
+            subjects: ['Maths', 'Physique-Chimie'],
+            username: 'Sylvano',
+            password: 'Sylvano'
+        },
+        'Saeed': { 
+            photo: 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
+            subjects: ['Arabe'],
+            username: 'Saeed',
+            password: 'Saeed'
+        },
+        'Majed': { 
+            photo: 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
+            subjects: ['Islamique'],
+            username: 'Majed',
+            password: 'Majed'
+        },
+        'Kamel': { 
+            photo: 'https://lh3.googleusercontent.com/d/1jT3WJBugZUy5wDgmU00_THVD8hZ-5M24',
+            subjects: ['Anglais'],
+            username: 'Kamel',
+            password: 'Kamel'
+        },
+        'Youssouf': { 
+            photo: 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
+            subjects: ['Individus et Sociétés'],
+            username: 'Youssouf',
+            password: 'Youssouf'
+        },
+        'Mohamed Cherif': { 
+            photo: 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
+            subjects: ['Coordinateur'],
+            username: 'Mohamed Cherif',
+            password: 'Mohamed Cherif'
+        },
+        'Jaber': { 
+            photo: 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_',
+            subjects: ['KSA'],
+            username: 'Jaber',
+            password: 'Jaber'
+        }
+    };
+    
     const translations = {
         fr: { portalTitle: "Portail de Suivi des Devoirs", parentSpace: "Espace Parent", teacherSpace: "Espace Enseignant", backButton: "Retour", teacherLoginTitle: "Accès Enseignant", usernamePlaceholder: "Nom d'utilisateur", passwordPlaceholder: "Mot de passe", loginButton: "Connexion", loginError: "Nom d'utilisateur ou mot de passe incorrect.", classSelectionTitle: "1. Choisissez une classe", studentSelectionTitle: "2. Choisissez votre enfant", studentDashboardTitle: "Tableau de bord de", overallWeeklyProgress: "Progression générale", previousDay: "Jour Précédent", nextDay: "Jour Suivant", homeworkFor: "Devoirs du", loading: "Chargement...", noHomeworkForDay: "Aucun devoir pour ce jour.", fetchError: "Erreur de chargement des données.", studentOfTheWeek: "Élève de la semaine", teacherDashboardTitle: "Tableau de Bord Enseignant", updateSchedule: "Mettre à jour le planning", uploadButton: "Charger et Mettre à jour", homeworkForDay: "Devoirs du jour", selectClassPrompt: "Veuillez sélectionner tous les filtres.", evalTableHeaderStudent: "Élève", evalTableHeaderStatus: "Statut", evalTableHeaderParticipation: "Participation", evalTableHeaderBehavior: "Comportement", evalTableHeaderComment: "Commentaire", saveButton: "Enregistrer", noHomeworkForSubject: "Pas de devoirs pour cette matière aujourd'hui.", teacherSelectTitle: "1. Choisissez votre nom", homeworkToEvaluate: "3. Choisissez un devoir à évaluer", weekSelectionTitle: "2. Choisissez une semaine", studentEvaluationTitle: "4. Évaluez les élèves", birthdayModalTitle: "Vérification", birthdayPrompt: "Veuillez choisir le mois et l'année de naissance de votre enfant :", birthdayError: "Date incorrecte. Veuillez réessayer.", cancelButton: "Annuler", confirmButton: "Confirmer", status_vide: "Vide", status_fait: "Fait", status_non_fait: "Non Fait", status_partiellement_fait: "Partiellement Fait", status_absent: "Absent", sotwTitle: "⭐ Élève de la semaine ⭐", sotwLastWeekTitle: "⭐ Élève de la semaine dernière ⭐", sotwMessage: "Félicitations pour tes excellents efforts !", potdTitle: "🎉 Félicitations ! 🎉", potdMessage: "Un projet ou un succès à célébrer !", adminPhotoTitle: "Ajouter une Photo de Félicitations", monthPlaceholder: "Mois", yearPlaceholder: "Année", weekLabel: "Semaine" },
         ar: { portalTitle: "بوابة متابعة الواجبات", parentSpace: "فضاء الولي", teacherSpace: "فضاء المربي", backButton: "رجوع", teacherLoginTitle: "دخول المربي", usernamePlaceholder: "اسم المستخدم", passwordPlaceholder: "كلمة المرور", loginButton: "دخول", loginError: "اسم المستخدم أو كلمة المرور غير صحيحة.", classSelectionTitle: "1. اختر قسماً", studentSelectionTitle: "2. اختر ابنك", studentDashboardTitle: "لوحة متابعة", overallWeeklyProgress: "التقدم العام", previousDay: "اليوم السابق", nextDay: "اليوم التالي", homeworkFor: "واجبات يوم", loading: "جار التحميل...", noHomeworkForDay: "لا توجد واجبات لهذا اليوم.", fetchError: "خطأ في تحميل البيانات.", studentOfTheWeek: "تلميذ الأسبوع", teacherDashboardTitle: "لوحة تحكم المربي", updateSchedule: "تحديث الجدول", uploadButton: "تحميل وتحديث", homeworkForDay: "واجبات اليوم", selectClassPrompt: "الرجاء اختيار كل المحددات.", evalTableHeaderStudent: "التلميذ", evalTableHeaderStatus: "الحالة", evalTableHeaderParticipation: "المشاركة", evalTableHeaderBehavior: "السلوك", evalTableHeaderComment: "ملاحظة", saveButton: "تسجيل", noHomeworkForSubject: "لا توجد واجبات لهذه المادة اليوم.", teacherSelectTitle: "1. اختر اسمك", homeworkToEvaluate: "3. اختر واجباً لتقييمه", weekSelectionTitle: "2. اختر أسبوعاً", studentEvaluationTitle: "4. قيّم التلاميذ", birthdayModalTitle: "تحقق", birthdayPrompt: "الرجاء اختيار شهر وسنة ميلاد طفلك :", birthdayError: "تاريخ غير صحيح. الرجاء المحاولة مرة أخرى.", cancelButton: "إلغاء", confirmButton: "تأكيد", status_vide: "لم يحضر الواجب", status_fait: "أنجز", status_non_fait: "لم ينجز", status_partiellement_fait: "أنجز جزئياً", status_absent: "غائب", sotwTitle: "⭐ تلميذ الأسبوع ⭐", sotwLastWeekTitle: "⭐ تلميذ الأسبوع الماضي ⭐", sotwMessage: "تهانينا على مجهوداتك الممتازة!", potdTitle: "🎉 تهانينا! 🎉", potdMessage: "مشروع أو نجاح للاحتفال به!", adminPhotoTitle: "إضافة صورة تهنئة", monthPlaceholder: "الشهر", yearPlaceholder: "السنة", weekLabel: "الأسبوع" }
@@ -1090,69 +1154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================================================
     // TEACHER CONTACT SYSTEM
     // ============================================================================
-    
-    const teachersContactData = {
-        'Abas': { 
-            photo: 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
-            subjects: ['Langues et Littératures'],
-            username: 'Abas',
-            password: 'Abas'
-        },
-        'Zine': { 
-            photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
-            subjects: ['Science', 'Biologie'],
-            username: 'Zine',
-            password: 'Zine'
-        },
-        'Tonga': { 
-            photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
-            subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths'],
-            username: 'Tonga',
-            password: 'Tonga'
-        },
-        'Sylvano': { 
-            photo: 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
-            subjects: ['Maths', 'Physique-Chimie'],
-            username: 'Sylvano',
-            password: 'Sylvano'
-        },
-        'Saeed': { 
-            photo: 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
-            subjects: ['Arabe'],
-            username: 'Saeed',
-            password: 'Saeed'
-        },
-        'Majed': { 
-            photo: 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
-            subjects: ['Islamique'],
-            username: 'Majed',
-            password: 'Majed'
-        },
-        'Kamel': { 
-            photo: 'https://lh3.googleusercontent.com/d/1jT3WJBugZUy5wDgmU00_THVD8hZ-5M24',
-            subjects: ['Anglais'],
-            username: 'Kamel',
-            password: 'Kamel'
-        },
-        'Youssouf': { 
-            photo: 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
-            subjects: ['Individus et Sociétés'],
-            username: 'Youssouf',
-            password: 'Youssouf'
-        },
-        'Mohamed Cherif': { 
-            photo: 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
-            subjects: ['Coordinateur'],
-            username: 'Mohamed Cherif',
-            password: 'Mohamed Cherif'
-        },
-        'Jaber': { 
-            photo: 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_',
-            subjects: ['KSA'],
-            username: 'Jaber',
-            password: 'Jaber'
-        }
-    };
     
     // Populate teachers contact grid
     function populateTeachersContact() {
