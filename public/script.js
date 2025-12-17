@@ -60,11 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedLogin) {
             // Auto-login avec les credentials sauvegardés
             if (savedLogin.isAdmin) {
-                setupTeacherDashboard(true);
+                setupTeacherDashboard(true, null);
                 addLogoutButton();
                 showView('teacher-dashboard-view');
             } else if (savedLogin.isTeacher) {
-                setupTeacherDashboard(false);
+                setupTeacherDashboard(false, null);
+                addLogoutButton();
+                showView('teacher-dashboard-view');
+            } else if (savedLogin.teacherName) {
+                setupTeacherDashboard(false, savedLogin.teacherName);
                 addLogoutButton();
                 showView('teacher-dashboard-view');
             }
@@ -83,8 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const isAdmin = (savedUser === 'Mohamed86' && savedPass === 'Mohamed86');
             const isTeacher = (savedUser === 'Alkawthar@!!!' && savedPass === 'Alkawthar@!!!');
             
-            if (isAdmin || isTeacher) {
-                return { isAdmin, isTeacher, savedUser };
+            // Vérifier si c'est un enseignant individuel
+            let teacherName = null;
+            for (const [name, data] of Object.entries(teachersContactData)) {
+                if (data.username === savedUser && data.password === savedPass) {
+                    teacherName = name;
+                    break;
+                }
+            }
+            
+            if (isAdmin || isTeacher || teacherName) {
+                return { isAdmin, isTeacher, teacherName, savedUser };
             }
         }
         return null;
@@ -119,18 +132,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const pass = document.getElementById('password').value;
         const isAdmin = (user === 'Mohamed86' && pass === 'Mohamed86');
         const isTeacher = (user === 'Alkawthar@!!!' && pass === 'Alkawthar@!!!');
+        
+        // Vérifier si c'est un enseignant individuel
+        let teacherName = null;
+        for (const [name, data] of Object.entries(teachersContactData)) {
+            if (data.username === user && data.password === pass) {
+                teacherName = name;
+                break;
+            }
+        }
+        
         if (isAdmin) {
             // Enregistrer dans localStorage
             localStorage.setItem('devoirs_username', user);
             localStorage.setItem('devoirs_password', pass);
-            setupTeacherDashboard(true);
+            setupTeacherDashboard(true, null);
             addLogoutButton();
             showView('teacher-dashboard-view');
         } else if (isTeacher) {
             // Enregistrer dans localStorage
             localStorage.setItem('devoirs_username', user);
             localStorage.setItem('devoirs_password', pass);
-            setupTeacherDashboard(false);
+            setupTeacherDashboard(false, null);
+            addLogoutButton();
+            showView('teacher-dashboard-view');
+        } else if (teacherName) {
+            // Enseignant individuel
+            localStorage.setItem('devoirs_username', user);
+            localStorage.setItem('devoirs_password', pass);
+            setupTeacherDashboard(false, teacherName);
             addLogoutButton();
             showView('teacher-dashboard-view');
         } else {
@@ -176,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function setupTeacherDashboard(isAdmin = false) {
+    async function setupTeacherDashboard(isAdmin = false, specificTeacherName = null) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const adminUploadSection = document.getElementById('admin-upload-section');
         const adminPhotoSection = document.getElementById('admin-photo-section');
@@ -184,10 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminPhoto3Section = document.getElementById('admin-photo3-section');
         const teacherIconsContainer = document.getElementById('teacher-icons-container');
         const teacherSelectTitle = teacherDashboardView.querySelector('[data-translate="teacherSelectTitle"]');
+        const messagesContainer = document.getElementById('teacher-messages-container');
+        
         adminUploadSection.style.display = isAdmin ? 'block' : 'none';
         adminPhotoSection.style.display = isAdmin ? 'block' : 'none';
         adminPhoto2Section.style.display = isAdmin ? 'block' : 'none';
         adminPhoto3Section.style.display = isAdmin ? 'block' : 'none';
+        
         if (isAdmin) {
             const excelFileInput = teacherDashboardView.querySelector('#excel-file-input');
             const uploadExcelBtn = teacherDashboardView.querySelector('#upload-excel-btn');
@@ -199,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitPhoto2Btn.addEventListener('click', handleSubmitPhoto2);
             submitPhoto3Btn.addEventListener('click', handleSubmitPhoto3);
         }
+        
         try {
             if (teacherPlanData.length === 0) {
                 const response = await fetch('/api/initial-data');
@@ -206,10 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 const initialData = await response.json();
                 teacherPlanData = initialData.planData;
             }
-            const allTeachers = [...new Set(teacherPlanData.map(item => item.Enseignant).filter(Boolean))].sort();
-            populateTeacherIcons(allTeachers);
-            teacherIconsContainer.style.display = 'flex';
-            teacherSelectTitle.style.display = 'block';
+            
+            // Si un enseignant sp\u00e9cifique est connect\u00e9
+            if (specificTeacherName) {
+                teacherIconsContainer.style.display = 'none';
+                teacherSelectTitle.style.display = 'none';
+                
+                // Afficher bo\u00eete de r\u00e9ception
+                if (messagesContainer) {
+                    messagesContainer.style.display = 'block';
+                    loadTeacherMessages(specificTeacherName);
+                }
+                
+                // Afficher directement les devoirs de cet enseignant
+                displayWeekSelector(specificTeacherName);
+            } else {
+                // Mode admin ou enseignant g\u00e9n\u00e9ral
+                const allTeachers = [...new Set(teacherPlanData.map(item => item.Enseignant).filter(Boolean))].sort();
+                populateTeacherIcons(allTeachers);
+                teacherIconsContainer.style.display = 'flex';
+                teacherSelectTitle.style.display = 'block';
+                if (messagesContainer) messagesContainer.style.display = 'none';
+            }
         } catch (error) {
             console.error(error);
             teacherDashboardView.querySelector('#homework-cards-container').innerHTML = `<p class="error-message">${translations[document.documentElement.lang].fetchError}.</p>`;
@@ -330,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
+        
         const allDates = [...new Set(weekHomeworks.map(hw => hw.Jour))];
         const allClassNames = [...new Set(weekHomeworks.map(hw => hw.Classe))];
         let allEvaluations = [];
@@ -340,18 +393,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             allEvaluations = results.flatMap(result => result.evaluations);
         } catch (error) { console.error("Erreur de pré-chargement:", error); }
-        weekHomeworks.sort((a, b) => new Date(a.Jour) - new Date(b.Jour));
+        
+        // Trier d'abord par date, puis par classe
+        weekHomeworks.sort((a, b) => {
+            const dateCompare = new Date(a.Jour) - new Date(b.Jour);
+            if (dateCompare !== 0) return dateCompare;
+            return a.Classe.localeCompare(b.Classe);
+        });
+        
+        // Regrouper par classe
+        const homeworksByClass = {};
         weekHomeworks.forEach(hw => {
-            const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
-            const card = document.createElement('div');
-            card.className = `homework-card ${isEvaluated ? 'evaluated' : ''}`;
-            card.innerHTML = `<h4>${hw.Matière}</h4><p><strong>🏫 Classe:</strong> <span>${hw.Classe}</span></p><p><strong>🗓️ Date:</strong> <span>${moment(hw.Jour).locale(document.documentElement.lang).format('dddd D MMMM')}</span></p>`;
-            card.addEventListener('click', () => {
-                cardsContainer.querySelectorAll('.homework-card').forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                renderEvaluationTable(hw.Classe, hw.Jour, hw.Matière, hw.Devoirs);
+            if (!homeworksByClass[hw.Classe]) {
+                homeworksByClass[hw.Classe] = [];
+            }
+            homeworksByClass[hw.Classe].push(hw);
+        });
+        
+        // Afficher par classe
+        Object.keys(homeworksByClass).sort().forEach(className => {
+            // Ajouter un en-tête de classe
+            const classHeader = document.createElement('div');
+            classHeader.className = 'class-group-header';
+            classHeader.innerHTML = `<h3>📚 ${className}</h3>`;
+            cardsContainer.appendChild(classHeader);
+            
+            // Ajouter les devoirs de cette classe
+            homeworksByClass[className].forEach(hw => {
+                const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
+                const card = document.createElement('div');
+                card.className = `homework-card ${isEvaluated ? 'evaluated' : ''}`;
+                card.innerHTML = `<h4>${hw.Matière}</h4><p><strong>🗓️ Date:</strong> <span>${moment(hw.Jour).locale(document.documentElement.lang).format('dddd D MMMM')}</span></p>`;
+                card.addEventListener('click', () => {
+                    cardsContainer.querySelectorAll('.homework-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    renderEvaluationTable(hw.Classe, hw.Jour, hw.Matière, hw.Devoirs);
+                });
+                cardsContainer.appendChild(card);
             });
-            cardsContainer.appendChild(card);
         });
     }
     
@@ -567,6 +646,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 homeworkGrid.innerHTML = `<p>${translations[currentLang].noHomeworkForDay}</p>`;
             }
             updateWeeklyStats(data.weeklyEvaluations || []);
+            
+            // Afficher les évaluations générales
+            displayGeneralEvaluations(className, studentName);
         } catch (error) { 
             console.error("Erreur:", error);
             homeworkGrid.innerHTML = `<p class="error-message">${translations[currentLang].fetchError}</p>`; 
@@ -1012,43 +1094,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const teachersContactData = {
         'Abas': { 
             photo: 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
-            subjects: ['Langues et Littératures']
+            subjects: ['Langues et Littératures'],
+            username: 'Abas',
+            password: 'Abas'
         },
         'Zine': { 
             photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
-            subjects: ['Science', 'Biologie']
+            subjects: ['Science', 'Biologie'],
+            username: 'Zine',
+            password: 'Zine'
         },
         'Tonga': { 
             photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
-            subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths']
+            subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths'],
+            username: 'Tonga',
+            password: 'Tonga'
         },
         'Sylvano': { 
             photo: 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
-            subjects: ['Maths', 'Physique-Chimie']
+            subjects: ['Maths', 'Physique-Chimie'],
+            username: 'Sylvano',
+            password: 'Sylvano'
         },
         'Saeed': { 
             photo: 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
-            subjects: ['Arabe']
+            subjects: ['Arabe'],
+            username: 'Saeed',
+            password: 'Saeed'
         },
         'Majed': { 
             photo: 'https://lh3.googleusercontent.com/d/18XVdbTXR7o2us4c2CA8_kwsjWeTtb-mT',
-            subjects: ['Islamique']
+            subjects: ['Islamique'],
+            username: 'Majed',
+            password: 'Majed'
         },
         'Kamel': { 
             photo: 'https://lh3.googleusercontent.com/d/1jT3WJBugZUy5wDgmU00_THVD8hZ-5M24',
-            subjects: ['Anglais']
+            subjects: ['Anglais'],
+            username: 'Kamel',
+            password: 'Kamel'
         },
         'Youssouf': { 
             photo: 'https://lh3.googleusercontent.com/d/1Z9CCqVaICs4EePq8NwdqbpD54f8LPkhb',
-            subjects: ['Individus et Sociétés']
+            subjects: ['Individus et Sociétés'],
+            username: 'Youssouf',
+            password: 'Youssouf'
         },
         'Mohamed Cherif': { 
             photo: 'https://lh3.googleusercontent.com/d/1hK0nUo30IxhYA6NuZ8CPxRA6K1Ge6pD6',
-            subjects: ['Coordinateur']
+            subjects: ['Coordinateur'],
+            username: 'Mohamed Cherif',
+            password: 'Mohamed Cherif'
         },
         'Jaber': { 
             photo: 'https://lh3.googleusercontent.com/d/1IWFNGE6CkFzAOtlHJqDsFhKcobb8Q0S_',
-            subjects: ['KSA']
+            subjects: ['KSA'],
+            username: 'Jaber',
+            password: 'Jaber'
         }
     };
     
@@ -1252,6 +1354,113 @@ document.addEventListener('DOMContentLoaded', () => {
         messagesButton: 'الرسائل',
         teacherMessagesTitle: 'رسائلي'
     };
+
+    // ============================================================================
+    // GESTION DE LA BOÎTE DE RÉCEPTION POUR ENSEIGNANTS
+    // ============================================================================
+    
+    async function loadTeacherMessages(teacherName) {
+        const messagesContainer = document.getElementById('teacher-messages-container');
+        if (!messagesContainer) return;
+        
+        try {
+            const response = await fetch(`/api/get-messages?teacherName=${encodeURIComponent(teacherName)}`);
+            if (!response.ok) throw new Error('Erreur de chargement des messages');
+            
+            const messages = await response.json();
+            
+            messagesContainer.innerHTML = `
+                <div class="teacher-messages-section">
+                    <h2>📬 ${translations[document.documentElement.lang].teacherMessagesTitle}</h2>
+                    <div class="messages-list">
+                        ${messages.length === 0 
+                            ? '<p style="text-align:center;padding:20px;color:#666;">Aucun message pour le moment</p>' 
+                            : messages.map(msg => `
+                                <div class="message-card ${msg.read ? 'read' : 'unread'}">
+                                    <div class="message-header">
+                                        <strong>${msg.parentName}</strong>
+                                        <span class="message-date">${new Date(msg.date).toLocaleString(document.documentElement.lang === 'ar' ? 'ar-SA' : 'fr-FR')}</span>
+                                    </div>
+                                    <div class="message-content">${msg.message}</div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                </div>
+            `;
+            
+            // Marquer les messages comme lus
+            if (messages.some(m => !m.read)) {
+                await fetch('/api/mark-messages-read', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teacherName })
+                });
+            }
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            messagesContainer.innerHTML = '<p style="color:red;">Erreur de chargement des messages</p>';
+        }
+    }
+    
+    // ============================================================================
+    // SYSTÈME D'ÉVALUATION GÉNÉRALE AUTOMATIQUE
+    // ============================================================================
+    
+    async function calculateGeneralEvaluations() {
+        try {
+            const response = await fetch('/api/general-evaluations');
+            if (!response.ok) throw new Error('Erreur calcul évaluations');
+            
+            const evaluations = await response.json();
+            return evaluations;
+        } catch (error) {
+            console.error('Erreur calcul évaluations générales:', error);
+            return null;
+        }
+    }
+    
+    // Afficher les évaluations générales dans le dashboard parent
+    async function displayGeneralEvaluations(className, studentName) {
+        const evaluationsContainer = document.getElementById('general-evaluations-container');
+        if (!evaluationsContainer) return;
+        
+        try {
+            const evaluations = await calculateGeneralEvaluations();
+            if (!evaluations) return;
+            
+            const studentEval = evaluations.find(e => e.classe === className && e.student === studentName);
+            if (!studentEval) return;
+            
+            const isPEI1 = className === 'PEI1';
+            const behaviorMax = isPEI1 ? 30 : 20;
+            
+            evaluationsContainer.innerHTML = `
+                <div class="general-eval-card">
+                    <h3>📊 Évaluation Générale (8 dernières semaines)</h3>
+                    <div class="eval-row">
+                        <span class="eval-label">Comportement & Participation :</span>
+                        <span class="eval-score">${studentEval.behaviorScore.toFixed(1)}/${behaviorMax}</span>
+                        <div class="eval-bar">
+                            <div class="eval-fill" style="width: ${(studentEval.behaviorScore / behaviorMax * 100).toFixed(1)}%;"></div>
+                        </div>
+                    </div>
+                    <div class="eval-row">
+                        <span class="eval-label">Faisabilité des Devoirs :</span>
+                        <span class="eval-score">${studentEval.homeworkScore.toFixed(1)}/20</span>
+                        <div class="eval-bar">
+                            <div class="eval-fill" style="width: ${(studentEval.homeworkScore / 20 * 100).toFixed(1)}%;"></div>
+                        </div>
+                    </div>
+                    <div class="eval-total">
+                        <strong>Total : ${(studentEval.behaviorScore + studentEval.homeworkScore).toFixed(1)}/${behaviorMax + 20}</strong>
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Erreur affichage évaluations:', error);
+        }
+    }
 
     displayHomePageExtras();
     setLanguage('fr');

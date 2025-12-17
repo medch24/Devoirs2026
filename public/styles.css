@@ -815,3 +815,205 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
         padding: 8px 15px;
     }
 }
+
+/* ============================================================================
+   STYLES POUR LA BOÎTE DE RÉCEPTION DES ENSEIGNANTS
+   ============================================================================ */
+
+.teacher-messages-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.teacher-messages-section h2 {
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-left: 5px solid var(--primary-color);
+}
+
+.message-card.unread {
+    border-left-color: var(--accent-color);
+    background: linear-gradient(90deg, rgba(255,193,7,0.1) 0%, white 10%);
+    font-weight: 500;
+}
+
+.message-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.message-header strong {
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+}
+
+.message-date {
+    color: #666;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.message-content {
+    color: #333;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* ============================================================================
+   STYLES POUR L'ÉVALUATION GÉNÉRALE AUTOMATIQUE
+   ============================================================================ */
+
+.general-eval-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 25px 0;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.general-eval-card h3 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.eval-row {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.eval-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.eval-score {
+    display: inline-block;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-left: 10px;
+    padding: 5px 15px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.eval-bar {
+    width: 100%;
+    height: 30px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.eval-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    border-radius: 15px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.5);
+}
+
+.eval-total {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.eval-total strong {
+    font-size: 1.8rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Responsive pour les évaluations */
+@media (max-width: 768px) {
+    .general-eval-card {
+        padding: 20px;
+    }
+    
+    .eval-row {
+        padding: 12px;
+    }
+    
+    .eval-score {
+        font-size: 1.1rem;
+    }
+    
+    .eval-total {
+        font-size: 1.2rem;
+    }
+    
+    .eval-total strong {
+        font-size: 1.5rem;
+    }
+}
+
+/* ============================================================================
+   STYLES POUR LES EN-TÊTES DE CLASSE
+   ============================================================================ */
+
+.class-group-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    margin: 25px 0 15px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.class-group-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.class-group-header:first-child {
+    margin-top: 10px;
+}
