@@ -852,7 +852,7 @@ async function handleSendMessage(req, res) {
         teacherName,
         parentName,
         message,
-        timestamp: timestamp || new Date().toISOString(),
+        date: timestamp || new Date().toISOString(),
         read: false,
         createdAt: new Date()
     });
@@ -877,7 +877,7 @@ async function handleGetMessages(req, res) {
     
     const messages = await collection.find(query).sort({ createdAt: -1 }).toArray();
     
-    return res.status(200).json({ messages });
+    return res.status(200).json(messages);
 }
 
 // Handler: /api/mark-messages-read

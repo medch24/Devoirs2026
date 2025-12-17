@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentDate = moment();
-    let teacherPlanData = []; 
+    let teacherPlanData = [];
+    let currentTeacherContext = {
+        teacherName: null,
+        weekHomeworks: null
+    }; 
 
     const studentData = {
         PEI1: [ { name: "Faysal", photo: "https://lh3.googleusercontent.com/d/1IB6BKROX3TRxaIIHVVVWbB7-Ii-V8VrC", birthday: "4/2014" }, { name: "Bilal", photo: "https://lh3.googleusercontent.com/d/1B0QUZJhpSad5Fs3qRTugUe4oyTlUDEVu", birthday: "2/2015" }, { name: "Jad", photo: "https://lh3.googleusercontent.com/d/1VLvrWjeJwaClf4pSaLiwjnS79N-HrsFr", birthday: "8/2014" }, { name: "Manaf", photo: "https://lh3.googleusercontent.com/d/1h46Tqtqcp5tNqdY62wV6pyZFYknCEMWY", birthday: "8/2014" } ],
@@ -439,6 +443,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function displayClassSelector(teacherName, weekHomeworks) {
+        // Sauvegarder le contexte pour navigation
+        currentTeacherContext.teacherName = teacherName;
+        currentTeacherContext.weekHomeworks = weekHomeworks;
+        
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
         const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
@@ -447,7 +455,21 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
-        cardsTitle.textContent = '3. Choisissez une classe';
+        
+        // Bouton de retour vers les semaines
+        const backButton = document.createElement('button');
+        backButton.className = 'back-to-weeks-btn';
+        backButton.innerHTML = '← Retour aux semaines';
+        backButton.style.cssText = 'margin-bottom: 15px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s;';
+        backButton.addEventListener('mouseenter', () => backButton.style.background = '#5a6268');
+        backButton.addEventListener('mouseleave', () => backButton.style.background = '#6c757d');
+        backButton.addEventListener('click', () => displayWeekSelector(teacherName));
+        cardsContainer.appendChild(backButton);
+        
+        const titleEl = document.createElement('h2');
+        titleEl.textContent = '3. Choisissez une classe';
+        titleEl.style.cssText = 'text-align: center; margin: 20px 0; color: var(--primary-dark);';
+        cardsContainer.appendChild(titleEl);
         
         // Extraire les classes uniques
         const classes = [...new Set(weekHomeworks.map(hw => hw.Classe))].sort();
@@ -498,7 +520,25 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
-        cardsTitle.textContent = selectedClass ? `4. Devoirs de ${selectedClass}` : '3. Choisissez un devoir à évaluer';
+        
+        // Bouton de retour vers les classes
+        const backButton = document.createElement('button');
+        backButton.className = 'back-to-classes-btn';
+        backButton.innerHTML = '← Retour aux classes';
+        backButton.style.cssText = 'margin-bottom: 15px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s;';
+        backButton.addEventListener('mouseenter', () => backButton.style.background = '#5a6268');
+        backButton.addEventListener('mouseleave', () => backButton.style.background = '#6c757d');
+        backButton.addEventListener('click', () => {
+            if (currentTeacherContext.teacherName && currentTeacherContext.weekHomeworks) {
+                displayClassSelector(currentTeacherContext.teacherName, currentTeacherContext.weekHomeworks);
+            }
+        });
+        cardsContainer.appendChild(backButton);
+        
+        const titleEl = document.createElement('h2');
+        titleEl.textContent = selectedClass ? `4. Devoirs de ${selectedClass}` : '3. Choisissez un devoir à évaluer';
+        titleEl.style.cssText = 'text-align: center; margin: 20px 0; color: var(--primary-dark);';
+        cardsContainer.appendChild(titleEl);
         
         const allDates = [...new Set(weekHomeworks.map(hw => hw.Jour))];
         const allClassNames = [...new Set(weekHomeworks.map(hw => hw.Classe))];
