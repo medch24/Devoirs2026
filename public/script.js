@@ -432,13 +432,65 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', (e) => {
                 weekContainer.querySelectorAll('.week-button').forEach(btn => btn.classList.remove('active'));
                 e.currentTarget.classList.add('active');
-                displayHomeworkCards(teacherName, weekData.homeworks);
+                displayClassSelector(teacherName, weekData.homeworks);
             });
             weekContainer.appendChild(button);
         });
     }
     
-    async function displayHomeworkCards(teacherName, weekHomeworks) {
+    function displayClassSelector(teacherName, weekHomeworks) {
+        const teacherDashboardView = document.getElementById('teacher-dashboard-view');
+        const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
+        const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
+        const evaluationSection = teacherDashboardView.querySelector('#teacher-evaluation-section');
+        
+        cardsContainer.innerHTML = '';
+        evaluationSection.style.display = 'none';
+        cardsTitle.style.display = 'block';
+        cardsTitle.textContent = '3. Choisissez une classe';
+        
+        // Extraire les classes uniques
+        const classes = [...new Set(weekHomeworks.map(hw => hw.Classe))].sort();
+        
+        if (classes.length === 0) {
+            cardsContainer.innerHTML = '<p>Aucune classe trouvée pour cette semaine</p>';
+            return;
+        }
+        
+        // Créer un bouton pour chaque classe
+        const classButtonsContainer = document.createElement('div');
+        classButtonsContainer.className = 'class-buttons-selection';
+        classButtonsContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px 0;';
+        
+        classes.forEach(className => {
+            const classButton = document.createElement('button');
+            classButton.className = 'class-selection-button';
+            classButton.textContent = className;
+            classButton.style.cssText = 'padding: 15px 30px; font-size: 1.1rem; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);';
+            
+            classButton.addEventListener('mouseenter', () => {
+                classButton.style.transform = 'translateY(-3px)';
+                classButton.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.5)';
+            });
+            
+            classButton.addEventListener('mouseleave', () => {
+                classButton.style.transform = 'translateY(0)';
+                classButton.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+            });
+            
+            classButton.addEventListener('click', () => {
+                // Filtrer les devoirs pour cette classe
+                const classHomeworks = weekHomeworks.filter(hw => hw.Classe === className);
+                displayHomeworkCards(teacherName, classHomeworks, className);
+            });
+            
+            classButtonsContainer.appendChild(classButton);
+        });
+        
+        cardsContainer.appendChild(classButtonsContainer);
+    }
+    
+    async function displayHomeworkCards(teacherName, weekHomeworks, selectedClass = null) {
         const teacherDashboardView = document.getElementById('teacher-dashboard-view');
         const cardsContainer = teacherDashboardView.querySelector('#homework-cards-container');
         const cardsTitle = teacherDashboardView.querySelector('#homework-cards-title');
@@ -446,6 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.innerHTML = '';
         evaluationSection.style.display = 'none';
         cardsTitle.style.display = 'block';
+        cardsTitle.textContent = selectedClass ? `4. Devoirs de ${selectedClass}` : '3. Choisissez un devoir à évaluer';
         
         const allDates = [...new Set(weekHomeworks.map(hw => hw.Jour))];
         const allClassNames = [...new Set(weekHomeworks.map(hw => hw.Classe))];
@@ -458,43 +511,21 @@ document.addEventListener('DOMContentLoaded', () => {
             allEvaluations = results.flatMap(result => result.evaluations);
         } catch (error) { console.error("Erreur de pré-chargement:", error); }
         
-        // Trier d'abord par date, puis par classe
-        weekHomeworks.sort((a, b) => {
-            const dateCompare = new Date(a.Jour) - new Date(b.Jour);
-            if (dateCompare !== 0) return dateCompare;
-            return a.Classe.localeCompare(b.Classe);
-        });
+        // Trier par date
+        weekHomeworks.sort((a, b) => new Date(a.Jour) - new Date(b.Jour));
         
-        // Regrouper par classe
-        const homeworksByClass = {};
+        // Afficher les devoirs sous forme de cartes
         weekHomeworks.forEach(hw => {
-            if (!homeworksByClass[hw.Classe]) {
-                homeworksByClass[hw.Classe] = [];
-            }
-            homeworksByClass[hw.Classe].push(hw);
-        });
-        
-        // Afficher par classe
-        Object.keys(homeworksByClass).sort().forEach(className => {
-            // Ajouter un en-tête de classe
-            const classHeader = document.createElement('div');
-            classHeader.className = 'class-group-header';
-            classHeader.innerHTML = `<h3>📚 ${className}</h3>`;
-            cardsContainer.appendChild(classHeader);
-            
-            // Ajouter les devoirs de cette classe
-            homeworksByClass[className].forEach(hw => {
-                const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
-                const card = document.createElement('div');
-                card.className = `homework-card ${isEvaluated ? 'evaluated' : ''}`;
-                card.innerHTML = `<h4>${hw.Matière}</h4><p><strong>🗓️ Date:</strong> <span>${moment(hw.Jour).locale(document.documentElement.lang).format('dddd D MMMM')}</span></p>`;
-                card.addEventListener('click', () => {
-                    cardsContainer.querySelectorAll('.homework-card').forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                    renderEvaluationTable(hw.Classe, hw.Jour, hw.Matière, hw.Devoirs);
-                });
-                cardsContainer.appendChild(card);
+            const isEvaluated = allEvaluations.some(ev => ev.date === hw.Jour && ev.class === hw.Classe && ev.subject === hw.Matière);
+            const card = document.createElement('div');
+            card.className = `homework-card ${isEvaluated ? 'evaluated' : ''}`;
+            card.innerHTML = `<h4>${hw.Matière}</h4><p><strong>🗓️ Date:</strong> <span>${moment(hw.Jour).locale(document.documentElement.lang).format('dddd D MMMM')}</span></p>`;
+            card.addEventListener('click', () => {
+                cardsContainer.querySelectorAll('.homework-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                renderEvaluationTable(hw.Classe, hw.Jour, hw.Matière, hw.Devoirs);
             });
+            cardsContainer.appendChild(card);
         });
     }
     
@@ -1368,7 +1399,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/get-messages?teacherName=${encodeURIComponent(teacherName)}`);
             if (!response.ok) throw new Error('Erreur de chargement des messages');
             
-            const messages = await response.json();
+            const data = await response.json();
+            const messages = Array.isArray(data) ? data : [];
             
             messagesContainer.innerHTML = `
                 <div class="teacher-messages-section">
