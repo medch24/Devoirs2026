@@ -459,10 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Bouton de retour vers les semaines
         const backButton = document.createElement('button');
         backButton.className = 'back-to-weeks-btn';
-        backButton.innerHTML = '← Retour aux semaines';
-        backButton.style.cssText = 'margin-bottom: 15px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s;';
-        backButton.addEventListener('mouseenter', () => backButton.style.background = '#5a6268');
-        backButton.addEventListener('mouseleave', () => backButton.style.background = '#6c757d');
+        backButton.textContent = 'Retour aux semaines';
         backButton.addEventListener('click', () => displayWeekSelector(teacherName));
         cardsContainer.appendChild(backButton);
         
@@ -524,10 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Bouton de retour vers les classes
         const backButton = document.createElement('button');
         backButton.className = 'back-to-classes-btn';
-        backButton.innerHTML = '← Retour aux classes';
-        backButton.style.cssText = 'margin-bottom: 15px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s;';
-        backButton.addEventListener('mouseenter', () => backButton.style.background = '#5a6268');
-        backButton.addEventListener('mouseleave', () => backButton.style.background = '#6c757d');
+        backButton.textContent = 'Retour aux classes';
         backButton.addEventListener('click', () => {
             if (currentTeacherContext.teacherName && currentTeacherContext.weekHomeworks) {
                 displayClassSelector(currentTeacherContext.teacherName, currentTeacherContext.weekHomeworks);

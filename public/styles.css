@@ -72,9 +72,12 @@ header h1 {
     max-width: 450px; margin: auto; align-items: center;
 }
 #home-logo {
-    width: 150px; height: auto; margin-bottom: 30px;
+    width: 150px; height: 150px; margin-bottom: 30px;
     animation: logoFloat 3s ease-in-out infinite;
     filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.3));
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.3);
 }
 
 @keyframes logoFloat {
@@ -302,7 +305,7 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
 }
-.student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; padding: 10px; }
+.student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; padding: 10px; justify-items: center; }
 .student-card { 
     text-align: center; cursor: pointer; border-radius: 16px; padding: 15px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -328,7 +331,7 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 }
 .student-card p { margin-top: 10px; font-weight: 600; color: var(--text-color); }
 .teacher-main-content { padding: 25px; }
-.teacher-icons-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 30px; }
+.teacher-icons-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin-bottom: 30px; }
 .teacher-icon-card { text-align: center; cursor: pointer; padding: 10px; border-radius: 12px; transition: all 0.2s; }
 .teacher-icon-card:hover { background-color: #f1f1f1; }
 .teacher-icon-card.active { background-color: var(--accent-color); color: white; }
@@ -1016,4 +1019,40 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
 
 .class-group-header:first-child {
     margin-top: 10px;
+}
+
+/* ============================================================================
+   STYLES POUR LES BOUTONS DE RETOUR ENSEIGNANT (COMPACTS)
+   ============================================================================ */
+
+.back-to-weeks-btn,
+.back-to-classes-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px !important;
+    margin-bottom: 10px !important;
+    background: #6c757d !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 6px rgba(108, 117, 125, 0.2) !important;
+}
+
+.back-to-weeks-btn:hover,
+.back-to-classes-btn:hover {
+    background: #5a6268 !important;
+    transform: translateX(-2px) !important;
+    box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3) !important;
+}
+
+.back-to-weeks-btn::before,
+.back-to-classes-btn::before {
+    content: '←';
+    font-size: 1rem;
+    font-weight: bold;
 }
