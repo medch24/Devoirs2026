@@ -67,6 +67,25 @@
                 <!-- Section Contact Enseignants -->
                 <div class="teacher-contact-section">
                     <h2 class="section-title" data-translate="contactTeachersTitle">📧 Contacter les Enseignants</h2>
+                    
+                    <!-- Badge de notification parent -->
+                    <div id="parent-notification-badge" style="display: none; margin: 15px 0; padding: 12px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">🔔</span>
+                            <div>
+                                <strong>Vous avez <span id="parent-unread-count">0</span> nouvelle(s) réponse(s)</strong>
+                                <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #92400e;">Cliquez pour voir vos messages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Historique des messages parent -->
+                    <div id="parent-messages-history" style="display: none; margin: 20px 0;">
+                        <h3 style="margin-bottom: 15px;">📬 Historique de vos messages</h3>
+                        <div id="parent-messages-list"></div>
+                        <button id="close-messages-history" class="role-button" style="margin-top: 15px; background: #6b7280;">Fermer</button>
+                    </div>
+                    
                     <div id="teachers-contact-grid" class="teachers-contact-grid"></div>
                 </div>
             </main>
@@ -186,6 +205,57 @@
         </div>
     </div>
 
+    <!-- Modal de connexion/inscription parent -->
+    <div id="parent-auth-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal-auth">&times;</span>
+            <h2 class="modal-title" id="auth-modal-title" data-translate="parentLoginTitle">Connexion Parent</h2>
+            
+            <!-- Formulaire de connexion -->
+            <form id="parent-login-form" style="display: block;">
+                <label for="login-phone" data-translate="phoneLabel">Numéro de téléphone :</label>
+                <input type="tel" id="login-phone" required placeholder="Ex: 20123456">
+                
+                <label for="login-password" data-translate="passwordPlaceholder">Mot de passe :</label>
+                <input type="password" id="login-password" required placeholder="Votre mot de passe">
+                
+                <button type="submit" class="role-button" data-translate="loginButton">Connexion</button>
+                <p id="login-status"></p>
+                
+                <p style="text-align: center; margin-top: 15px;">
+                    <span data-translate="noAccountYet">Pas encore de compte ?</span>
+                    <a href="#" id="show-register-form" style="color: #667eea; font-weight: 600;">Créer un compte</a>
+                </p>
+            </form>
+            
+            <!-- Formulaire d'inscription -->
+            <form id="parent-register-form" style="display: none;">
+                <label for="register-firstname" data-translate="firstNameLabel">Prénom :</label>
+                <input type="text" id="register-firstname" required placeholder="Votre prénom">
+                
+                <label for="register-lastname" data-translate="lastNameLabel">Nom :</label>
+                <input type="text" id="register-lastname" required placeholder="Votre nom de famille">
+                
+                <label for="register-phone" data-translate="phoneLabel">Numéro de téléphone :</label>
+                <input type="tel" id="register-phone" required placeholder="Ex: 20123456">
+                
+                <label for="register-password" data-translate="passwordPlaceholder">Mot de passe :</label>
+                <input type="password" id="register-password" required placeholder="Choisissez un mot de passe">
+                
+                <label for="register-password-confirm" data-translate="confirmPasswordLabel">Confirmer le mot de passe :</label>
+                <input type="password" id="register-password-confirm" required placeholder="Confirmez votre mot de passe">
+                
+                <button type="submit" class="role-button" data-translate="registerButton">Créer mon compte</button>
+                <p id="register-status"></p>
+                
+                <p style="text-align: center; margin-top: 15px;">
+                    <span data-translate="alreadyHaveAccount">Déjà un compte ?</span>
+                    <a href="#" id="show-login-form" style="color: #667eea; font-weight: 600;">Se connecter</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal pour contacter un enseignant -->
     <div id="contact-teacher-modal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -198,10 +268,11 @@
                     <p id="modal-teacher-subjects"></p>
                 </div>
             </div>
+            <div id="parent-info-display" style="margin: 15px 0; padding: 10px; background: #f0f9ff; border-radius: 8px;">
+                <p><strong>Connecté en tant que :</strong> <span id="logged-parent-name"></span></p>
+                <p><strong>Téléphone :</strong> <span id="logged-parent-phone"></span></p>
+            </div>
             <form id="contact-teacher-form">
-                <label for="parent-name" data-translate="parentNameLabel">Votre nom (père/mère de quel élève) :</label>
-                <input type="text" id="parent-name" required placeholder="Ex: Père de Ahmed">
-                
                 <label for="message-content" data-translate="messageLabel">Votre message :</label>
                 <textarea id="message-content" rows="6" required placeholder="Écrivez votre message ici..."></textarea>
                 

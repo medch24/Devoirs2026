@@ -1217,6 +1217,163 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================================
+    // PARENT ACCOUNT SYSTEM
+    // ============================================================================
+    
+    // Vérifier si un parent est connecté
+    function getLoggedParent() {
+        const parentData = localStorage.getItem('logged_parent');
+        if (parentData) {
+            try {
+                return JSON.parse(parentData);
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    // Sauvegarder le parent connecté
+    function saveLoggedParent(parentInfo) {
+        localStorage.setItem('logged_parent', JSON.stringify(parentInfo));
+    }
+    
+    // Déconnecter le parent
+    function logoutParent() {
+        localStorage.removeItem('logged_parent');
+    }
+    
+    // Afficher la modal d'authentification parent
+    function showParentAuthModal(mode = 'login') {
+        const modal = document.getElementById('parent-auth-modal');
+        const loginForm = document.getElementById('parent-login-form');
+        const registerForm = document.getElementById('parent-register-form');
+        const title = document.getElementById('auth-modal-title');
+        
+        if (mode === 'login') {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            title.textContent = translations[document.documentElement.lang].parentLoginTitle || 'Connexion Parent';
+        } else {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            title.textContent = translations[document.documentElement.lang].registerTitle || 'Créer un compte';
+        }
+        
+        modal.style.display = 'flex';
+    }
+    
+    // Fermer la modal d'authentification
+    document.querySelector('.close-modal-auth')?.addEventListener('click', () => {
+        document.getElementById('parent-auth-modal').style.display = 'none';
+    });
+    
+    // Basculer entre login et register
+    document.getElementById('show-register-form')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showParentAuthModal('register');
+    });
+    
+    document.getElementById('show-login-form')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showParentAuthModal('login');
+    });
+    
+    // Formulaire de connexion parent
+    document.getElementById('parent-login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('login-phone').value;
+        const password = document.getElementById('login-password').value;
+        const statusEl = document.getElementById('login-status');
+        
+        statusEl.textContent = 'Connexion...';
+        statusEl.className = '';
+        
+        try {
+            const response = await fetch('/api/parent-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur de connexion');
+            }
+            
+            // Sauvegarder les infos du parent
+            saveLoggedParent(data.parent);
+            
+            statusEl.textContent = '✅ Connexion réussie !';
+            statusEl.className = 'success';
+            
+            setTimeout(() => {
+                document.getElementById('parent-auth-modal').style.display = 'none';
+                statusEl.textContent = '';
+                document.getElementById('parent-login-form').reset();
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            statusEl.textContent = '❌ ' + error.message;
+            statusEl.className = 'error';
+        }
+    });
+    
+    // Formulaire d'inscription parent
+    document.getElementById('parent-register-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const firstName = document.getElementById('register-firstname').value;
+        const lastName = document.getElementById('register-lastname').value;
+        const phone = document.getElementById('register-phone').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-password-confirm').value;
+        const statusEl = document.getElementById('register-status');
+        
+        // Vérifier que les mots de passe correspondent
+        if (password !== confirmPassword) {
+            statusEl.textContent = '❌ Les mots de passe ne correspondent pas';
+            statusEl.className = 'error';
+            return;
+        }
+        
+        statusEl.textContent = 'Création du compte...';
+        statusEl.className = '';
+        
+        try {
+            const response = await fetch('/api/parent-register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, phone, password })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur lors de la création du compte');
+            }
+            
+            statusEl.textContent = '✅ Compte créé avec succès ! Connexion...';
+            statusEl.className = 'success';
+            
+            // Sauvegarder automatiquement le parent
+            saveLoggedParent(data.parent);
+            
+            setTimeout(() => {
+                document.getElementById('parent-auth-modal').style.display = 'none';
+                statusEl.textContent = '';
+                document.getElementById('parent-register-form').reset();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            statusEl.textContent = '❌ ' + error.message;
+            statusEl.className = 'error';
+        }
+    });
+    
+    // ============================================================================
     // TEACHER CONTACT SYSTEM
     // ============================================================================
     
@@ -1243,12 +1400,52 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Open contact modal
     function openContactModal(teacherName, teacherData) {
+        // Vérifier si un parent est connecté
+        const loggedParent = getLoggedParent();
+        
+        if (!loggedParent) {
+            // Si pas connecté, afficher la modal d'authentification
+            showParentAuthModal('login');
+            
+            // Sauvegarder les infos de l'enseignant pour ouvrir la modal après connexion
+            sessionStorage.setItem('pending_teacher_contact', JSON.stringify({
+                teacherName,
+                teacherData
+            }));
+            
+            return;
+        }
+        
+        // Afficher les infos du parent connecté
+        document.getElementById('logged-parent-name').textContent = `${loggedParent.firstName} ${loggedParent.lastName}`;
+        document.getElementById('logged-parent-phone').textContent = loggedParent.phone;
+        
         const modal = document.getElementById('contact-teacher-modal');
         document.getElementById('modal-teacher-photo').src = teacherData.photo;
         document.getElementById('modal-teacher-name').textContent = teacherName;
         document.getElementById('modal-teacher-subjects').textContent = teacherData.subjects.join(', ');
         document.getElementById('contact-teacher-form').dataset.teacherName = teacherName;
         modal.style.display = 'flex';
+    }
+    
+    // Surveiller la connexion pour ouvrir la modal de contact enseignant
+    const originalSaveLoggedParent = saveLoggedParent;
+    saveLoggedParent = function(parentInfo) {
+        originalSaveLoggedParent(parentInfo);
+        
+        // Vérifier si on doit ouvrir la modal de contact
+        const pendingContact = sessionStorage.getItem('pending_teacher_contact');
+        if (pendingContact) {
+            try {
+                const { teacherName, teacherData } = JSON.parse(pendingContact);
+                sessionStorage.removeItem('pending_teacher_contact');
+                setTimeout(() => {
+                    openContactModal(teacherName, teacherData);
+                }, 500);
+            } catch (e) {
+                console.error('Erreur:', e);
+            }
+        }
     }
     
     // Close modal
@@ -1273,9 +1470,19 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const form = e.target;
         const teacherName = form.dataset.teacherName;
-        const parentName = document.getElementById('parent-name').value;
         const messageContent = document.getElementById('message-content').value;
         const statusEl = document.getElementById('message-status');
+        
+        // Récupérer les infos du parent connecté
+        const loggedParent = getLoggedParent();
+        if (!loggedParent) {
+            statusEl.textContent = '❌ Vous devez être connecté pour envoyer un message';
+            statusEl.className = 'error';
+            return;
+        }
+        
+        const parentName = `${loggedParent.firstName} ${loggedParent.lastName}`;
+        const parentPhone = loggedParent.phone;
         
         statusEl.textContent = 'Envoi en cours...';
         statusEl.className = '';
@@ -1287,6 +1494,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     teacherName,
                     parentName,
+                    parentPhone,
                     message: messageContent,
                     timestamp: new Date().toISOString()
                 })
@@ -1393,12 +1601,100 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Vérifier les notifications parent
+    async function checkParentNotifications() {
+        const loggedParent = getLoggedParent();
+        if (!loggedParent) {
+            document.getElementById('parent-notification-badge').style.display = 'none';
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/parent-unread-replies?phone=${encodeURIComponent(loggedParent.phone)}`);
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            const badge = document.getElementById('parent-notification-badge');
+            const countEl = document.getElementById('parent-unread-count');
+            
+            if (data.unreadCount > 0) {
+                countEl.textContent = data.unreadCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Erreur vérification notifications:', error);
+        }
+    }
+    
+    // Afficher l'historique des messages parent
+    async function showParentMessagesHistory() {
+        const loggedParent = getLoggedParent();
+        if (!loggedParent) return;
+        
+        const historyDiv = document.getElementById('parent-messages-history');
+        const listDiv = document.getElementById('parent-messages-list');
+        
+        listDiv.innerHTML = '<p>Chargement...</p>';
+        historyDiv.style.display = 'block';
+        
+        try {
+            const response = await fetch(`/api/parent-messages?phone=${encodeURIComponent(loggedParent.phone)}`);
+            if (!response.ok) throw new Error('Erreur de chargement');
+            
+            const data = await response.json();
+            
+            if (data.messages.length === 0) {
+                listDiv.innerHTML = '<p style="text-align: center; color: #6b7280;">Aucun message pour le moment</p>';
+                return;
+            }
+            
+            listDiv.innerHTML = '';
+            data.messages.forEach(msg => {
+                const card = document.createElement('div');
+                card.style.cssText = 'padding: 15px; margin: 10px 0; background: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>À: ${msg.teacherName}</strong>
+                        <span style="font-size: 0.9em; color: #6b7280;">${new Date(msg.date).toLocaleString('fr-FR')}</span>
+                    </div>
+                    <p style="margin: 0; color: #374151;">${msg.message}</p>
+                `;
+                listDiv.appendChild(card);
+            });
+            
+            // Marquer comme lues
+            await fetch('/api/mark-replies-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: loggedParent.phone })
+            });
+            
+            checkParentNotifications();
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            listDiv.innerHTML = '<p class="error-message">Erreur de chargement des messages</p>';
+        }
+    }
+    
+    // Événements pour les notifications
+    document.getElementById('parent-notification-badge')?.addEventListener('click', showParentMessagesHistory);
+    document.getElementById('close-messages-history')?.addEventListener('click', () => {
+        document.getElementById('parent-messages-history').style.display = 'none';
+    });
+    
     // Populate teachers contact when parent view is shown
     goToParentBtn.addEventListener('click', () => {
         populateTeachersContact();
+        checkParentNotifications();
+        
+        // Vérifier les notifications régulièrement (toutes les 30 secondes)
+        setInterval(checkParentNotifications, 30000);
     });
     
-    // Update translations for teacher contact
+    // Update translations for teacher contact and parent accounts
     translations.fr = {
         ...translations.fr,
         contactTeachersTitle: '📧 Contacter les Enseignants',
@@ -1407,7 +1703,16 @@ document.addEventListener('DOMContentLoaded', () => {
         messageLabel: 'Votre message :',
         sendButton: 'Envoyer',
         messagesButton: 'Messages',
-        teacherMessagesTitle: 'Mes Messages'
+        teacherMessagesTitle: 'Mes Messages',
+        parentLoginTitle: 'Connexion Parent',
+        registerTitle: 'Créer un compte',
+        firstNameLabel: 'Prénom',
+        lastNameLabel: 'Nom',
+        phoneLabel: 'Numéro de téléphone',
+        confirmPasswordLabel: 'Confirmer le mot de passe',
+        registerButton: 'Créer mon compte',
+        noAccountYet: 'Pas encore de compte ?',
+        alreadyHaveAccount: 'Déjà un compte ?'
     };
     
     translations.ar = {
@@ -1418,7 +1723,16 @@ document.addEventListener('DOMContentLoaded', () => {
         messageLabel: 'رسالتك :',
         sendButton: 'إرسال',
         messagesButton: 'الرسائل',
-        teacherMessagesTitle: 'رسائلي'
+        teacherMessagesTitle: 'رسائلي',
+        parentLoginTitle: 'دخول الولي',
+        registerTitle: 'إنشاء حساب',
+        firstNameLabel: 'الاسم الأول',
+        lastNameLabel: 'اسم العائلة',
+        phoneLabel: 'رقم الهاتف',
+        confirmPasswordLabel: 'تأكيد كلمة المرور',
+        registerButton: 'إنشاء حسابي',
+        noAccountYet: 'ليس لديك حساب بعد؟',
+        alreadyHaveAccount: 'لديك حساب بالفعل؟'
     };
 
     // ============================================================================

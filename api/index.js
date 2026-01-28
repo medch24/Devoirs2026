@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const moment = require('moment');
+const crypto = require('crypto');
 
 // ============================================================================
 // SHARED DATABASE CONNECTION (avec cache pour réutilisation)
@@ -842,7 +843,7 @@ async function handleSendMessage(req, res) {
     const collection = db.collection('teacher_messages');
     
     if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
-    const { teacherName, parentName, message, timestamp } = req.body;
+    const { teacherName, parentName, parentPhone, message, timestamp } = req.body;
     
     if (!teacherName || !parentName || !message) {
         return res.status(400).json({ error: 'Données incomplètes' });
@@ -851,6 +852,7 @@ async function handleSendMessage(req, res) {
     await collection.insertOne({
         teacherName,
         parentName,
+        parentPhone: parentPhone || '',
         message,
         date: timestamp || new Date().toISOString(),
         read: false,
@@ -1031,6 +1033,170 @@ async function handleGeneralEvaluations(req, res) {
 }
 
 // ============================================================================
+// PARENT ACCOUNT MANAGEMENT
+// ============================================================================
+
+/**
+ * Hash a password using SHA256
+ */
+function hashPassword(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+// Handler: /api/parent-register
+async function handleParentRegister(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('parent_accounts');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { firstName, lastName, phone, password } = req.body;
+    
+    if (!firstName || !lastName || !phone || !password) {
+        return res.status(400).json({ error: 'Tous les champs sont requis' });
+    }
+    
+    // Vérifier si le numéro de téléphone existe déjà
+    const existingParent = await collection.findOne({ phone });
+    if (existingParent) {
+        return res.status(409).json({ error: 'Ce numéro de téléphone est déjà enregistré' });
+    }
+    
+    // Hasher le mot de passe
+    const hashedPassword = hashPassword(password);
+    
+    // Créer le compte
+    await collection.insertOne({
+        firstName,
+        lastName,
+        phone,
+        password: hashedPassword,
+        createdAt: new Date(),
+        lastLogin: null
+    });
+    
+    return res.status(201).json({ 
+        message: 'Compte créé avec succès',
+        parent: { firstName, lastName, phone }
+    });
+}
+
+// Handler: /api/parent-login
+async function handleParentLogin(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('parent_accounts');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { phone, password } = req.body;
+    
+    if (!phone || !password) {
+        return res.status(400).json({ error: 'Numéro de téléphone et mot de passe requis' });
+    }
+    
+    // Hasher le mot de passe
+    const hashedPassword = hashPassword(password);
+    
+    // Rechercher le parent
+    const parent = await collection.findOne({ phone, password: hashedPassword });
+    
+    if (!parent) {
+        return res.status(401).json({ error: 'Numéro de téléphone ou mot de passe incorrect' });
+    }
+    
+    // Mettre à jour lastLogin
+    await collection.updateOne(
+        { phone },
+        { $set: { lastLogin: new Date() } }
+    );
+    
+    return res.status(200).json({ 
+        message: 'Connexion réussie',
+        parent: { 
+            firstName: parent.firstName, 
+            lastName: parent.lastName, 
+            phone: parent.phone 
+        }
+    });
+}
+
+// Handler: /api/parent-messages (historique des messages d'un parent)
+async function handleParentMessages(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_messages');
+    const { phone } = req.query;
+    
+    if (!phone) {
+        return res.status(400).json({ error: 'Numéro de téléphone requis' });
+    }
+    
+    // Récupérer tous les messages envoyés par ce parent
+    const messages = await collection.find({ 
+        parentPhone: phone 
+    }).sort({ createdAt: -1 }).toArray();
+    
+    return res.status(200).json({ messages });
+}
+
+// Handler: /api/parent-unread-replies (compter les réponses non lues pour un parent)
+async function handleParentUnreadReplies(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const messagesCollection = db.collection('teacher_messages');
+    const repliesCollection = db.collection('teacher_replies');
+    const { phone } = req.query;
+    
+    if (!phone) {
+        return res.status(400).json({ error: 'Numéro de téléphone requis' });
+    }
+    
+    // Compter les réponses non lues
+    const count = await repliesCollection.countDocuments({
+        parentPhone: phone,
+        readByParent: false
+    });
+    
+    return res.status(200).json({ unreadCount: count });
+}
+
+// Handler: /api/mark-replies-read (marquer les réponses comme lues)
+async function handleMarkRepliesRead(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const collection = db.collection('teacher_replies');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { phone } = req.body;
+    
+    if (!phone) {
+        return res.status(400).json({ error: 'Numéro de téléphone requis' });
+    }
+    
+    await collection.updateMany(
+        { parentPhone: phone, readByParent: false },
+        { $set: { readByParent: true } }
+    );
+    
+    return res.status(200).json({ message: 'Réponses marquées comme lues' });
+}
+
+// ============================================================================
 // MAIN ROUTER
 // ============================================================================
 module.exports = async (req, res) => {
@@ -1076,11 +1242,21 @@ module.exports = async (req, res) => {
             await handleUnreadCount(req, res);
         } else if (pathname === '/api/general-evaluations' || pathname === '/api/general-evaluations/') {
             await handleGeneralEvaluations(req, res);
+        } else if (pathname === '/api/parent-register' || pathname === '/api/parent-register/') {
+            await handleParentRegister(req, res);
+        } else if (pathname === '/api/parent-login' || pathname === '/api/parent-login/') {
+            await handleParentLogin(req, res);
+        } else if (pathname === '/api/parent-messages' || pathname === '/api/parent-messages/') {
+            await handleParentMessages(req, res);
+        } else if (pathname === '/api/parent-unread-replies' || pathname === '/api/parent-unread-replies/') {
+            await handleParentUnreadReplies(req, res);
+        } else if (pathname === '/api/mark-replies-read' || pathname === '/api/mark-replies-read/') {
+            await handleMarkRepliesRead(req, res);
         } else if (pathname === '/api' || pathname === '/api/') {
             // Route par défaut pour /api
             res.status(200).json({ 
                 message: 'API Devoirs2026',
-                version: '2.0.0',
+                version: '2.1.0',
                 endpoints: [
                     '/api/evaluations',
                     '/api/weekly-summary',
@@ -1094,7 +1270,12 @@ module.exports = async (req, res) => {
                     '/api/get-messages',
                     '/api/mark-messages-read',
                     '/api/unread-count',
-                    '/api/general-evaluations'
+                    '/api/general-evaluations',
+                    '/api/parent-register',
+                    '/api/parent-login',
+                    '/api/parent-messages',
+                    '/api/parent-unread-replies',
+                    '/api/mark-replies-read'
                 ]
             });
         } else {
