@@ -1236,6 +1236,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sauvegarder le parent connecté
     function saveLoggedParent(parentInfo) {
         localStorage.setItem('logged_parent', JSON.stringify(parentInfo));
+        
+        // Vérifier si on doit ouvrir la modal de contact après connexion
+        const pendingContact = sessionStorage.getItem('pending_teacher_contact');
+        if (pendingContact) {
+            try {
+                const { teacherName, teacherData } = JSON.parse(pendingContact);
+                sessionStorage.removeItem('pending_teacher_contact');
+                setTimeout(() => {
+                    openContactModal(teacherName, teacherData);
+                }, 500);
+            } catch (e) {
+                console.error('Erreur:', e);
+            }
+        }
     }
     
     // Déconnecter le parent
@@ -1426,26 +1440,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-teacher-subjects').textContent = teacherData.subjects.join(', ');
         document.getElementById('contact-teacher-form').dataset.teacherName = teacherName;
         modal.style.display = 'flex';
-    }
-    
-    // Surveiller la connexion pour ouvrir la modal de contact enseignant
-    const originalSaveLoggedParent = saveLoggedParent;
-    saveLoggedParent = function(parentInfo) {
-        originalSaveLoggedParent(parentInfo);
-        
-        // Vérifier si on doit ouvrir la modal de contact
-        const pendingContact = sessionStorage.getItem('pending_teacher_contact');
-        if (pendingContact) {
-            try {
-                const { teacherName, teacherData } = JSON.parse(pendingContact);
-                sessionStorage.removeItem('pending_teacher_contact');
-                setTimeout(() => {
-                    openContactModal(teacherName, teacherData);
-                }, 500);
-            } catch (e) {
-                console.error('Erreur:', e);
-            }
-        }
     }
     
     // Close modal
