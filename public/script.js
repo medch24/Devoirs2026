@@ -731,7 +731,20 @@ document.addEventListener('DOMContentLoaded', () => {
             studentPhotoElement.alt = `Photo de ${studentName}`;
         }
         try {
-            const dateQuery = date.clone().locale('en').format('YYYY-MM-DD');
+            // Si vendredi (5) ou samedi (6), utiliser les devoirs de jeudi (4)
+            let queryDate = date.clone();
+            const dayOfWeek = queryDate.day();
+            if (dayOfWeek === 5 || dayOfWeek === 6) {
+                // Trouver le jeudi précédent
+                const daysToSubtract = dayOfWeek === 5 ? 1 : 2;
+                queryDate = queryDate.subtract(daysToSubtract, 'days');
+                
+                // Mettre à jour l'affichage pour indiquer qu'on montre les devoirs de jeudi
+                const thursdayText = currentLang === 'ar' ? 'واجبات الخميس' : 'Devoirs du jeudi';
+                homeworkDateElement.textContent = `${thursdayText} ${queryDate.clone().locale(currentLang).format('D MMMM YYYY')}`;
+            }
+            
+            const dateQuery = queryDate.locale('en').format('YYYY-MM-DD');
             const response = await fetch(`/api/evaluations?class=${className}&student=${studentName}&date=${dateQuery}&week=true`);
             if (!response.ok) throw new Error(`Erreur du serveur (statut ${response.status})`);
             const data = await response.json();

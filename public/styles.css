@@ -1056,3 +1056,42 @@ button[type="submit"] { background: var(--secondary-color); color: white; border
     font-size: 1rem;
     font-weight: bold;
 }
+
+/* Daily Progress Note - في تحسن / في تراجع */
+.daily-progress-note {
+    margin-top: 12px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.daily-progress-note:not(:empty) {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #3b82f6;
+    color: #1e40af;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    animation: fadeInNote 0.5s ease-out;
+}
+
+@keyframes fadeInNote {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] .daily-progress-note {
+    font-family: 'Tajawal', sans-serif;
+}
