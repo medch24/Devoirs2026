@@ -900,18 +900,30 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const previousPct = prevMax > 0 ? Math.round((prevTotal / prevMax) * 100) : null;
 
-            // Afficher TOUJOURS une évaluation (même si pas de données du jour précédent)
+            // NOUVELLE LOGIQUE selon les critères du client :
+            // 1. Excellent (ممتاز) : ≥80% ET ≥3 étoiles
+            // 2. En amélioration (في تحسن) : >50% ET augmentation par rapport au jour précédent
+            // 3. En régression (في تراجع) : <50% OU diminution du pourcentage
+            
             let label = '';
-            if (previousPct === null || currentDayPct === 0) {
-                // Pas de données du jour précédent OU pas de données aujourd'hui
-                label = lang === 'ar' ? 'ممتاز' : 'Excellent';
-            } else if (currentDayPct > previousPct) {
-                label = lang === 'ar' ? 'في تحسن' : 'En amélioration';
-            } else if (currentDayPct < previousPct) {
-                label = lang === 'ar' ? 'في تراجع' : 'En régression';
-            } else {
+            
+            // Critère 1 : Excellent - 80% ou plus ET 3 étoiles au moins
+            if (currentDayPct >= 80 && stars >= 3) {
                 label = lang === 'ar' ? 'ممتاز' : 'Excellent';
             }
+            // Critère 2 : En amélioration - Plus de 50% ET augmentation par rapport au jour précédent
+            else if (currentDayPct > 50 && previousPct !== null && currentDayPct > previousPct) {
+                label = lang === 'ar' ? 'في تحسن' : 'En amélioration';
+            }
+            // Critère 3 : En régression - Moins de 50% OU diminution du pourcentage
+            else if (currentDayPct < 50 || (previousPct !== null && currentDayPct < previousPct)) {
+                label = lang === 'ar' ? 'في تراجع' : 'En régression';
+            }
+            // Par défaut : Si aucune condition n'est remplie
+            else {
+                label = lang === 'ar' ? 'ممتاز' : 'Excellent';
+            }
+            
             noteEl.textContent = label;
             noteEl.style.display = 'block'; // Assurer qu'il est toujours visible
         }
