@@ -767,6 +767,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const card = document.createElement('div');
                     card.className = 'subject-card';
+                    
+                    const commentText = dailyEval.comment || "...";
+                    const translateBtnText = currentLang === 'ar' ? '🌐 ترجمة' : '🌐 Traduire';
+                    
                     card.innerHTML = `<h3>
                                         <span>${hw.subject}</span>
                                         <div class="status-container">
@@ -776,7 +780,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                       </h3>
                                       <div class="content">
                                         <div class="assignment">${hw.assignment}</div>
-                                        <div class="comment-box">${dailyEval.comment || "..."}</div>
+                                        <div class="comment-box" id="comment-${hw.subject.replace(/\s+/g, '-')}" data-original="${commentText}">${commentText}</div>
+                                        ${commentText !== "..." ? `<button class="translate-btn" onclick="translateComment('comment-${hw.subject.replace(/\s+/g, '-')}', '${currentLang === 'ar' ? 'fr' : 'ar'}')" style="margin-top: 8px; padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">${translateBtnText}</button>` : ''}
                                         <div class="scores">
                                             <div><span>${translations[currentLang].evalTableHeaderBehavior}</span><span>${dailyEval.behavior ?? '-'}</span></div>
                                             <div><span>${translations[currentLang].evalTableHeaderParticipation}</span><span>${dailyEval.participation ?? '-'}</span></div>
@@ -867,9 +872,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const noteEl = document.getElementById('daily-progress-note');
         const lang = document.documentElement.lang;
         if (noteEl) {
-            // previous day percentage
+            // Calculer le pourcentage du jour ACTUEL affiché (currentDate)
+            const currentDayStr = currentDate.format('YYYY-MM-DD');
+            let currentTotal = 0, currentMax = 0;
+            (weeklyEvals || []).forEach(ev => {
+                if (ev.date === currentDayStr) {
+                    const d = moment(ev.date).day();
+                    if (d >= 0 && d <= 4 && ev.status !== 'Absent') {
+                        currentTotal += (ev.status === 'Fait' ? 10 : ev.status === 'Partiellement Fait' ? 5 : 0) + (ev.participation || 0) + (ev.behavior || 0);
+                        currentMax += 30;
+                    }
+                }
+            });
+            const currentDayPct = currentMax > 0 ? Math.round((currentTotal / currentMax) * 100) : 0;
+            
+            // Calculer le pourcentage du jour PRÉCÉDENT (par rapport à currentDate)
             let prevTotal = 0, prevMax = 0;
-            const prevDayStr = moment().subtract(1, 'day').format('YYYY-MM-DD');
+            const prevDayStr = currentDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
             (weeklyEvals || []).forEach(ev => {
                 if (ev.date === prevDayStr) {
                     const d = moment(ev.date).day();
@@ -881,17 +900,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const previousPct = prevMax > 0 ? Math.round((prevTotal / prevMax) * 100) : null;
 
+            // Afficher TOUJOURS une évaluation (même si pas de données du jour précédent)
             let label = '';
-            if (previousPct === null) {
-                label = '';
-            } else if (percentage > previousPct) {
+            if (previousPct === null || currentDayPct === 0) {
+                // Pas de données du jour précédent OU pas de données aujourd'hui
+                label = lang === 'ar' ? 'ممتاز' : 'Excellent';
+            } else if (currentDayPct > previousPct) {
                 label = lang === 'ar' ? 'في تحسن' : 'En amélioration';
-            } else if (percentage < previousPct) {
+            } else if (currentDayPct < previousPct) {
                 label = lang === 'ar' ? 'في تراجع' : 'En régression';
             } else {
                 label = lang === 'ar' ? 'ممتاز' : 'Excellent';
             }
             noteEl.textContent = label;
+            noteEl.style.display = 'block'; // Assurer qu'il est toujours visible
         }
     }
     
@@ -1658,18 +1680,48 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             listDiv.innerHTML = '';
-            data.messages.forEach(msg => {
+            
+            // Charger les messages avec leurs réponses
+            for (const msg of data.messages) {
                 const card = document.createElement('div');
                 card.style.cssText = 'padding: 15px; margin: 10px 0; background: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;';
+                
+                // Charger les réponses pour ce message
+                let repliesHtml = '';
+                try {
+                    const convResponse = await fetch(`/api/get-conversation?messageId=${msg._id}`);
+                    if (convResponse.ok) {
+                        const convData = await convResponse.json();
+                        if (convData.replies && convData.replies.length > 0) {
+                            repliesHtml = `
+                                <div style="margin-top: 15px; padding-left: 20px; border-left: 3px solid #10b981;">
+                                    ${convData.replies.map(reply => `
+                                        <div style="background: #ecfdf5; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                <strong style="color: #059669;">🧑‍🏫 ${reply.teacherName}</strong>
+                                                <span style="font-size: 0.85em; color: #6b7280;">${new Date(reply.timestamp).toLocaleString('fr-FR')}</span>
+                                            </div>
+                                            <div style="color: #065f46;">${reply.replyText}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Erreur chargement réponses:', e);
+                }
+                
                 card.innerHTML = `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                         <strong>À: ${msg.teacherName}</strong>
                         <span style="font-size: 0.9em; color: #6b7280;">${new Date(msg.date).toLocaleString('fr-FR')}</span>
                     </div>
                     <p style="margin: 0; color: #374151;">${msg.message}</p>
+                    ${repliesHtml}
                 `;
                 listDiv.appendChild(card);
-            });
+            }
             
             // Marquer comme lues
             await fetch('/api/mark-replies-read', {
@@ -1764,18 +1816,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${messages.length === 0 
                             ? '<p style="text-align:center;padding:20px;color:#666;">Aucun message pour le moment</p>' 
                             : messages.map(msg => `
-                                <div class="message-card ${msg.read ? 'read' : 'unread'}">
+                                <div class="message-card ${msg.read ? 'read' : 'unread'}" data-message-id="${msg._id}">
                                     <div class="message-header">
                                         <strong>${msg.parentName}</strong>
                                         <span class="message-date">${new Date(msg.date).toLocaleString(document.documentElement.lang === 'ar' ? 'ar-SA' : 'fr-FR')}</span>
                                     </div>
                                     <div class="message-content">${msg.message}</div>
+                                    <button class="reply-button" onclick="openReplyModal('${msg._id}', '${msg.parentName}', '${msg.parentPhone}', '${teacherName}')" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                        💬 ${document.documentElement.lang === 'ar' ? 'الرد' : 'Répondre'}
+                                    </button>
+                                    <div class="replies-section" id="replies-${msg._id}" style="margin-top: 15px; padding-left: 20px; border-left: 3px solid #667eea;"></div>
                                 </div>
                             `).join('')
                         }
                     </div>
                 </div>
             `;
+            
+            // Charger les réponses pour chaque message
+            messages.forEach(async (msg) => {
+                await loadRepliesForMessage(msg._id);
+            });
             
             // Marquer les messages comme lus
             if (messages.some(m => !m.read)) {
@@ -1788,6 +1849,153 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Erreur chargement messages:', error);
             messagesContainer.innerHTML = '<p style="color:red;">Erreur de chargement des messages</p>';
+        }
+    }
+    
+    // ============================================================================
+    // SYSTÈME DE TRADUCTION AUTOMATIQUE
+    // ============================================================================
+    
+    window.translateComment = async function(commentId, targetLang) {
+        const commentEl = document.getElementById(commentId);
+        if (!commentEl) return;
+        
+        const originalText = commentEl.dataset.original;
+        const currentText = commentEl.textContent;
+        const btn = commentEl.nextElementSibling;
+        
+        // Si déjà traduit, revenir au texte original
+        if (commentEl.dataset.translated === 'true') {
+            commentEl.textContent = originalText;
+            commentEl.dataset.translated = 'false';
+            if (btn) btn.textContent = document.documentElement.lang === 'ar' ? '🌐 ترجمة' : '🌐 Traduire';
+            return;
+        }
+        
+        try {
+            if (btn) btn.textContent = '⏳...';
+            
+            const response = await fetch('/api/translate-text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: currentText, targetLang })
+            });
+            
+            if (!response.ok) throw new Error('Erreur de traduction');
+            
+            const data = await response.json();
+            commentEl.textContent = data.translatedText;
+            commentEl.dataset.translated = 'true';
+            
+            if (btn) btn.textContent = document.documentElement.lang === 'ar' ? '↩️ الأصل' : '↩️ Original';
+            
+        } catch (error) {
+            console.error('Erreur traduction:', error);
+            if (btn) btn.textContent = '❌ Erreur';
+        }
+    };
+    
+    // ============================================================================
+    // SYSTÈME DE RÉPONSES (CHAT BIDIRECTIONNEL)
+    // ============================================================================
+    
+    // Fonction globale pour ouvrir la modal de réponse
+    window.openReplyModal = function(messageId, parentName, parentPhone, teacherName) {
+        const modal = document.createElement('div');
+        modal.id = 'reply-modal-temp';
+        modal.style.cssText = 'display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;';
+        
+        const lang = document.documentElement.lang;
+        const replyTitle = lang === 'ar' ? 'الرد على' : 'Répondre à';
+        const replyPlaceholder = lang === 'ar' ? 'اكتب ردك هنا...' : 'Écrivez votre réponse ici...';
+        const sendBtn = lang === 'ar' ? 'إرسال' : 'Envoyer';
+        const cancelBtn = lang === 'ar' ? 'إلغاء' : 'Annuler';
+        
+        modal.innerHTML = `
+            <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <h2 style="margin: 0 0 20px 0; color: #667eea;">${replyTitle} ${parentName}</h2>
+                <textarea id="reply-text-input" placeholder="${replyPlaceholder}" style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical;"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
+                    <button onclick="closeReplyModal()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">${cancelBtn}</button>
+                    <button onclick="sendReply('${messageId}', '${teacherName}', '${parentPhone}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">${sendBtn}</button>
+                </div>
+                <p id="reply-status" style="margin-top: 15px; text-align: center;"></p>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    };
+    
+    window.closeReplyModal = function() {
+        const modal = document.getElementById('reply-modal-temp');
+        if (modal) modal.remove();
+    };
+    
+    window.sendReply = async function(messageId, teacherName, parentPhone) {
+        const replyText = document.getElementById('reply-text-input').value.trim();
+        const statusEl = document.getElementById('reply-status');
+        
+        if (!replyText) {
+            statusEl.textContent = document.documentElement.lang === 'ar' ? 'الرجاء كتابة رد' : 'Veuillez écrire une réponse';
+            statusEl.style.color = 'red';
+            return;
+        }
+        
+        statusEl.textContent = document.documentElement.lang === 'ar' ? 'جار الإرسال...' : 'Envoi en cours...';
+        statusEl.style.color = '#667eea';
+        
+        try {
+            const response = await fetch('/api/send-reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messageId,
+                    teacherName,
+                    parentPhone,
+                    replyText
+                })
+            });
+            
+            if (!response.ok) throw new Error('Erreur d\'envoi');
+            
+            statusEl.textContent = document.documentElement.lang === 'ar' ? '✅ تم إرسال الرد بنجاح!' : '✅ Réponse envoyée avec succès !';
+            statusEl.style.color = 'green';
+            
+            setTimeout(() => {
+                closeReplyModal();
+                loadRepliesForMessage(messageId);
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            statusEl.textContent = document.documentElement.lang === 'ar' ? '❌ حدث خطأ' : '❌ Une erreur est survenue';
+            statusEl.style.color = 'red';
+        }
+    };
+    
+    async function loadRepliesForMessage(messageId) {
+        try {
+            const response = await fetch(`/api/get-conversation?messageId=${messageId}`);
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            const repliesContainer = document.getElementById(`replies-${messageId}`);
+            
+            if (!repliesContainer || !data.replies || data.replies.length === 0) return;
+            
+            const lang = document.documentElement.lang;
+            repliesContainer.innerHTML = data.replies.map(reply => `
+                <div style="background: #f0f9ff; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong style="color: #667eea;">🧑‍🏫 ${reply.teacherName}</strong>
+                        <span style="font-size: 0.85em; color: #6b7280;">${new Date(reply.timestamp).toLocaleString(lang === 'ar' ? 'ar-SA' : 'fr-FR')}</span>
+                    </div>
+                    <div style="color: #374151;">${reply.replyText}</div>
+                </div>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Erreur chargement réponses:', error);
         }
     }
     

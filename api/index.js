@@ -1196,6 +1196,126 @@ async function handleMarkRepliesRead(req, res) {
     return res.status(200).json({ message: 'Réponses marquées comme lues' });
 }
 
+// Handler: /api/send-reply (enseignants répondent aux parents)
+async function handleSendReply(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const repliesCollection = db.collection('teacher_replies');
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { messageId, teacherName, parentPhone, replyText } = req.body;
+    
+    if (!messageId || !teacherName || !parentPhone || !replyText) {
+        return res.status(400).json({ error: 'Données incomplètes' });
+    }
+    
+    await repliesCollection.insertOne({
+        messageId,
+        teacherName,
+        parentPhone,
+        replyText,
+        readByParent: false,
+        createdAt: new Date(),
+        timestamp: new Date().toISOString()
+    });
+    
+    return res.status(200).json({ message: 'Réponse envoyée avec succès' });
+}
+
+// Handler: /api/translate-text (traduction simple FR <-> AR)
+async function handleTranslateText(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    if (!req.body || typeof req.body !== 'object') { req.body = await readJsonBody(req); }
+    const { text, targetLang } = req.body;
+    
+    if (!text || !targetLang) {
+        return res.status(400).json({ error: 'Texte et langue cible requis' });
+    }
+    
+    // Traduction simplifiée avec dictionnaire commun
+    const translations = {
+        // Français vers Arabe
+        'Fait': 'أنجز',
+        'Non Fait': 'لم ينجز',
+        'Partiellement Fait': 'أنجز جزئياً',
+        'Absent': 'غائب',
+        'Excellent': 'ممتاز',
+        'Très bien': 'جيد جداً',
+        'Bien': 'جيد',
+        'Moyen': 'متوسط',
+        'Faible': 'ضعيف',
+        'Bon travail': 'عمل جيد',
+        'Continue': 'واصل',
+        'Bravo': 'أحسنت',
+        'Félicitations': 'تهانينا',
+        
+        // Arabe vers Français
+        'أنجز': 'Fait',
+        'لم ينجز': 'Non Fait',
+        'أنجز جزئياً': 'Partiellement Fait',
+        'غائب': 'Absent',
+        'ممتاز': 'Excellent',
+        'جيد جداً': 'Très bien',
+        'جيد': 'Bien',
+        'متوسط': 'Moyen',
+        'ضعيف': 'Faible',
+        'عمل جيد': 'Bon travail',
+        'واصل': 'Continue',
+        'أحسنت': 'Bravo',
+        'تهانينا': 'Félicitations'
+    };
+    
+    // Essayer une traduction mot à mot
+    let translatedText = text;
+    for (const [key, value] of Object.entries(translations)) {
+        const regex = new RegExp(key, 'gi');
+        translatedText = translatedText.replace(regex, value);
+    }
+    
+    return res.status(200).json({ 
+        originalText: text,
+        translatedText: translatedText,
+        targetLang: targetLang
+    });
+}
+
+// Handler: /api/get-conversation (récupérer une conversation complète)
+async function handleGetConversation(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ message: 'Méthode non autorisée' });
+    }
+    
+    const db = await getDb();
+    const messagesCollection = db.collection('teacher_messages');
+    const repliesCollection = db.collection('teacher_replies');
+    const { messageId } = req.query;
+    
+    if (!messageId) {
+        return res.status(400).json({ error: 'ID du message requis' });
+    }
+    
+    // Récupérer le message original
+    const message = await messagesCollection.findOne({ _id: require('mongodb').ObjectId.createFromHexString(messageId) });
+    
+    if (!message) {
+        return res.status(404).json({ error: 'Message non trouvé' });
+    }
+    
+    // Récupérer toutes les réponses
+    const replies = await repliesCollection.find({ messageId }).sort({ createdAt: 1 }).toArray();
+    
+    return res.status(200).json({
+        message,
+        replies
+    });
+}
+
 // ============================================================================
 // MAIN ROUTER
 // ============================================================================
@@ -1252,6 +1372,12 @@ module.exports = async (req, res) => {
             await handleParentUnreadReplies(req, res);
         } else if (pathname === '/api/mark-replies-read' || pathname === '/api/mark-replies-read/') {
             await handleMarkRepliesRead(req, res);
+        } else if (pathname === '/api/send-reply' || pathname === '/api/send-reply/') {
+            await handleSendReply(req, res);
+        } else if (pathname === '/api/get-conversation' || pathname === '/api/get-conversation/') {
+            await handleGetConversation(req, res);
+        } else if (pathname === '/api/translate-text' || pathname === '/api/translate-text/') {
+            await handleTranslateText(req, res);
         } else if (pathname === '/api' || pathname === '/api/') {
             // Route par défaut pour /api
             res.status(200).json({ 
@@ -1275,7 +1401,10 @@ module.exports = async (req, res) => {
                     '/api/parent-login',
                     '/api/parent-messages',
                     '/api/parent-unread-replies',
-                    '/api/mark-replies-read'
+                    '/api/mark-replies-read',
+                    '/api/send-reply',
+                    '/api/get-conversation',
+                    '/api/translate-text'
                 ]
             });
         } else {
