@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
             password: 'Abas'
         },
         'Zine': { 
-            photo: 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
+            photo: 'https://lh3.googleusercontent.com/d/1rWvRuwuk3H0xFDSyjLKbMxDSeuyHvknw',
             subjects: ['Science', 'Biologie'],
             username: 'Zine',
             password: 'Zine'
         },
         'Tonga': { 
-            photo: 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
+            photo: 'https://lh3.googleusercontent.com/d/1j4D9SPnMTPvtTOt1gzjHBy5uA-sl_qh4',
             subjects: ['Physique-Chimie', 'Design', 'SES', 'Maths'],
             username: 'Tonga',
             password: 'Tonga'
