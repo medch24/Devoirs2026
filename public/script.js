@@ -341,8 +341,8 @@ document.addEventListener('DOMContentLoaded', () => {
         iconsContainer.innerHTML = '';
         const avatars = {
             'Abas': 'https://lh3.googleusercontent.com/d/1zMazqEUqMEE92NUG1Lh_MUcm8MmXZPDt',
-            'Zine': 'https://lh3.googleusercontent.com/d/1FFHpggNLV4GYpvoa3mI90LkjmD-oIvuF',
-            'Tonga': 'https://lh3.googleusercontent.com/d/18iddUS7sAnYIl43QRqh8aorF9xtmKKIV',
+            'Zine': 'https://lh3.googleusercontent.com/d/1rWvRuwuk3H0xFDSyjLKbMxDSeuyHvknw',
+            'Tonga': 'https://lh3.googleusercontent.com/d/1j4D9SPnMTPvtTOt1gzjHBy5uA-sl_qh4',
             'Sylvano': 'https://lh3.googleusercontent.com/d/1JD_ojrBGLYfX2q-SgEw2W9H4AxDagaQl',
             'Morched': 'https://lh3.googleusercontent.com/d/1Bq4yI247Lc3G0d9U7fG33W11Q1lxk8nt',
             'Saeed': 'https://lh3.googleusercontent.com/d/1c8ERLl7HjPQ3J9FcwfWdhgZwDE2Mnd07',
