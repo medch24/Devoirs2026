@@ -1,8 +1,14 @@
 {
   "name": "devoirs-app",
   "version": "1.0.0",
+  "description": "Portail de Suivi des Devoirs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "mongodb": "^6.5.0",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "express": "^4.18.2"
   }
 }
